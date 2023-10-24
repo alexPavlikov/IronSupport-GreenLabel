@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
-	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/client/postgresql"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/logging"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/utils"
+	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 )
 
 type repository struct {

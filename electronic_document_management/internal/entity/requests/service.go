@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/config"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 )
 
 type Service struct {

@@ -1,4 +1,4 @@
-IronSupport-GreenLabel/package requests
+package requests
 
 import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/client"

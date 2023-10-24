@@ -1,4 +1,4 @@
-IronSupport-GreenLabel/package requests_db
+package requests_db
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/objects"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/requests"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
-	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/client/postgresql"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/logging"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/pkg/utils"
+	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 	"github.com/lib/pq"
 )
 
