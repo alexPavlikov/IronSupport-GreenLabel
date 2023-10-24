@@ -1,0 +1,95 @@
+{{ define "regedit" }}
+
+{{ template "dialog" }}
+
+    <main>
+
+        <dialog class="dialog-visible" id="dialogedit">
+            <h3 class="main-color" style="text-transform: uppercase;">Редактирование заявки с №{{ .Req.Id }}</h3>
+            <form method="get" action="/edm/request/edits" class="content"  autocomplete="off">
+                <input type="text" name="id" id="" style="display: none;" value="{{ .Req.Id }}">
+                <div class="content-col" style="width: 60%; padding: 0 20px;">
+                    <div class="class">
+                        <div class="type">
+                            <div class="sub-title"><span>Тип заявки</span></div>
+                            <select name="type" id="">
+                                <option selected>{{ .Req.Title }}</option>
+                                <option value="1">hello</option>
+                            </select>
+                        </div>
+                        <div class="status">
+                            <div class="sub-title"><span>Статус заявки</span></div>
+                            <select name="status" id="">
+                                <option selected value="{{ .Req.Status.Name }}">{{ .Req.Status.Name }}</option>
+                                <option value="1">hello</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="priority">
+                        <span>Приоритет заявки</span>
+                        <select name="priority" style="margin-bottom: 20px;">
+                            <option selected value="{{ .Req.Priority }}">{{ .Req.Priority }}</option>
+                            <option style="color: red;" value="fa-chevron-up">&#xf077;</option>
+                            <option style="color: blue;" value="fa-chevron-down">&#xf078;</option>
+                            <option style="color: green;" value="minus-square">&#x2212;</option>
+                        </select>
+                    </div>
+                    <div class="description">
+                        <span>Описание</span>
+                        <textarea name="description" id="" rows="9" placeholder="Опишите подробности заявки">{{ .Req.Description }}</textarea>
+                    </div>
+                    <div class="file" style="margin-top: 10px;" onclick="window.dialoglistfile.showModal();"><a class="text-btn ">Список файлов <i class="fa-solid fa-download"></i></a></div>
+                </div>
+                <div class="content-col" style="width: 40%; padding: 0 20px;">
+                    <div class="client">
+                        <div class="sub-title"><span>Выберите клиента</span></div>
+                        <select name="client" id="">
+                            <option selected value="{{ .Req.Client.Id }}">{{ .Req.Client.Name }}</option>
+                            <option value="1">hello</option>
+                        </select>
+                    </div>
+                    <div class="contract">
+                        <div class="sub-title"><span>Выберите контракт</span></div>
+                        <select name="contract" id="">
+                            <option selected value="{{ .Req.Contract.Id }}">{{ .Req.Contract.Name }}</option>
+                            <option value="1">hello</option>
+                        </select>
+                    </div>
+                    <div class="object">
+                        <div class="sub-title"><span>Выберите объект</span></div>
+                        <select name="object" id="">
+                            <option selected value="{{ .Req.ClientObject.Id }}">{{ .Req.ClientObject.Object.Name }}</option>
+                            <option value="1">hello</option>
+                        </select>
+                    </div>
+                    <div class="equipment">
+                        <div class="sub-title"><span>Выберите оборудование</span></div>
+                        <select name="equipment" id="">
+                            <option selected value="{{ .Req.Equipment.Id }}">{{ .Req.Equipment.Name }}</option>
+                            <option value="1">hello</option>
+                        </select>
+                    </div>
+                    <div class="worker">
+                        <span>Выберите сотрудника</span>
+                        <select name="worker" id="">
+                            <option selected value="{{ .Req.Worker.Id }}">{{ .Req.Worker.FullName }}</option>
+                            <option value="1">hello</option>
+                        </select>
+                    </div>
+                    <div class="date">
+                        <span>Выберите новую дату исполнения ({{ .Req.EndDate }})</span>
+                        <input type="date" name="date" value="{{ .Req.EndDate }}">
+                    </div>
+                </div>
+                <button class="main-btn adds">Изменить</button>
+            </form>
+            <form action="/edm/request" method="get">
+                <button onclick="window.dialogedit.close();" aria-label="close" class="x">❌</button>
+            </form>
+        </dialog>
+
+    </main>
+
+{{ template "footer" }}
+
+{{ end }}

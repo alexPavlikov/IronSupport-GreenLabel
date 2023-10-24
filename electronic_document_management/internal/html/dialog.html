@@ -1,0 +1,363 @@
+{{ define "dialog" }}
+
+<dialog class="dialogsub-small"  style="min-height: 75vh;" id="dialognews">
+    <h3 class="main-color" style="text-transform: uppercase;">Новости</h3>
+
+   
+
+	<button onclick="window.dialognews.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-small" id="dialogtype">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать новый тип заявки</h3>
+
+    <form action="/edm/...." class="content-small" autocomplete="off">
+        <span>Тип заявки</span>
+        <input type="text" name="title" id="" placeholder="Тип">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogtype.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-small" id="dialogstatus">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать новый статус заявки</h3>
+
+    <form action="/edm/...." class="content-small" autocomplete="off">
+        <span>Статус заявки</span>
+        <input type="text" name="status" id="" placeholder="Статус">
+        <input type="color" name="color" placeholder="Выберите цвет">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogstatus.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-medium" id="dialogclient" style="height: 63%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать нового клиента</h3>
+
+    <form action="/edm/...." class="content-medium" autocomplete="off">
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;">
+                <span>ИНН</span>
+                <input type="text" name="status" id="" placeholder="ИНН">
+            </div>
+            <div style="margin-right: 30px;">
+                <span>КПП</span>
+                <input type="text" name="status" id="" placeholder="КПП">
+            </div>
+            <div>
+                <span>ОГРН</span>
+                <input type="text" name="status" id="" placeholder="ОГРН">
+            </div>
+        </div>
+        <span>Название компании</span>
+        <input type="text" name="status" id="" placeholder="Название">
+        <span>Владелец компании</span>
+        <input type="text" name="status" id="" placeholder="Владелец">
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;">
+                <span>Контактный телефон</span>
+                <input type="text" name="status" id="" placeholder="Телефон">
+            </div>
+            <div>
+                <span>Электронная почта</span>
+                <input type="text" name="status" id="" placeholder="Почта">
+            </div>
+        </div>
+
+        <span>Фактический адрес</span>
+        <input type="text" name="status" id="" placeholder="Адрес">
+        <button style="width: 105%;" class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogclient.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-medium" id="dialogcontract">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый контракт</h3>
+
+    <form action="/edm/...." class="content-medium" autocomplete="off">
+        <span>Название контракта</span>
+        <input type="text" name="status" id="" placeholder="Название">
+        <select class="select" name="type" id="" style="margin-bottom: 20px; width: 106%;">
+            <option disabled selected>Клиент</option>
+            <option value="1">hello</option>
+        </select>
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;">
+                <span>Дата начала</span>
+                <input type="date" name="status" id="" placeholder="Дата">
+            </div>
+            <div>
+                <span>Дата окончания</span>
+                <input type="date" name="status" id="" placeholder="Дата">
+            </div>
+        </div>
+    
+        <span>Стоимость контракта</span>
+        <input type="number" name="status" id="" placeholder="Стоимость">
+        <span>Скан контракта</span>
+        <input type="file" name="status" id="" placeholder="Котракт">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogcontract.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-medium" id="dialogobject">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый объект</h3>
+
+    <form action="/edm/...." class="content-medium" autocomplete="off">
+        <span>Название объекта</span>
+        <input type="text" name="status" id="" placeholder="Объект">
+        <span>Адрес объекта</span>
+        <input type="text" name="status" id="" placeholder="Адрес">
+        <span>Время работы объекта</span>
+        <input type="text" name="status" id="" placeholder="Время работы">
+        <select class="select" name="type" id="" style="margin-bottom: 40px; width: 106%;">
+            <option disabled selected>Клиент</option>
+            <option value="1">hello</option>
+        </select>
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogobject.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-medium" id="dialogequipment">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новое оборудование</h3>
+
+    <form action="/edm/...." class="content-medium" autocomplete="off">
+        <div class="content-medium-case">
+            <div style="    margin-right: 30px;">
+                <span>Название оборудование</span>
+                <input type="text" name="status" id="" placeholder="Название">
+            </div>
+            <div>
+                <span>Тип оборудования</span>
+                <input type="text" name="status" id="" placeholder="Тип">
+            </div>
+        </div>
+        <div class="content-medium-case">
+            <div style="    margin-right: 30px;">
+                <span>Производитель</span>
+                <input type="text" name="status" id="" placeholder="Производитель">
+            </div>
+            <div>
+                <span>Модель</span>
+                <input type="text" name="status" id="" placeholder="Модель">
+            </div>
+        </div>
+        <span>Уникальный номер оборудования</span>
+        <input type="text" name="status" id="" placeholder="Уникальный номер">
+        <span>Инструкция для оборудования</span>
+        <input type="file" name="status" id="" placeholder="Инструкция">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogequipment.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+
+<dialog class="dialogsub-medium" id="dialogworker" style="height: 65%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать нового сотрудника</h3>
+
+    <form action="/edm/...." class="content-medium" autocomplete="off">
+        <span>Фамилия/Имя/Отчество</span>
+        <input type="text" name="status" id="" placeholder="ФИО">
+        <span>Почта</span>
+        <input type="text" name="status" id="" placeholder="Почта">
+        <span>Телефон</span>
+        <input type="text" name="status" id="" placeholder="Номер телефона">
+        <span>Фото</span>
+        <input type="file" name="status" accept="image/*" placeholder="Статус">
+        <div class="sub-title" style="width: 97%;"><span>Роль пользователя</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogworkerrole.showModal();">Создать</a></div>
+        <select class="select" name="type" id="" style="margin-bottom: 40px;">
+            <option disabled selected>Роль пользователя</option>
+            <option value="1">hello</option>
+        </select>
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogworker.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-small" id="dialogworkerrole">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать новую роль сотрудникам</h3>
+
+    <form action="/edm/...." class="content-small" autocomplete="off">
+        <span>Роль сотрудника</span>
+        <input type="text" name="title" id="" placeholder="Тип">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogworkerrole.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-small" id="dialogservice" style="max-height: 35%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать услугу</h3>
+
+    <form action="/edm/...." class="content-small" autocomplete="off">
+
+            <div class="sub-title" style="width: 97%;"><span>Оборудование</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogequipment.showModal();">Создать</a></div>
+            <select name="type" id="" class="select">
+                <option value="1">hello</option>
+            </select>
+            <div class="sub-title" style="width: 97%;"><span>Тип услуги</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogservicetype.showModal();">Создать</a></div>
+            <select name="type" id=""  class="select">
+                <option value="1">hello</option>
+            </select>
+        <input type="number" name="title" id="" placeholder="Стоимость">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogservice.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-small" id="dialogservicetype" style="max-height: 25%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать услугу</h3>
+
+    <form action="/edm/...." class="content-small" autocomplete="off">
+        <span>Доавить тип услуги</span>
+        <input type="text" name="title" id="" placeholder="Тип услуги">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogservicetype.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog id="dialog">
+    <h3 class="main-color" style="text-transform: uppercase;">Новая заявка</h3>
+    <form action="/edm/request/add" class="content"  autocomplete="off">
+        <div class="content-col" style="width: 60%; padding: 0 20px;">
+            <div class="class">
+                <div class="type">
+                    <div class="sub-title"><span>Тип заявки</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogtype.showModal();">Создать</a></div>
+                    <select name="type">
+                        {{ range $_, $t := .ReqInsertData.Title }}
+                        <option value="{{ $t.Type }}">{{ $t.Id }} {{ $t.Equipment }} {{ $t.Type }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+                <div class="status">
+                    <div class="sub-title"><span>Статус заявки</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogstatus.showModal();">Создать</a></div>
+                    <select name="status">
+                        {{ range $_, $s := .ReqInsertData.Status }}
+                        <option value="{{ $s.Name }}">{{ $s.Name }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+            </div>
+            <div class="priority">
+                <span>Приоритет заявки</span>
+                <select name="priority" style="margin-bottom: 20px;">
+                    {{ range $_, $p := .ReqInsertData.Priority }}
+                    <option value="{{ $p }}">{{ $p }}</option>
+                    <!-- <option style="color: blue;" value="fa-chevron-down">&#xf078;</option>
+                    <option style="color: green;" value="minus-square">&#x2212;</option> -->
+                    {{ end }}
+                </select>
+            </div>
+            <div class="description">
+                <span>Описание</span>
+                <textarea name="description" id="" rows="9" placeholder="Опишите подробности заявки"></textarea>
+            </div>
+            <div class="file" style="margin-top: 10px;"><a class="text-btn ">Загрузить файл <i class="fa-solid fa-download"></i></a></div>
+        </div>
+        <div class="content-col" style="width: 40%; padding: 0 20px;">
+            <div class="client">
+                <div class="sub-title"><span>Выберите клиента</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogclient.showModal();">Создать</a></div>
+                <select name="client" id="">
+                    {{ range $_, $c := .ReqInsertData.Client }}
+                    <option value="{{ $c.Id }}">{{ $c.INN }} {{ $c.KPP }} {{ $c.OGRN }} {{ $c.Name }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="contract">
+                <div class="sub-title"><span>Выберите контракт</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogcontract.showModal();">Создать</a></div>
+                <select name="contract" id="">
+                    {{ range $_, $ct := .ReqInsertData.Contract }}
+                    <option value="{{ $ct.Id }}">{{ $ct.Name }} {{ $ct.Client.Name }} {{ $ct.DataStart }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="object">
+                <div class="sub-title"><span>Выберите объект</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogobject.showModal();">Создать</a></div>
+                <select name="object" id="">
+                    {{ range $_, $o := .ReqInsertData.ClientObject }}
+                    <option value="{{ $o.ClientObjectId }}">{{ $o.Name }} {{ $o.Client.Name }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="equipment">
+                <div class="sub-title"><span>Выберите оборудование</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogequipment.showModal();">Создать</a></div>
+                <select name="equipment" id="">
+                    {{ range $_, $e := .ReqInsertData.Equipment }}
+                    <option value="{{ $e.Id }}">{{ $e.Name }} {{ $e.Type }} {{ $e.Manufacture }} {{ $e.Model }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="worker">
+                <span>Выберите сотрудника</span>
+                <select name="worker" id="">
+                    {{ range $_, $w := .ReqInsertData.Worker }}
+                    <option value="{{ $w.Id }}">{{ $w.Id }} {{ $w.FullName }} {{ $w.Role }} </option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="date">
+                <span>Выберите дату исполнения</span>
+                <input type="date" name="date">
+            </div>
+        </div>
+        <button class="main-btn adds">Создать</button>
+    </form>
+
+	<button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+
+
+<dialog class="dialogsub-small" id="dialoglistfile" style="max-height: 45%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Список загруженных файлов</h3>
+
+    <form style="width: 100%;" action="/edm/" class="content-small" autocomplete="off">
+        <span>Выберите файлы, которые нужно удалить</span>
+        <div style="width: 100%;">
+            <dialog class="dialog" id="dialogdelfileread" style="height: 90vh;">
+                <embed src="/data/1.pdf" width="100%" height="90%" />
+                <button onclick="window.dialogdelfileread.close();" aria-label="close" class="x">❌</button>
+                </dialog>
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text" onclick="windows.dialogdelfileread.showModal();">Файл_такой-то.docx</div>
+            </label>
+          
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text">Clouds</div>
+            </label>
+          
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text">Earth</div>
+            </label>
+          
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text">Water</div>
+            </label>
+          
+          </div>
+        <button class="main-btn m-auto" style="position: absolute; bottom: 20px;">Применить</button>
+    </form>
+
+	<button onclick="window.dialoglistfile.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+{{ end }}

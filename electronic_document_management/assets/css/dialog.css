@@ -1,0 +1,401 @@
+/*Dialog Styles*/
+dialog {
+    padding: 1rem 3rem;
+    position: relative;
+    background: white;
+    min-width: 60%;
+    height: 60%;
+    padding-top: 2rem;
+    border-radius: 20px;
+    border: 0;
+    box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease both;
+  }
+  dialog::backdrop {
+    animation: fadeIn 1s ease both;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 2;
+    backdrop-filter: blur(20px);
+  }
+  dialog .x {
+    filter: grayscale(1);
+    border: none;
+    background: none;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    transition: ease filter, transform 0.3s;
+    cursor: pointer;
+    transform-origin: center;
+  }
+  dialog .x:hover {
+    filter: grayscale(0);
+    transform: scale(1.1);
+  }
+  
+  dialog .content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 80%;
+
+  }
+
+  dialog .content .content-col {
+    height: 100%;
+    position: relative;
+  }
+
+  dialog .content .content-col .title {
+    height: 15%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+  }
+
+  dialog .content .content-col .priority {
+    height: 15%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  dialog .adds {
+    position: absolute;
+    left: 60px;
+    bottom: 20px;
+  }
+
+  dialog .content .content-col .class {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+  }
+
+  dialog .content .content-col .class .type {
+    width: 100%;
+  }
+
+  dialog .content .content-col .class .status {
+    width: 100%;
+  }
+
+  dialog .content .content-col .class .type select {
+    width: 95%;
+    font-size: 18px;
+    padding: 5px 10px;
+    
+  }
+
+  dialog .content .content-col .title select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+    
+  }
+
+  dialog .content .content-col .priority select {
+    width: 40%;
+    font-size: 18px;
+    padding: 5px 10px;
+    font-family: 'FontAwesome', 'Second Font name'
+  }
+
+  dialog .content .content-col .class .status select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+    
+  }
+
+  dialog .content .content-col .description {
+    width: 100%;
+    height: 100%;
+  }
+
+  dialog .content .content-col textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    resize: none;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  dialog .content .content-col .client {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  dialog .content .content-col .client select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+
+  dialog .content .content-col .contract {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  dialog .content .content-col .contract select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+
+  dialog .content .content-col .object {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  dialog .content .content-col .object select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+
+  dialog .content .content-col .equipment {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  dialog .content .content-col .equipment select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+
+  dialog .content .content-col .worker {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  dialog .content .content-col .worker select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+
+  .select {
+    width: 100%;
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+
+  dialog .content .content-col .date {
+    width: 100%;
+  }
+
+  dialog .content .content-col .date input {
+    width: 50%;
+    font-size: 20px;
+    padding: 5px;
+  }
+
+  .sub-title {
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .sub-title span {
+    width: 100%;
+    text-align: left;
+  }
+
+  .sub-title button {
+    width: 100%;
+    text-align: right;
+    padding: 0;
+    margin-right: 20px;
+  }
+
+  .dialogsub-medium {
+    padding: 1rem 4rem;
+    position: relative;
+    background: white;
+    min-width: 40%;
+    height: 60%;
+    padding-top: 2rem;
+    border-radius: 20px;
+    border: 0;
+    box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+    animation: fadeIn 1s ease both;
+  }
+
+  .dialogsub-medium::backdrop {
+    animation: fadeIn 1s ease both;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 2;
+    backdrop-filter: blur(2px);
+  }
+
+  .dialogsub-small {
+    padding: 1rem 4rem;
+    position: relative;
+    background: white;
+    min-width: 20%;
+    min-height: 5%;
+    max-height: 30%;
+    /* padding-top: 2rem; */
+    border-radius: 20px;
+    border: 0;
+    box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+    animation: fadeIn 1s ease both;
+  }
+
+  .dialogsub-small::backdrop {
+    animation: fadeIn 1s ease both;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 2;
+    backdrop-filter: blur(2px);
+  }
+
+  .content-small {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+  }
+
+  .content-small span {
+    width: 100%;
+    margin: 5% 0 0 0;
+  }
+
+  .content-small input {
+    width: 100%;
+    padding: 8px 0;
+    margin: 5% 0;
+    font-size: 18px;
+    text-indent: 10px;
+  }
+
+  .content-medium {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    min-height: 50%;
+    padding: 5% 20%;
+  }
+
+  .content-medium input {
+    padding: 7px 10px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .content-medium .content-medium-case {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .content-medium .content-medium-case input {
+    width: 100%;
+  }
+
+  .content-medium .content-medium-case input:first-child {
+    margin-right: 10px;
+  }
+
+  .m-auto {
+    margin: 0 auto;
+    width: 60%;
+  }
+
+.click {
+  text-align: center;
+}
+
+.click:hover {
+  cursor: pointer;
+}
+
+.file-link {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+}
+
+.dialog-visible {
+  display: block;
+  height: 60vh;
+  margin: 10vh auto;
+}
+
+/*  */
+.rad-label {
+  display: flex;
+  align-items: center;
+
+  border-radius: 100px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  width: 80%;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.rad-label:hover,
+.rad-label:focus-within {
+  background: hsla(0, 0%, 80%, .14);
+}
+
+.rad-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  z-index: -1;
+}
+
+.rad-design {
+  width: 22px;
+  height: 22px;
+  border-radius: 100px;
+
+  background: linear-gradient(to right bottom, hsl(46, 100%, 51%), hsl(0, 100%, 50%));
+  position: relative;
+}
+
+.rad-design::before {
+  content: '';
+
+  display: inline-block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+
+  background: hsl(0, 0%, 90%);
+  transform: scale(1.1);
+  transition: .3s;
+}
+
+.rad-input:checked+.rad-design::before {
+  transform: scale(0);
+}
+
+.rad-text {
+  color: hsl(0, 0%, 60%);
+  margin-left: 14px;
+  letter-spacing: 3px;
+  width: 100%;
+  font-size: 18px;
+  font-weight: 900;
+
+  transition: .3s;
+}
+
+.rad-input:checked~.rad-text {
+  color: hsl(0, 0%, 40%);
+}

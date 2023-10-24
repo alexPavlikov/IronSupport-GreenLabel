@@ -1,0 +1,27 @@
+{{ define "footer" }}
+
+<script src="../../assets/js/script.js"></script>
+    
+<script>
+
+    $(document).ready(function(){
+                $('.edtbtn').click(function(e) {
+                    clickId = $(this).attr('id');
+                        $.ajax({
+                            url: '/edm/request/edit',
+                            type: 'GET',
+                            dataType: 'html',
+                            data : { edit_req: clickId},
+                            success : function(data) {
+                            $('#result').html(data);
+                            },
+                        });
+                    alert(edit_req);
+                });
+            });
+
+</script>
+
+</body>
+</html>
+{{ end }}

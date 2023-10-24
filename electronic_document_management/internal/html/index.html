@@ -1,0 +1,127 @@
+{{ define "request" }}
+
+    <main>
+
+        <div class="sorted">
+            <form action="/edm/request/sorted/" method="post">
+                <select name="client-sort">
+                    <option disabled selected>Клиенты</option>
+                    {{ range $_, $c := .RID.Client }}
+                    <option value="{{ $c.Id }}">{{ $c.INN }} {{ $c.Name }}</option>
+                    {{ end }}
+                </select>
+
+                <select name="worker-sort">
+                    <option disabled selected>Работники</option>
+                    {{ range $_, $w := .RID.Worker }}
+                    <option value="{{ $w.Id }}">{{ $w.Id }} {{ $w.FullName }} {{ $w.Role }}</option>
+                    {{ end }}
+                </select>
+
+                <select name="object-sort">
+                    <option disabled selected>Объекты</option>
+                    {{ range $_, $o := .RID.ClientObject }}
+                    <option value="1">{{ $o.Name }} {{ $o.Client.Name }}</option>
+                    {{ end }}
+                </select>
+
+                <select name="equipment-sort">
+                    <option disabled selected>Оборудование</option>
+                    {{ range $_, $e := .RID.Equipment }}
+                    <option value="1">{{ $e.Name }}</option>
+                    {{ end }}
+                </select>
+
+                <select name="status-sort">
+                    <option disabled selected>Выберите статус</option>
+                    <option value="1">Шеф</option>
+                </select>
+                <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
+            </form>
+        </div>
+
+        <table class="table-sortable">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Тема</th>
+                    <th>Клиент</th>
+                    <th>Работник</th>
+                    <th>Объект</th>
+                    <th>Оборудование</th>
+                    <th>Контракт</th>
+                    <th>Описание</th>
+                    <th>Создана</th>
+                    <th>Закончена</th>
+                    <th>Статус</th>
+                    <th><i class="fa-solid fa-chevron-up"></i></th>
+                    <th><i class="fa-solid fa-paperclip"></i></th>
+                    <th><i class="fa-solid fa-pen-to-square"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td style="text-align: center;">1</td>
+                    <td>Hello</td>
+                    <td>Client</td>
+                    <td>Worker</td>
+                    <td>Object</td>
+                    <td>Equipment</td>
+                    <td>Contract</td>
+                    <td>Description</td>
+                    <td>Start</td>
+                    <td>End</td>
+                    <td style="background-color: aqua;">Закрыта</td>
+                    <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
+                    <td style="text-align: center;">+</td>
+                    <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                </tr> -->
+
+                {{ range $_, $rs := .Requests }}
+
+                <tr>
+                    <td style="text-align: center;">{{ $rs.Id }}</td>
+                    <td>{{ $rs.Title }}</td>
+                    <td>{{ $rs.Client.Id }} - {{ $rs.Client.Name }}</td>
+                    <td>{{ $rs.Worker.FullName }}</td>
+                    <td>{{ $rs.ClientObject.Id }} - {{ $rs.ClientObject.Object.Name }}</td>
+                    <td>{{ $rs.Equipment.Id }} - {{ $rs.Equipment.Name }}</td>
+                    <td>{{ $rs.Contract.Id }} - {{ $rs.Contract.Name }}</td>
+                    <td>{{ $rs.Description }}</td>
+                    <td>{{ $rs.StartDate }}</td>
+                    <td>{{ $rs.EndDate }}</td>
+                    <td {{ $rs.Status.Color }}>{{ $rs.Status.Name }}</td>
+                        {{ if eq $rs.Priority "high"}}
+                        <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
+                        {{ else if eq $rs.Priority "normal" }}
+                        <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
+                        {{ else if eq $rs.Priority "low" }}
+                        <td style="text-align: center;"><i class="fa-solid fa-chevron-down"></i></td>
+                        {{ end }}
+                    <td class="click" onclick="window.dialogfiles.showModal();">+</td>
+                    <td class="edit"><form action="/edm/request/edit" method="get"><input style="display: none;" name="id" type="text" value="{{$rs.Id}}"><button class="edtbtn" onclick="window.dialogedit.showModal();"><i class="fa-solid fa-pen-to-square"></i></button></form></td>
+                </tr>
+
+                <dialog class="dialogsub-small" id="dialogfiles">
+                    <h3 class="main-color" style="text-transform: uppercase;">Список файл для заявки - №{{ $rs.Id }}</h3>
+                    <img src="/data/1.pdf" alt="">
+                    {{ range $_, $f := $rs.Files }}
+                    <span class="click file-link" onclick="window.dialogfilesread.showModal();">{{$f}}</span>
+                    {{ end }}
+                
+                    <button onclick="window.dialogfiles.close();" aria-label="close" class="x">❌</button>
+                </dialog>
+
+                <dialog class="dialog" id="dialogfilesread" style="height: 90vh;">
+                    <embed src="/data/1.pdf" width="100%" height="90%" />
+                    <button onclick="window.dialogfilesread.close();" aria-label="close" class="x">❌</button>
+                </dialog>
+
+                {{ end }}
+            </tbody>
+        </table>
+    </main>
+
+{{ template "footer" }}
+
+{{ end }}

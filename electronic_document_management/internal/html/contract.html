@@ -1,0 +1,70 @@
+{{ define "contract" }}
+
+{{ template "dialog" }}
+
+<main>
+
+    <div class="sorted">
+        <form class="sort-client" action="/edm/contract/sorted/" method="post">
+            <input type="text" placeholder="Клиент">
+            <input type="text" placeholder="Дата начала">
+            <input type="text" placeholder="Дата окончания">
+            <select style="padding: 5px 10px;" name="status" id="">
+                <option disabled selected>Статус</option>
+                <option value="true">Активен</option>
+                <option value="false">Не активен</option>
+            </select>
+            <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
+        </form>
+    </div>
+
+    <div class="add">
+        <button class="main-btn" onclick="window.dialogcontract.showModal();">Добавить контракт</button>
+    </div>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Клиент</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Стоимость</th>
+                <th>Документ</th>
+                <th>Статус</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td>Hello</td>
+                <td>Client</td>
+                <td>123123</td>
+                <td>312321</td>
+                <td>321312</td>
+                <td>Contract</td>
+                <td>true</td>
+                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+            </tr>
+            {{ range $_, $ct := .Contracts }}
+            <tr>
+                <td style="text-align: center;">{{ $ct.Id }}</td>
+                <td>{{ $ct.Name }}</td>
+                <td>{{ $ct.Name }}</td>
+                <td>{{ $ct.DataStart }}</td>
+                <td>{{ $ct.DataEnd }}</td>
+                <td>{{ $ct.Amount }}</td>
+                <td>{{ $ct.File }}</td>
+                <td>{{ $ct.Status }}</td>
+                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</main>
+
+{{ template "footer" }}
+
+{{ end }}
