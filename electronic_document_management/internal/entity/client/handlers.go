@@ -7,7 +7,7 @@ import (
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/handlers"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
 )
@@ -32,9 +32,9 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) ClientHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./internal/html/*.html")
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
 	if err != nil {
-		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+		h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
 	}
 

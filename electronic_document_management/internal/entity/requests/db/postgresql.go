@@ -156,6 +156,62 @@ func (r *repository) SelectRequests(ctx context.Context) (reqs []requests.Reques
 	return reqs, nil
 }
 
+func (r *repository) SelectRequestsBySort(ctx context.Context, req requests.Request) (rs []requests.Request, err error) {
+	query := `
+	SELECT 
+		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status
+	FROM 
+		public."Request"
+	WHERE client = $1 OR worker = $2 OR client_object = $3 OR equipment = $4 OR status = $5
+	`
+
+	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
+
+	rows, err := r.client.Query(ctx, query, req.Client.Id, req.Worker.Id, req.ClientObject.Id, req.Equipment.Id, req.Status.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	var rt requests.Request
+	var client, worker, client_object, equipment, contract int
+	var status string
+
+	for rows.Next() {
+		err = rows.Scan(&rt.Id, &rt.Title, &client, &worker, &client_object, &equipment, &contract, &rt.Description, &rt.Priority, &rt.StartDate, &rt.EndDate, pq.Array(&rt.Files), &status)
+		if err != nil {
+			return nil, err
+		}
+
+		rt.Client, err = r.getRequestClient(ctx, client)
+		if err != nil {
+			return nil, err
+		}
+		rt.Worker, err = r.getRequestWorker(ctx, worker)
+		if err != nil {
+			return nil, err
+		}
+		rt.Contract, err = r.getRequestContract(ctx, contract)
+		if err != nil {
+			return nil, err
+		}
+		rt.Equipment, err = r.getRequestEquipment(ctx, equipment)
+		if err != nil {
+			return nil, err
+		}
+		rt.ClientObject, err = r.getRequestClientObject(ctx, client_object)
+		if err != nil {
+			return nil, err
+		}
+		rt.Status, err = r.getRequestStatus(ctx, status)
+		if err != nil {
+			return nil, err
+		}
+
+		rs = append(rs, rt)
+	}
+	return rs, nil
+}
+
 // UpdateRequest implements Repository.
 func (r *repository) UpdateRequest(ctx context.Context, req *requests.Request) error {
 	query := `

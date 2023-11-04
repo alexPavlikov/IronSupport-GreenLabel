@@ -1,0 +1,125 @@
+{{ define "abs" }}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Заметки для сотрудников</title>
+</head>
+<!-- 
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
+<link rel="stylesheet" href="/assets/css/abs.css">
+<link rel="stylesheet" href="/assets/css/dialog.css"> -->
+
+<!-- <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet" type="text/css"> -->
+
+<header>
+    <div class="headers box-header logo">
+        <a href="/IronSupport"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
+    </div>
+    <div class="headers box-header-center">
+		<h2 style="color: rgb(255, 153, 0);">Заметки</h2>
+    </div>
+    <div class="headers box-header-right">
+        <a href="/" class="main-btn" style="margin-right: 20px; background-color: rgba(251, 255, 34); color: rgb(255, 153, 0); font-weight: 700;"><i class="fa-regular fa-user" style="font-weight: 700;"></i>Павликов А.</a>
+        <button id="exit" class="main-btn" style=" background-color: rgba(251, 255, 34); color: rgb(255, 153, 0); font-weight: 700;"><i class="fa-solid fa-arrow-right-from-bracket" style="font-weight: 700;"></i></button>
+    </div>
+</header>
+
+<dialog class="dialogsub-medium dialogabs" id="dialogabs" style="height: 60vh;">
+	<h2>Форма добавления заметки</h2>
+	<form action="/abs/add">
+		<input name="user" type="text" style="display: none;" value="2">
+		<div><span>Выберите дату окончания заметки</span><input name="date" type="date" placeholder="Дата конца события"></div>
+		<div><span>Выберите цвет</span><input name="color" type="color" placeholder="Выберите цвет" step=" padding: 40px;"></div>
+		<textarea name="text" cols="30" rows="10" placeholder="Опишите Вашу заметку"></textarea>
+		<button type="submit">Добавить</button>
+	</form>
+
+    <button onclick="window.dialogabs.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<!-- <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script> -->
+
+<body>
+	<div class="abs">
+		<div class="add-abs">
+			<button class="btn-abs" onclick="window.dialogabs.showModal();"><i class="fa-solid fa-plus fa-lg"></i> Добавить заметку</button>
+		</div>
+
+		<div id="board" style="height: 348px;">
+			
+			<!-- <div class="note ui-draggable ui-draggable-handle" style="display: none;"><a href="javascript:;" class="button remove">X</a><div class="note_cnt"><textarea class="title" placeholder="Enter note title" style="height: 64px;"></textarea><textarea class="cnt" placeholder="Enter note description here" style="height: 200px;"></textarea></div> </div><div class="note ui-draggable ui-draggable-handle" style="z-index: 2; width: 300px; inset: 1px auto auto -3px; height: 322px; display: none;"><a href="javascript:;" class="button remove">X</a><div class="note_cnt"><textarea class="title" placeholder="Enter note title" style="height: 64px;"></textarea><textarea class="cnt" placeholder="Enter note description here" style="height: 200px;"></textarea></div> </div><div class="note ui-draggable ui-draggable-handle" style="z-index: 8; width: 300px; inset: 8px auto auto 134px; height: 322px;"><a href="javascript:;" class="button remove">X</a><div class="note_cnt"><textarea class="title" placeholder="Enter note title" style="height: 64px;"></textarea><textarea class="cnt" placeholder="Enter note description here" style="height: 200px;"></textarea></div> </div></div> -->
+
+		<div class="grid">
+			<!-- <div class="block draggable">
+				<div class="note ui-draggable ui-draggable-handle" style="background-color: #FFFD75;">
+					<a href="" class="button remove"><img class="img" src="/assets/data/knopka.png" alt=""></a>
+					<div class="note_cnt">
+						<div class="date">До 13.12.2023</div>
+						<textarea class="cnt" placeholder="Введите описание заметки" style="height: 250px; resize: none;"></textarea>
+					</div>
+				</div>
+			</div>
+			<div  id="1" class="block draggable" style = "width: 362px; inset: 0px auto auto 0px; height:360px">
+				<div class="note ui-draggable ui-draggable-handle" style="background-color: rgb(123, 105, 165);">
+					<a href="" class="button remove"><img class="img" src="/assets/data/knopka.png" alt=""></a>
+					
+					<div class="note_cnt">
+						<div class="date">До 13.12.2023</div>
+						<textarea class="cnt" placeholder="Введите описание заметки" style="height: 250px; resize: none;"></textarea>
+					</div>
+				</div>
+			</div> -->
+
+			{{ range $_, $p := .Posts }}
+			<div id="{{$p.Id}}" class="block draggable" {{$p.Inset}}>
+				<div class="note ui-draggable ui-draggable-handle" {{ $p.Color }}>
+					<a href="/abs/delete?id={{ $p.Id }}" class="button remove"><img class="img" src="/assets/data/knopka.png" alt=""></a>
+					<div class="note_cnt">
+						<div class="date">До {{ $p.Deadline }}</div>
+						<textarea class="cnt" placeholder="Введите описание заметки" style="height: 250px; resize: none;">
+							{{ $p.Text }}
+						</textarea>
+					</div>
+				</div>
+			</div>
+			{{ end }}
+
+		</div>
+	</div>
+
+</body>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/overcast/jquery-ui.css" /> -->
+
+{{ range $_, $p := .Posts }}
+		<!-- <script>
+			$("#{{$p.Id}}").on('mouseup', function(){
+			$.ajax({
+				url: '/abs/move',
+				type: 'POST',
+				dataType: 'html',
+				data : { 
+					Ok: $("#{{$p.Id}}").css("inset"),
+					Id: $("#{{$p.Id}}").attr('id')},
+				success : function(data) {
+				$('#result').html(data);
+				},
+				});
+		})
+		</script> -->
+{{ end }}
+
+<!-- <script>
+	$(".block").draggable();
+</script> -->
+
+
+</html>
+
+{{ end }}

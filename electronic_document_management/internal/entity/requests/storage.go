@@ -7,6 +7,7 @@ type Repository interface {
 
 	SelectRequest(ctx context.Context, id int) (req Request, err error)
 	SelectRequests(ctx context.Context) (reqs []Request, err error)
+	SelectRequestsBySort(ctx context.Context, req Request) (rs []Request, err error)
 
 	UpdateRequest(ctx context.Context, req *Request) error
 

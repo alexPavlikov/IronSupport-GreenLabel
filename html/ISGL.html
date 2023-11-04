@@ -1,0 +1,51 @@
+{{ define "isgl" }}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronSupport-GreenLabel</title>
+</head>
+
+<link rel="stylesheet" href="/assets/css/isgl.css">
+
+<body>
+
+    <main>
+        <h1>Выберите нужный Вам сервис</h1>
+        <div class="half">
+            <a class="point" id="green" href="/edm/request">
+                <div><img src="/assets/data/edm_logo.png" alt=""></div>
+                <div style="height: 40%;"><span style="color: rgb(4, 160, 56);">Электронный документооборот</span></div>
+            </a>
+            <a class="point" id="orange" href="http://127.0.0.1/test1">
+                <div><img src="/assets/data/1c_logo.png" alt=""></div>
+                <div style="height: 40%;"><span style="color: rgb(254, 205, 56);">1С:Бухгалтерия</span></div>
+            </a>
+            <a class="point" id="blue" href="/yadisk">
+                <div><img src="/assets/data/disk_logo.png" alt=""></div>
+                <div style="height: 40%;"><span style="color: rgb(0, 110, 255);">Yandex Disk</span></div>
+            </a>
+        </div>
+        <div class="half">
+            <a class="point" id="red" href="/">
+                <div><img src="/assets/data/web_logo.png" alt=""></div>
+                <div style="height: 40%;"><span style="color: rgb(211, 48, 20);">Веб-сайт</span></div>
+            </a>
+            <a class="point" id="yellow" href="/abs">
+                <div><img src="/assets/data/zapiski.png" alt=""></div>
+                <div style="height: 40%;"><span style="color: rgb(251, 255, 34);">Объявления для сотрудников</span></div>
+                <span class="notification">!</span>
+            </a>
+            <a class="point" id="violet" href="/chat">
+                <div><img src="/assets/data/message_logo.png" alt=""></div>
+                <div style="height: 40%;"><span style="color: #c225ff;">Чаты сотрудников</span></div>
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>
+
+{{ end }}

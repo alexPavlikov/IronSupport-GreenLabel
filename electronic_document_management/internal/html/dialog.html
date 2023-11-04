@@ -1,5 +1,22 @@
 {{ define "dialog" }}
 
+
+
+<dialog class="dialogsub-small" id="dialogfiles">
+    <h3 class="main-color" style="text-transform: uppercase;">Список файл для заявки - №</h3>
+    <img src="/assets/data/1.pdf" alt="">
+
+
+    <button onclick="window.dialogfiles.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialog" id="dialogfilesread" style="height: 90vh;">
+    <embed src="/assets/data/1.pdf" width="100%" height="90%" />
+    <button onclick="window.dialogfilesread.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+
+
 <dialog class="dialogsub-small"  style="min-height: 75vh;" id="dialognews">
     <h3 class="main-color" style="text-transform: uppercase;">Новости</h3>
 

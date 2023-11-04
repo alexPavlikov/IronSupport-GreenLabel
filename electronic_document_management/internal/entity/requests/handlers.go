@@ -8,7 +8,7 @@ import (
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/handlers"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
 )
@@ -20,13 +20,15 @@ type handler struct {
 
 func (h *handler) Register(router *httprouter.Router) {
 
-	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
-	router.ServeFiles("/data/*filepath", http.Dir("data"))
+	// router.ServeFiles("/assets/*filepath", http.Dir("./assets/"))
+	// router.ServeFiles("/data/*filepath", http.Dir("./data/"))
 
 	router.HandlerFunc(http.MethodGet, "/edm/request", h.RequestsHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/request/edit", h.EditRequestHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/request/edits", h.EditPostRequestHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/request/add", h.InsertRequestHandler)
+	router.HandlerFunc(http.MethodPost, "/edm/request/sorted", h.SorterRequestHandler)
+	router.HandlerFunc(http.MethodGet, "/edm/request/sorted", h.SorterRequestHandler)
 }
 
 func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
@@ -37,7 +39,7 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) RequestsHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./internal/html/*.html")
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
 	if err != nil {
 		fmt.Println(err)
 		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
@@ -49,6 +51,8 @@ func (h *handler) RequestsHandler(w http.ResponseWriter, r *http.Request) {
 		h.logger.Errorf("%s - failed load RequestsHandler due to err: %s", config.LOG_ERROR, err)
 		http.NotFound(w, r)
 	}
+
+	fmt.Println(reqs[0].ClientObject.Object.Id, reqs[0].ClientObject.Object.Name)
 
 	data := map[string]interface{}{"Requests": reqs, "RID": RID}
 	header := map[string]string{"Title": "ЭДО - Заявки"}
@@ -74,7 +78,7 @@ func (h *handler) RequestsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) EditRequestHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./internal/html/*.html")
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
 	if err != nil {
 		h.logger.Tracef("%s - failed open EditRequestHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
@@ -195,4 +199,65 @@ func (h *handler) InsertRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.NotFound(w, r)
 	}
+}
+
+var rs []Request
+
+func (h *handler) SorterRequestHandler(w http.ResponseWriter, r *http.Request) {
+	var req Request
+
+	var err error
+
+	if r.Method == "POST" {
+		r.ParseForm()
+
+		req.Client.Id, _ = strconv.Atoi(r.FormValue("client-sort"))
+		req.Worker.Id, _ = strconv.Atoi(r.FormValue("worker-sort"))
+		req.ClientObject.Id, _ = strconv.Atoi(r.FormValue("object-sort"))
+		req.Equipment.Id, _ = strconv.Atoi(r.FormValue("equipment-sort"))
+		req.Status.Name = r.FormValue("status-sort")
+
+		rs, err = h.service.GetRequestsBySort(context.TODO(), req)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+
+		fmt.Println(rs)
+
+		http.Redirect(w, r, "/edm/request/sorted", http.StatusSeeOther)
+
+	} else if r.Method == "GET" {
+
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+		if err != nil {
+			fmt.Println(err)
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			w.WriteHeader(http.StatusNotFound)
+		}
+
+		fmt.Println(rs)
+
+		data := map[string]interface{}{"Requests": rs, "RID": RID}
+		header := map[string]string{"Title": "ЭДО - Заявки"}
+		dialog := map[string]interface{}{"ReqInsertData": RID}
+
+		err = tmpl.ExecuteTemplate(w, "header", header)
+		if err != nil {
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			//http.NotFound(w, r)
+		}
+
+		err = tmpl.ExecuteTemplate(w, "request", data)
+		if err != nil {
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			//http.NotFound(w, r)
+		}
+
+		err = tmpl.ExecuteTemplate(w, "dialog", dialog)
+		if err != nil {
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			//http.NotFound(w, r)
+		}
+	}
+
 }
