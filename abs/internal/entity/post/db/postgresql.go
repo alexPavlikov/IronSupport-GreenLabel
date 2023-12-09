@@ -157,6 +157,25 @@ func (r *repository) UpdateCordAbs(ctx context.Context, x, y, id int) error {
 	return nil
 }
 
+func (r *repository) UpdateTextAbs(ctx context.Context, text string, id int) error {
+	query := `
+	UPDATE 
+		public."Abs" 
+	SET
+		text = $1
+	WHERE 
+		id = $2
+	`
+
+	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
+
+	_, err := r.client.Query(ctx, query, text, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *repository) DeleteUserAbs(ctx context.Context, abs int) error {
 	query := `
 	DELETE 

@@ -24,6 +24,7 @@ func (h *handler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodPost, "/abs/move", h.AbsMoveHandler)
 	router.HandlerFunc(http.MethodGet, "/abs/delete", h.AbsDeleteHandler)
 	router.HandlerFunc(http.MethodGet, "/abs/add", h.AbsAddHandler)
+	router.HandlerFunc(http.MethodPost, "/abs/edit", h.EditAbsHandler)
 
 }
 
@@ -45,9 +46,16 @@ func (h *handler) AbsHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	fmt.Println(posts)
+	r.ParseForm()
+	id, _ := strconv.Atoi(r.FormValue("Id"))
+	editPost, err := h.service.GetPost(context.TODO(), id)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	data := map[string]interface{}{"Posts": posts}
+	editArr := []Post{editPost}
+
+	data := map[string]interface{}{"Posts": posts, "EditPost": editArr}
 
 	err = tmpl.ExecuteTemplate(w, "abs", data)
 	if err != nil {
@@ -57,25 +65,34 @@ func (h *handler) AbsHandler(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) AbsMoveHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	test := r.FormValue("Ok")
+	test := r.FormValue("Position")
 	id := r.FormValue("Id")
 
 	arr := strings.Split(test, " ")
-	x := arr[0]
-	y := "-" + arr[1]
-	x = strings.TrimSuffix(x, "px")
-	y = strings.TrimSuffix(y, "px")
+	if len(arr) > 2 {
+		x := arr[0]
+		y := arr[3]
+		x = strings.TrimSuffix(x, "px")
+		y = strings.TrimSuffix(y, "px")
 
-	idx, _ := strconv.Atoi(id)
-	nx, _ := strconv.Atoi(x)
-	ny, _ := strconv.Atoi(y)
+		idx, _ := strconv.Atoi(id)
+		nx, err := strconv.Atoi(x)
+		if err != nil {
+			fmt.Println(err)
+		}
+		ny, err := strconv.Atoi(y)
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	err := h.service.UpdateCordPost(context.TODO(), nx, ny, idx)
-	if err != nil {
-		http.NotFound(w, r)
-	} else {
-		http.Redirect(w, r, "/abs/", http.StatusSeeOther)
+		err = h.service.UpdateCordPost(context.TODO(), nx, ny, idx)
+		if err != nil {
+			http.NotFound(w, r)
+		} else {
+			http.Redirect(w, r, "/abs/", http.StatusSeeOther)
+		}
 	}
+
 }
 
 func (h *handler) AbsDeleteHandler(w http.ResponseWriter, r *http.Request) {
@@ -105,6 +122,22 @@ func (h *handler) AbsAddHandler(w http.ResponseWriter, r *http.Request) {
 	err := h.service.AddPost(context.TODO(), &post)
 	if err != nil {
 		fmt.Println(err)
+		http.NotFound(w, r)
+	} else {
+		http.Redirect(w, r, "/abs/", http.StatusSeeOther)
+	}
+}
+
+func (h *handler) EditAbsHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	var post Post
+
+	post.Id, _ = strconv.Atoi(r.FormValue("id"))
+	post.Text = r.FormValue("text")
+	fmt.Println(post)
+	err := h.service.repository.UpdateTextAbs(context.TODO(), post.Text, post.Id)
+	if err != nil {
 		http.NotFound(w, r)
 	} else {
 		http.Redirect(w, r, "/abs/", http.StatusSeeOther)

@@ -19,63 +19,63 @@ import (
 	services_db "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/services/db"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	user_db "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user/db"
-	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/server"
 	"github.com/julienschmidt/httprouter"
 )
 
-var ClientPostgreSQL dbClient.Client
+// var ClientPostgreSQL dbClient.Client
 
 func Run(router *httprouter.Router) *httprouter.Router {
 	logger := logging.GetLogger()
 	logger.Info(config.LOG_INFO, "Create router")
 
-	cfg := config.GetConfig()
+	// cfg := config.GetConfig()
 
 	var err error
 
-	ClientPostgreSQL, err = dbClient.NewClient(context.TODO(), cfg.Storage)
-	if err != nil {
-		logger.Fatalf("failed to get new client postgresql, due to err: %v", err)
-	}
+	// ClientPostgreSQL, err = dbClient.NewClient(context.TODO(), cfg.Storage)
+	// if err != nil {
+	// 	logger.Fatalf("failed to get new client postgresql, due to err: %v", err)
+	// }
 
 	logger.Info(config.LOG_INFO, " - Start requests handlers")
-	rRep := requests_db.NewRepository(ClientPostgreSQL, logger)
+	rRep := requests_db.NewRepository(server.ClientPostgreSQL, logger)
 	rSer := requests.NewService(rRep, logger)
 	rHan := requests.NewHandler(rSer, logger)
 	rHan.Register(router)
 
 	logger.Info(config.LOG_INFO, " - Start client handlers")
-	cRep := client_db.NewRepository(ClientPostgreSQL, logger)
+	cRep := client_db.NewRepository(server.ClientPostgreSQL, logger)
 	cSer := client.NewService(cRep, logger)
 	cHan := client.NewHandler(cSer, logger)
 	cHan.Register(router)
 
 	logger.Info(config.LOG_INFO, " - Start contract handlers")
-	ctRep := contract_db.NewRepository(ClientPostgreSQL, logger)
+	ctRep := contract_db.NewRepository(server.ClientPostgreSQL, logger)
 	ctSer := contract.NewService(ctRep, logger)
 	ctHan := contract.NewHandler(ctSer, logger)
 	ctHan.Register(router)
 
 	logger.Info(config.LOG_INFO, " - Start object handlers")
-	oRep := objects_db.NewRepository(ClientPostgreSQL, logger)
+	oRep := objects_db.NewRepository(server.ClientPostgreSQL, logger)
 	oSer := objects.NewService(oRep, logger)
 	oHan := objects.NewHandler(oSer, logger)
 	oHan.Register(router)
 
 	logger.Info(config.LOG_INFO, " - Start equipment handlers")
-	eRep := equipment_db.NewRepository(ClientPostgreSQL, logger)
+	eRep := equipment_db.NewRepository(server.ClientPostgreSQL, logger)
 	eSer := equipment.NewService(eRep, logger)
 	eHan := equipment.NewHandler(eSer, logger)
 	eHan.Register(router)
 
 	logger.Info(config.LOG_INFO, " - Start user handlers")
-	uRep := user_db.NewRepository(ClientPostgreSQL, logger)
+	uRep := user_db.NewRepository(server.ClientPostgreSQL, logger)
 	uSer := user.NewService(uRep, logger)
 	uHan := user.NewHandler(uSer, logger)
 	uHan.Register(router)
 
-	sRep := services_db.NewRepository(ClientPostgreSQL, logger)
+	sRep := services_db.NewRepository(server.ClientPostgreSQL, logger)
 	sSer := services.NewService(sRep, logger)
 	sHan := services.NewHandler(sSer, logger)
 

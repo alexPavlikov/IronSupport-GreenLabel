@@ -1,0 +1,58 @@
+{{ define "header" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+</head>
+
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/dialog.css">
+<link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
+<link rel="stylesheet" href="/assets/css/website.css">
+
+<header>
+    <div class="headers box-header logo">
+       <a href="/ironsupport"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
+    </div>
+    <!-- <div class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div> -->
+    <div class="headers box-header-center">
+        <!-- <button onclick="window.dialognews.showModal();" style=" width: 40%;" class="text-btn"><i class="fa-solid fa-envelope-open-text main-color"></i> События</button> -->
+            <form class="find">
+                <input type="text" placeholder="Искать здесь...">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+    </div>
+    <div class="headers box-header-right">
+        <a href="/" class="main-btn" style="margin-right: 20px;"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <button id="exit" class="main-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+</header>
+
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+
+
+<div class="horizontal-menu">
+    <div class="item"><a href="/news">Новости</a></div>
+    <div class="item"><a href="">Продукция</a></div>
+    <div class="item"><a href="">Наши клиенты</a></div>
+    <div class="item"><a href="">Вакансии</a></div>
+    <div class="item"><a href="">О компании</a></div>
+</div>
+
+    
+    <!-- <aside class="menu">
+        
+        
+        <a href="/edm/request" class="menu-item menu-item-active"><i class="fa-regular fa-bell"></i><span>Заявки</span></a>
+        <a href="/edm/client" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Клиенты</span></a>
+        <a href="/edm/contract" class="menu-item"><i class="fa-regular fa-file"></i><span>Договоры</span></a>
+        <a href="/edm/object" class="menu-item"><i class="fa-regular fa-building"></i><span>Объекты</span></a>
+        <a href="/edm/equipment" class="menu-item"><i class="fa-solid fa-print"></i><span>Оборудование</span></a>
+        <a href="/edm/user" class="menu-item"><i class="fa-regular fa-user"></i><span>Сотрудники</span></a>
+        <a href="/edm/service" class="menu-item"><i class="fa-regular fa-rectangle-list"></i><span>Услуги</span></a>
+        <a href="/edm/statistics" class="menu-item"><i class="fa-solid fa-chart-column"></i><span>Отчеты</span></a>
+    </aside> -->
+{{ end }}

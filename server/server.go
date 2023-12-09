@@ -81,7 +81,9 @@ func init() {
 	cfg := config.GetConfig()
 	logger := logging.GetLogger()
 
-	ClientPostgreSQL, err := dbClient.NewClient(context.TODO(), cfg.Storage)
+	var err error
+
+	ClientPostgreSQL, err = dbClient.NewClient(context.TODO(), cfg.Storage)
 	if err != nil {
 		logger.Fatalf("failed to get new client postgresql, due to err: %v", err)
 	}

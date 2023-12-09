@@ -1,0 +1,42 @@
+{{ define "menuweb" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-сайт</title>
+</head>
+
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
+<link rel="stylesheet" href="/assets/css/website.css">
+
+
+<header>
+    <div class="headers box-header logo">
+       <a href="/ironsupport"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
+    </div>
+   <div class="headers box-header-center">
+       <h2 style="color: rgb(211, 48, 20);">Веб-сайт</h2>
+    </div>
+    <div class="headers box-header-right">
+        <a href="/" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <button id="exit" class="main-btn"  style="background-color: rgb(211, 48, 20);"><i class="fa-solid fa-arrow-right-from-bracket" ></i></button>
+    </div>
+</header>
+
+<body>
+    <menu>
+        <a href="/" class="block">
+            <i class="fa-solid fa-globe"></i>
+            <span>Веб-сайт</span>
+        </a>
+        <a href="/administrator" class="block">
+            <i class="fa-solid fa-user-tie"></i>
+            <span>Админ-панель</span>
+        </a>
+    </menu>
+</body>
+
+{{ end }}

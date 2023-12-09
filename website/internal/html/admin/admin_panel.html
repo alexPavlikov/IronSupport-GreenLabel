@@ -1,0 +1,61 @@
+{{ define "panel" }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-сайт</title>
+</head>
+
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
+<link rel="stylesheet" href="/assets/css/website.css">
+<link rel="stylesheet" href="/assets/css/adminpanel.css">
+
+
+<header>
+    <div class="headers box-header logo">
+       <a href="/ironsupport"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
+    </div>
+   <div class="headers box-header-center">
+       <h2 style="color: rgb(211, 48, 20);">Админ-панель сайта</h2>
+    </div>
+    <div class="headers box-header-right">
+        <a href="/" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <button id="exit" class="main-btn"  style="background-color: rgb(211, 48, 20);"><i class="fa-solid fa-arrow-right-from-bracket" ></i></button>
+    </div>
+</header>
+
+<body>
+    <div class="container">
+        <aside>
+          <h1>Категории</h1>
+          <ul  class="drop_vert_menu">
+            <li><a href="#"><span>Главная</span></a></li>
+            <li><a href="#"><span>Контакты</span></a>
+              <ul id="drop">
+               <li><a href="#"><span>Телефон</span></a></li>
+               <li><a href="#"><span>E-mail</span></a></li>
+               <li><a href="#"><span>Адреса</span></a></li>
+                 </ul>
+               </li>
+            <li><a href="#"><span>О сайте</span></a>
+                <ul>
+               <li><a href="#"><span>История</span></a></li>
+               <li><a href="#"><span>Коллектив</span></a></li>
+                  </ul>
+            </li>
+            <li><a href="#"><span>Карта сайта</span></a></li>
+            <li><a href="#"><span>Ссылки</span></a></li>
+          </ul>
+        </aside>
+        <main>123</main>
+    </div>
+</body>
+
+
+
+
+{{ end }}

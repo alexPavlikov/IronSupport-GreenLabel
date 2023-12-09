@@ -1,0 +1,109 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+}
+
+.container aside {
+    width: 20%;
+    background-color: rgb(34, 33, 33);
+    height: 100%;
+    position: fixed;
+    color: white;
+    padding: 10px 20px;
+}
+
+.container aside h1 {
+  font-size: 40px;
+  font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.container main {
+    width: 80%;
+    padding: 10px 20px;
+   display: block;
+   margin-left: 25%;
+}
+
+
+ul { list-style-type: none; }
+
+a {
+  /* color: #b63b4d; */
+  text-decoration: none;
+}
+.drop_vert_menu {
+  list-style-type: none; 
+  width: 100%;
+  margin: 0; 
+  padding: 0;
+
+}
+
+.drop_vert_menu  ul {
+  list-style-type: none; 
+  width: 100%;
+  margin: 0; 
+  padding: 0; 
+  position: relative;
+
+}
+
+.drop_vert_menu > li{
+position: relative; 
+padding: 20px 10px;
+
+}
+
+.drop_vert_menu > li > a{
+font-size:28px;
+color: White;
+text-decoration:none;
+display: block;
+  width: 100%;
+}
+
+
+.drop_vert_menu li ul {
+display: none;
+  /* top: 50px;  */
+  left: 0px; 
+  z-index: 1000;
+  position: relative;
+ }
+
+.drop_vert_menu li:hover ul {
+ display: block; 
+ }
+
+.drop_vert_menu li ul li{
+text-align:left;
+transition: all .4s linear;
+padding: 20px 20px 20px 10px;
+position: relative;
+width: calc(100%-30px);
+}
+
+.drop_vert_menu li ul li:hover {
+background: rgb(211, 48, 20);
+
+}
+
+.drop_vert_menu li ul li a{
+  font-size: 24px;
+  color:White;
+  text-decoration:none;  
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.drop_vert_menu li:hover {
+  background: rgba(211, 49, 20, 0.5);
+}
+
+ul li a span {
+  color: white;
+}
