@@ -15,19 +15,25 @@
 
 <header>
     <div class="headers box-header logo">
-       <a href="/ironsupport"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
+       <a href="/"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
     </div>
     <!-- <div class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div> -->
     <div class="headers box-header-center">
         <!-- <button onclick="window.dialognews.showModal();" style=" width: 40%;" class="text-btn"><i class="fa-solid fa-envelope-open-text main-color"></i> События</button> -->
-            <form class="find">
-                <input type="text" placeholder="Искать здесь...">
+            <form class="find" action="/find" method="post">
+                <input type="text" name="find" placeholder="Искать здесь...">
                 <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
     </div>
     <div class="headers box-header-right">
-        <a href="/" class="main-btn" style="margin-right: 20px;"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <a href="/account" class="main-btn" style="margin-right: 20px;"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <a href="/backet" class="main-btn" style="margin-right: 20px; position: relative;">
+            <i class="fa-solid fa-basket-shopping"></i>
+            <span style="position: absolute; top: 3; right: 3; color: yellow; font-weight: 700; font-size: 12px;">9</span>
+        </a>
+        <form action="/exit">
         <button id="exit" class="main-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+        </form>
     </div>
 </header>
 
@@ -36,10 +42,10 @@
 
 <div class="horizontal-menu">
     <div class="item"><a href="/news">Новости</a></div>
-    <div class="item"><a href="">Продукция</a></div>
-    <div class="item"><a href="">Наши клиенты</a></div>
-    <div class="item"><a href="">Вакансии</a></div>
-    <div class="item"><a href="">О компании</a></div>
+    <div class="item"><a href="/products">Продукция</a></div>
+    <div class="item"><a href="/clients">Наши клиенты</a></div>
+    <div class="item"><a href="/vacancy">Вакансии</a></div>
+    <div class="item"><a href="/about">О компании</a></div>
 </div>
 
     

@@ -1,0 +1,111 @@
+{{ define "products" }}
+
+{{ template "header" }}
+
+
+
+<body>
+    <div class="sorted-panel">
+        <h1 style="color: rgb(4, 160, 56);">Каталог товара</h1>
+        <form action="/products/sort" method="get">
+            <select name="category" id="">
+                <option value="" disabled selected>Категория товара</option>
+                <option value="category">2</option>
+            </select>
+            <select name="price" id="">
+                <option value="" disabled selected>Сортировка по цене</option>
+                <option value="price">2</option>
+            </select>
+            <select name="active" id="">
+                <option value="" disabled selected>Наличие товара</option>
+                <option value="active">2</option>
+            </select>
+            <select name="discount" id="">
+                <option value="" disabled selected>Скидка</option>
+                <option value="discount">2</option>
+            </select>
+            <button><i class="fa-solid fa-square-check"></i></button>
+        </form>
+    </div>
+
+    <div class="products-grid">         
+
+        <!-- 4 товара со скидкой -->
+        <a href="/" class="product">
+            <div class="img"><img src="" alt=""></div>
+            <span>15мл/30мл, спрей, от 4 лет</span>
+            <div class="name">Херкометазол</div>
+            <div class="price"><span class="old-price">1 400 ₽</span><span class="new-price">900 ₽</span></div>
+            <form action="">
+                <input type="text" name="" id="" style="display: none;">
+                <button>В корзину</button>
+            </form>
+        </a>
+        <a href="/" class="product">
+            <div class="img"><img src="" alt=""></div>
+            <span>15мл/30мл, спрей, от 4 лет</span>
+            <div class="name">Херкометазол</div>
+            <div class="price"><span class="old-price">1 400 ₽</span><span class="new-price">900 ₽</span></div>
+            <form action="">
+                <input type="text" name="" id="" style="display: none;">
+                <button>В корзину</button>
+            </form>
+        </a>
+        <a href="/" class="product">
+            <div class="img"><img src="" alt=""></div>
+            <span>15мл/30мл, спрей, от 4 лет</span>
+            <div class="name">Херкометазол</div>
+            <div class="price"><span class="old-price">1 400 ₽</span><span class="new-price">900 ₽</span></div>
+            <form action="">
+                <input type="text" name="" id="" style="display: none;">
+                <button>В корзину</button>
+            </form>
+        </a>
+        <a href="/" class="product">
+            <div class="img"><img src="" alt=""></div>
+            <span>15мл/30мл, спрей, от 4 лет</span>
+            <div class="name">Херкометазол</div>
+            <div class="price"><span class="old-price">1 400 ₽</span><span class="new-price">900 ₽</span></div>
+            <form action="">
+                <input type="text" name="" id="" style="display: none;">
+                <button>В корзину</button>
+            </form>
+        </a>
+        <a href="/" class="product">
+            <div class="img"><img src="" alt=""></div>
+            <span>15мл/30мл, спрей, от 4 лет</span>
+            <div class="name">Херкометазол</div>
+            <div class="price"><span class="old-price">1 400 ₽</span><span class="new-price">900 ₽</span></div>
+            <form action="">
+                <input type="text" name="user_id" id="" style="display: none;">
+                <input type="text" name="" id="product_id" style="display: none;">
+                <button>В корзину</button>
+            </form>
+        </a>
+    </div>
+    <div class="pagination:container">
+        <a href="/products?page=-1" class="pagination:number arrow">
+          
+            <i class="fa-solid fa-angle-left"></i>
+        </a>
+        
+        <a href="/products?page=1" class="pagination:number">
+          1
+        </a>
+
+        ...
+        
+        <a href="/products?page=last" class="pagination:number">
+          540
+        </a>
+        
+        <a href="/products?page=+1" class="pagination:number arrow">
+            <i class="fa-solid fa-angle-right"></i>
+        </a>
+    </div>
+      
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

@@ -1,0 +1,269 @@
+{{ define "purchases" }}
+
+{{ template "header" }}
+
+<link rel="stylesheet" href="/assets/css/purchases.css">
+
+<body>
+    
+    <div class="purchases">
+        <h1>Мои заказы</h1>
+        <!-- <div class="purchases-list">
+            <div class="purchases-item">
+                
+            </div>
+        </div> -->
+
+        <div class="tabs">
+            <input class="input" name="tabs" type="radio" id="tab-1" checked="checked"/>
+            <label class="label" for="tab-1">Активные заказы</label>
+            <div class="panel">
+                <div class="panel-item">
+                    <div class="panel-item-header">
+                        <div class="up">
+                            <span>Заказ №8989898</span>
+                            <div class="status not-active">Получен</div>
+                        </div>
+                        <div class="progress-bar">
+                            -------
+                        </div>
+                    </div>
+                    <div class="panel-item-main">
+                        <div class="info code" style="font-weight: 600;">
+                            <span>Код получателя заказа:</span>
+                            <span>7525</span>
+                        </div>
+                        <div class="info pick-up-point">
+                            <span>Пункт выдачи заказов:</span>
+                            <span>Донецкая Народная респ, г Донецк, ул Университетская, д 67</span>
+                        </div>
+                        <div class="info">
+                            <span>Заказ хранится</span>
+                            <span>Заказ будет храниться в течение 5 дней после доставки в ПВЗ</span>
+                        </div>
+                        <div class="info create-date">
+                            <span>Заказ сделан</span>
+                            <span>18 декабря 2023, 15:21</span>
+                        </div>
+                        <div class="info count-item-price">
+                            <span>4 товара</span>
+                            <span>731 ₽</span>
+                        </div>
+                        <div class="gallery">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                        </div>
+                      
+                    </div>
+                </div>
+                <div class="panel-item">
+                    <div class="panel-item-header">
+                        <div class="up">
+                            <span>Заказ №8989898</span>
+                            <div class="status not-active">Получен</div>
+                        </div>
+                        <div class="progress-bar">
+                            -------
+                        </div>
+                    </div>
+                    <div class="panel-item-main">
+                        <div class="info code" style="font-weight: 600;">
+                            <span>Код получателя заказа:</span>
+                            <span>7525</span>
+                        </div>
+                        <div class="info pick-up-point">
+                            <span>Пункт выдачи заказов:</span>
+                            <span>Донецкая Народная респ, г Донецк, ул Университетская, д 67</span>
+                        </div>
+                        <div class="info">
+                            <span>Заказ хранится</span>
+                            <span>Заказ будет храниться в течение 5 дней после доставки в ПВЗ</span>
+                        </div>
+                        <div class="info create-date">
+                            <span>Заказ сделан</span>
+                            <span>18 декабря 2023, 15:21</span>
+                        </div>
+                        <div class="info count-item-price">
+                            <span>4 товара</span>
+                            <span>731 ₽</span>
+                        </div>
+                        <div class="gallery">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                        </div>
+                     
+                    </div>
+                </div>
+            </div>
+            <input class="input" name="tabs" type="radio" id="tab-2"/>
+            <label class="label" for="tab-2">Все заказы</label>
+            <div class="panel">
+                <div class="panel-item">
+                    <div class="panel-item-header">
+                        <div class="up">
+                            <span>Заказ №8989898</span>
+                            <div class="status not-active">Получен</div>
+                        </div>
+                        <div class="progress-bar">
+                            -------
+                        </div>
+                    </div>
+                    <div class="panel-item-main">
+                        <div class="info code" style="font-weight: 600;">
+                            <span>Код получателя заказа:</span>
+                            <span>7525</span>
+                        </div>
+                        <div class="info pick-up-point">
+                            <span>Пункт выдачи заказов:</span>
+                            <span>Донецкая Народная респ, г Донецк, ул Университетская, д 67</span>
+                        </div>
+                        <div class="info">
+                            <span>Заказ хранится</span>
+                            <span>Заказ будет храниться в течение 5 дней после доставки в ПВЗ</span>
+                        </div>
+                        <div class="info create-date">
+                            <span>Заказ сделан</span>
+                            <span>18 декабря 2023, 15:21</span>
+                        </div>
+                        <div class="info count-item-price">
+                            <span>4 товара</span>
+                            <span>731 ₽</span>
+                        </div>
+                        <div class="gallery">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                        </div>
+                        <div class="comment">
+                            <form action="/purchases/comment">
+                                <input type="text" name="purchases" value="123" style="display: none;">
+                                <input type="text" name="user" value="123" style="display: none;">
+                                <select name="score">
+                                    <option selected disabled>Оцените товар</option>
+                                    <option value="1">Ужасно</option>
+                                    <option value="2">Не очень</option>
+                                    <option value="3">Удовлетворительно</option>
+                                    <option value="4">Хорошо</option>
+                                    <option value="5">Отлично</option>
+                                </select>
+                                <textarea name="text" cols="30" rows="10" placeholder="Опишите Вашу оценку качества товара"></textarea>
+                                <button class="main-btn" type="submit">Отправить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-item">
+                    <div class="panel-item-header">
+                        <div class="up">
+                            <span>Заказ №8989898</span>
+                            <div class="status not-active">Получен</div>
+                        </div>
+                        <div class="progress-bar">
+                            -------
+                        </div>
+                    </div>
+                    <div class="panel-item-main">
+                        <div class="info code" style="font-weight: 600;">
+                            <span>Код получателя заказа:</span>
+                            <span>7525</span>
+                        </div>
+                        <div class="info pick-up-point">
+                            <span>Пункт выдачи заказов:</span>
+                            <span>Донецкая Народная респ, г Донецк, ул Университетская, д 67</span>
+                        </div>
+                        <div class="info">
+                            <span>Заказ хранится</span>
+                            <span>Заказ будет храниться в течение 5 дней после доставки в ПВЗ</span>
+                        </div>
+                        <div class="info create-date">
+                            <span>Заказ сделан</span>
+                            <span>18 декабря 2023, 15:21</span>
+                        </div>
+                        <div class="info count-item-price">
+                            <span>4 товара</span>
+                            <span>731 ₽</span>
+                        </div>
+                        <div class="gallery">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                            <img  src="/assets/data/1c_logo.png" alt="">
+                        </div>
+                        <div class="comment">
+                            <form action="/purchases/comment">
+                                <input type="text" name="purchases" value="123" style="display: none;">
+                                <input type="text" name="user" value="123" style="display: none;">
+                                <select name="score">
+                                    <option selected disabled>Оцените товар</option>
+                                    <option value="1">Ужасно</option>
+                                    <option value="2">Не очень</option>
+                                    <option value="3">Удовлетворительно</option>
+                                    <option value="4">Хорошо</option>
+                                    <option value="5">Отлично</option>
+                                </select>
+                                <textarea name="text" cols="30" rows="10" placeholder="Опишите Вашу оценку качества товара"></textarea>
+                                <button class="main-btn" type="submit">Отправить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+          </div>
+
+    </div>
+
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

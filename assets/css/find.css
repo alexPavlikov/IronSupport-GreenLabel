@@ -1,0 +1,91 @@
+.tabs {
+    width: 60%;
+    margin: 40px 20%;
+  text-align: left;
+  position: relative;
+  text-align: center;
+}
+.tabs input {
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.tabs input + label:hover {
+  color: #ffffff;
+  background-color: rgba(4, 160, 56, 0.5);
+}
+
+.content .item {
+  opacity: 0;
+
+  visibility: hidden;
+  transition: all 0.3s;
+    position: absolute;
+  padding: 10px 20px;
+}
+
+#tab-1:checked ~ section #content-1,
+#tab-2:checked ~ section #content-2,
+#tab-3:checked ~ section #content-3,
+#tab-4:checked ~ section #content-4 {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tabs input + label {
+  margin-top: 12px;
+  border-left: 3px solid rgb(4, 160, 56);
+  border-right: 3px solid rgb(4, 160, 56);
+  border-top: 3px solid rgb(4, 160, 56);
+  text-indent: 10px;
+  color: rgb(4, 160, 56);
+  width: 20%;
+  transition: all 0.3s;
+  display: inline-flex;
+  -webkit-box-pack: center;
+  padding: 10px 0;
+  vertical-align:middle;
+  font-weight: 700;
+  font-size: 24px;
+  border-radius: 10px 10px 0 0 !important;
+  letter-spacing: 1px !important;  
+  cursor: pointer;
+}
+
+.content {
+  margin: 0px auto;
+  text-align: left;
+  line-height: 20px;
+  height: 240px;
+  border-radius: 5px;
+  display: block;
+  padding: 1.25rem;
+  z-index: 2;
+  color: #3b3d3f;
+  border: 3px solid rgb(4, 160, 56);
+  position: relative;
+}
+
+.content p {
+  margin: 10px 15px 10px 0;
+  letter-spacing: 0.75px;
+  font-size: 14pt;
+  font-style: normal;
+  line-height: 30px;
+  margin-top: 10pt;
+  font-family: "freight-display-pro";
+  font-weight: 300 !important;
+}
+
+.tabs input {
+  position: relative;
+  opacity: 0;
+  margin: auto !important;
+  padding: 0;
+}
+
+.tab:checked + label {
+  background-color: rgb(4, 160, 56);
+  color: white;
+}
