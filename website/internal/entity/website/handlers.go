@@ -22,6 +22,7 @@ func (h *handler) Register(router *httprouter.Router) {
 
 	router.HandlerFunc(http.MethodGet, "/", h.IndexHandler)
 	router.HandlerFunc(http.MethodGet, "/account", h.AccountHandler)
+	router.HandlerFunc(http.MethodGet, "/account/notifications", h.NotificationsHandler)
 	router.HandlerFunc(http.MethodGet, "/news", h.NewsHandler)
 	router.HandlerFunc(http.MethodGet, "/post", h.PostHandler)
 	router.HandlerFunc(http.MethodGet, "/products", h.ProductsHandler)
@@ -210,6 +211,20 @@ func (h *handler) PurchasesHandler(w http.ResponseWriter, r *http.Request) {
 	err = tmpl.ExecuteTemplate(w, "purchases", nil)
 	if err != nil {
 		h.logger.Tracef("%s - failed open website PurchasesHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+}
+
+func (h *handler) NotificationsHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./website/internal/html/website/*.html")
+	if err != nil {
+		h.logger.Tracef("%s - failed open website NotificationsHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	err = tmpl.ExecuteTemplate(w, "notifications", nil)
+	if err != nil {
+		h.logger.Tracef("%s - failed open website NotificationsHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
 	}
 }

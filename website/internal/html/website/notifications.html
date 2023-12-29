@@ -1,0 +1,30 @@
+{{ define "notifications" }}
+
+{{ template "header" }}
+
+<link rel="stylesheet" href="/assets/css/notifications.css">
+
+<body>
+
+    <!-- <i class="fa-solid fa-bell"></i> notification
+    <i class="fa-solid fa-circle-exclamation"></i> ! -->
+
+        <div class="notifications">
+            <h1 style="color: rgb(4, 160, 56);">Уведомления</h1>
+            <div class="notification">
+                <div class="icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                <div class="text">123123123312</div>
+                <div class="date">23.07.2002</div>
+            </div>
+            <div class="notification">
+                <div class="icon"><i class="fa-solid fa-bell"></i></div>
+                <div class="text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laudantium nihil accusantium, necessitatibus repellendus molestiae dolore libero provident voluptate labore enim sequi autem, nobis possimus sit soluta doloribus recusandae pariatur eaque!</div>
+                <div class="date">23.07.2002</div>
+            </div>
+        </div>
+
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

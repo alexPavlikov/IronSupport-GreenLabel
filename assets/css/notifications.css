@@ -1,0 +1,61 @@
+.notifications {
+    width: 50%;
+    margin: 40px 25%;
+    min-height: 50vh;
+}
+
+.notifications h1 {
+    margin-bottom: 40px;
+}
+
+.notifications .notification {
+    display: flex;
+    flex-direction: row;
+    height: 140px;
+    border: 3px solid rgb(4, 160, 56);;
+    border-radius: 25px;
+    width: 80%;
+    margin: 20px 10%;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+
+.notifications .notification div {
+    height: 100%;
+    position: relative;
+    align-items: center;
+}
+
+
+.notifications .notification .icon {
+    width: 20%;
+    font-size: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.notifications .notification .icon .fa-bell {
+    color: rgb(4, 160, 56);
+}
+
+.notifications .notification .icon .fa-circle-exclamation {
+    color: rgb(255, 187, 0);
+}
+
+.notifications .notification .text {
+    width: 60%;
+    text-align: justify;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notifications .notification .date {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

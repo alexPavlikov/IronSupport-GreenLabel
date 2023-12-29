@@ -336,3 +336,17 @@ span {
     padding: 5px 10px;
     margin: 0 20px;
 }
+
+.goback {
+    color: gray;
+    text-decoration: none;
+    font-size: 18px;
+    position: absolute;
+    top: 200px;
+    left: 40px;
+    font-weight: 700;
+}
+
+.goback:hover {
+    opacity: 0.8;
+}

@@ -43,10 +43,10 @@ menu .block span {
     color: rgb(211, 48, 20);
 }
 
-.box-header-center {
+/* .box-header-center {
     justify-content: right !important;
    
-}
+} */
 
 .box-header-center form {
     width: 80%;
