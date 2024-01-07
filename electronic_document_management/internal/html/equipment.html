@@ -22,47 +22,27 @@
             <tr>
                 <th>id</th>
                 <th>Название</th>
-                <th>ИНН</th>
-                <th>КПП</th>
-                <th>ОГРН</th>
-                <th>Владелец</th>
-                <th>Телефон</th>
-                <th>Почта</th>
-                <th>Адрес</th>
-                <th>Дата создания</th>
-                <th>Статус</th>
+                <th>Тип</th>
+                <th>Производитель</th>
+                <th>Модель</th>
+                <th>Уникальный номер</th>
+                <th>Инструкция</th>
+                <th>Дата добавления</th>
                 <th><i class="fa-solid fa-pen-to-square"></i></th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td style="text-align: center;">1</td>
-                <td>DHG</td>
-                <td>12312312</td>
-                <td>32233232</td>
-                <td>43423423</td>
-                <td>Vasya</td>
-                <td>31231232</td>
-                <td>321312@gmail.com</td>
-                <td>rf</td>
-                <td>now</td>
-                <td>false</td>
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
-            </tr>
 
             {{ range $_, $e := .Equipments }}
             <tr>
-                <td style="text-align: center;">1</td>
-                <td>DHG</td>
-                <td>12312312</td>
-                <td>32233232</td>
-                <td>43423423</td>
-                <td>Vasya</td>
-                <td>31231232</td>
-                <td>321312@gmail.com</td>
-                <td>rf</td>
-                <td>now</td>
-                <td>false</td>
+                <td style="text-align: center;">{{ $e.Id }}</td>
+                <td>{{ $e.Name }}</td>
+                <td>{{ $e.Type }}</td>
+                <td>{{ $e.Manufacture }}</td>
+                <td>{{ $e.Model }}</td>
+                <td>{{ $e.UniqueNumber }}</td>
+                <td>{{ $e.Contract }}</td>
+                <td>{{ $e.CreateDate }}</td>
                 <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
             </tr>
             {{ end }}

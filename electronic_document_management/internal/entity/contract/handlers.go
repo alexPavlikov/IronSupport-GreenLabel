@@ -40,7 +40,7 @@ func (h *handler) ContractHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Контракты"}
+	title := map[string]string{"Title": "ЭДО - Контракты", "Page": "Contract"}
 	data := map[string]interface{}{"Contracts": contracts}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)

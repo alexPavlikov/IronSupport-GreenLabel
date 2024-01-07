@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"net/http"
 	"text/template"
 
@@ -34,20 +35,20 @@ func (h *handler) ServicesHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	// services, err := h.service.GetServices(context.TODO())
-	// if err != nil {
-	// 	http.NotFound(w, r)
-	// }
+	services, err := h.service.GetServices(context.TODO())
+	if err != nil {
+		http.NotFound(w, r)
+	}
 
-	title := map[string]string{"Title": "ЭДО - Услуги"}
-	//data := map[string]interface{}{"Services": services}
+	title := map[string]string{"Title": "ЭДО - Услуги", "Page": "Service"}
+	data := map[string]interface{}{"Services": services}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
 		http.NotFound(w, r)
 	}
 
-	err = tmpl.ExecuteTemplate(w, "service", nil)
+	err = tmpl.ExecuteTemplate(w, "service", data)
 	if err != nil {
 		http.NotFound(w, r)
 	}

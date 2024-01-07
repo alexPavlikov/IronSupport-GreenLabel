@@ -1,4 +1,5 @@
 {{ define "chat" }}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,9 +9,12 @@
     <title>1231</title>
 </head>
 
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+
 <link rel="stylesheet" href="/assets/css/style.css">
 <link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
 <link rel="stylesheet" href="/assets/css/chat.css">
+<link rel="stylesheet" href="/assets/css/dialog.css">
 
 <header>
     <div class="headers box-header logo">
@@ -25,24 +29,90 @@
     </div>
 </header>
 
+<dialog class="dialogsub-small" id="dialogstatus" style="max-height: 50vh;">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать новый статус заявки</h3>
+
+    <form action="/chat/add" class="content-small" autocomplete="off">
+        <span>Название чата</span>
+        <input type="text" name="status" id="" placeholder="Название">
+       
+        <div class="multiselect">
+            <div class="selectBox" onclick="showCheckboxes()">
+              <select name="users">
+                <option>Select an option</option>
+              </select>
+              <div class="overSelect"></div>
+            </div>
+            <div id="checkboxes">
+              <label for="one">
+                <input type="checkbox" name="one" id="one" /><span>First checkbox</span></label>
+              <label for="two">
+                <input type="checkbox" name="two" id="two" /><span>Second checkbox</span></label>
+              <label for="three">
+                <input type="checkbox" name="three" id="three" /><span>Third checkbox</span></label>
+                
+                <label for="one">
+                    <input type="checkbox" name="one" id="one" /><span>First checkbox</span></label>
+                  <label for="two">
+                    <input type="checkbox" name="two" id="two" /><span>Second checkbox</span></label>
+                  <label for="three">
+                    <input type="checkbox" name="three" id="three" /><span>Third checkbox</span></label>
+                
+                    <label for="one">
+                        <input type="checkbox" name="one" id="one" /><span>First checkbox</span></label>
+                      <label for="two">
+                        <input type="checkbox" name="two" id="two" /><span>Second checkbox</span></label>
+                      <label for="three">
+                        <input type="checkbox" name="three" id="three" /><span>Third checkbox</span></label>
+                
+                        <label for="one">
+                            <input type="checkbox" name="one" id="one" /><span>First checkbox</span></label>
+                          <label for="two">
+                            <input type="checkbox" name="two" id="two" /><span>Second checkbox</span></label>
+                          <label for="three">
+                            <input type="checkbox" name="three" id="three" /><span>Third checkbox</span></label>
+                            
+                            <label for="one">
+                                <input type="checkbox" name="one" id="one" /><span>First checkbox</span></label>
+                              <label for="two">
+                                <input type="checkbox" name="two" id="two" /><span>Second checkbox</span></label>
+                              <label for="three">
+                                <input type="checkbox" name="three" id="three" /><span>Third checkbox</span></label>
+                                
+            </div>
+          </div>
+
+        <button class="main-btn m-auto" style="margin-top: 20px;">Создать</button>
+    </form>
+
+	<button onclick="window.dialogstatus.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-small" id="dialogdel" style="max-height: 50vh;">
+    <h3 class="main-color" style="text-transform: uppercase;">Список участников</h3>
+
+    <form action="/chat/user/del" class="content-small" autocomplete="off" style="display: flex; flex-direction: row; height: 10%;">
+        <input type="text" name="id" value="123" style="display: none;">
+        <span>Alex Pav</span>
+        <button class="main-btn m-auto">Исключить</button>
+    </form>
+
+	<button onclick="window.dialogdel.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+
+<a class="goback" href="javascript: history.go(-1)"><i class="fa-solid fa-chevron-left"></i> Назад</a>
 
 <body>
 
     <div class="chat">
         <div class="list">
-            <div class="object">
-                <img src="/assets/data/disk_logo.png" alt="">
-                <div class="info">
-                    <span>alex</span>
-                    <div class="msg">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Inventore, esse. Nihil expedita tempora nisi quas architecto nam ullam quo ratione iure iste modi quasi earum, non reprehenderit labore hic voluptates!</div>
-                    <!-- if len >= 30 -->
-                    <div class="dots"> ...</div>
-                    <!-- end -->
-                </div>
+            <div class="object-add" onclick="window.dialogstatus.showModal();">
+                <i class="fa-solid fa-circle-plus"></i><span>Добавить чат</span>
             </div>
             
-            <div class="object">
+            <div class="object" id="groupID">
                 <img src="/assets/data/disk_logo.png" alt="">
                 <div class="info">
                     <span>alex</span>
@@ -136,9 +206,14 @@
                 <img src="/assets/data/disk_logo.png" alt="">
                 <div class="center">
                     <div class="name">Alex</div>
-                    <div class="members">12 members</div>
+                    <div onclick="window.dialogdel.showModal();" class="members">12 members</div>
                 </div>
             </div>
+            {{ if eq .Key "Clear" }}
+                <div class="text">
+                    <h1 style="position: absolute; top: 40%; width: 100%; text-align: center; color: rgb(184, 255, 112);">Выберите переписку</h1>
+                </div>
+            {{ else if ne .Key "Clear" }}
             <div class="text">
                 <div class="text-object nmy">
                     <img src="/assets/data/disk_logo.png" alt="">
@@ -179,6 +254,7 @@
                     <img src="/assets/data/disk_logo.png" alt="">
                 </div>
             </div>
+            
             <div class="send">
                 <form action="">
                     <input type="text" name="message">
@@ -186,10 +262,54 @@
                 </form>
                 <div>123</div>
             </div>
+            {{ end }}
         </div>
     </div>
     
 </body>
 </html>
+
+<script>
+   var expanded = false;
+
+function showCheckboxes() {
+  var checkboxes = document.getElementById("checkboxes");
+  if (!expanded) {
+    checkboxes.style.display = "block";
+    expanded = true;
+  } else {
+    checkboxes.style.display = "none";
+    expanded = false;
+  }
+}
+</script>
+
+<script>
+
+        $(document).ready(function(){
+            $('.object').click(function(e) {
+                clickId = $(this).attr('id');
+                    $.ajax({
+                        url: '/chat',
+                        type: 'GET',
+                        dataType: 'html',
+                        data : { group: clickId},
+                        success : function(data) {
+                        $('#result').html(data);
+                        },
+                    });
+                    $.ajax({
+                        url: '/chat',
+                        type: 'POST',
+                        dataType: 'html',
+                        data : { group: clickId},
+                        success : function(data) {
+                        $('#result').html(data);
+                        },
+                    });
+            });
+        });
+
+</script>
 
 {{ end }}

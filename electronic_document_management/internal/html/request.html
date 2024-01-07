@@ -28,13 +28,15 @@
                 <select name="equipment-sort">
                     <option disabled selected>Оборудование</option>
                     {{ range $_, $e := .RID.Equipment }}
-                    <option value="1">{{ $e.Name }}</option>
+                    <option value="{{ $e.Id }}">{{ $e.Name }}</option>
                     {{ end }}
                 </select>
 
                 <select name="status-sort">
                     <option disabled selected>Выберите статус</option>
-                    <option value="1">Шеф</option>
+                    {{ range $_, $st := .RID.Status }}
+                    <option value="{{ $st.Name }}">{{ $st.Name }}</option>
+                    {{ end }}
                 </select>
                 <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
             </form>
@@ -94,7 +96,7 @@
                         {{ if eq $rs.Priority "high"}}
                         <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
                         {{ else if eq $rs.Priority "normal" }}
-                        <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
+                        <td style="text-align: center;"><i class="fa-solid fa-minus"></i></td>
                         {{ else if eq $rs.Priority "low" }}
                         <td style="text-align: center;"><i class="fa-solid fa-chevron-down"></i></td>
                         {{ end }}
@@ -108,8 +110,6 @@
                         </form>
                     </td>
                 </tr>
-
-
 
                 {{ end }}
             </tbody>

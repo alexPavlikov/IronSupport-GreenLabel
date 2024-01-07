@@ -41,7 +41,7 @@ func (h *handler) UserHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(users)
 
-	title := map[string]string{"Title": "ЭДО - Пользователи"}
+	title := map[string]string{"Title": "ЭДО - Пользователи", "Page": "User"}
 	data := map[string]interface{}{"User": users}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)

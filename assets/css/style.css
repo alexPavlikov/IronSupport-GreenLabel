@@ -222,7 +222,7 @@ main {
 .table-sortable {
     width: 100%;
     padding: 0 40px;
-    margin-top: 40px;
+    margin-top: 20px;
     /* sorted
      max-width: 1000px;
     overflow-x: scroll; */
@@ -329,7 +329,7 @@ span {
 .add {
     width: 90%;
     text-align: right;
-    margin: 40px 5% 0 5%;
+    margin: 20px 5% 0 5%;
 }
 
 .sorted .sort-client input {

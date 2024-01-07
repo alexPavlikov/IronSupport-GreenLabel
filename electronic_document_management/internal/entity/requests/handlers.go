@@ -55,7 +55,7 @@ func (h *handler) RequestsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(reqs[0].ClientObject.Object.Id, reqs[0].ClientObject.Object.Name)
 
 	data := map[string]interface{}{"Requests": reqs, "RID": RID}
-	header := map[string]string{"Title": "ЭДО - Заявки"}
+	header := map[string]string{"Title": "ЭДО - Заявки", "Page": "Request"}
 	dialog := map[string]interface{}{"ReqInsertData": RID}
 
 	err = tmpl.ExecuteTemplate(w, "header", header)
@@ -96,8 +96,8 @@ func (h *handler) EditRequestHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(req)
 
-	title := map[string]string{"Title": "ЭДО - Изменение заявки"}
-	data := map[string]interface{}{"Req": req}
+	title := map[string]string{"Title": "ЭДО - Изменение заявки", "Page": "Request"}
+	data := map[string]interface{}{"Req": req, "List": RID}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
@@ -146,6 +146,8 @@ func (h *handler) EditPostRequestHandler(w http.ResponseWriter, r *http.Request)
 	//
 
 	req.EndDate = r.FormValue("date")
+
+	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", req.Priority)
 
 	err := h.service.UpdateRequest(context.TODO(), &req)
 	if err != nil {
@@ -222,8 +224,6 @@ func (h *handler) SorterRequestHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		fmt.Println(rs)
-
 		http.Redirect(w, r, "/edm/request/sorted", http.StatusSeeOther)
 
 	} else if r.Method == "GET" {
@@ -235,10 +235,8 @@ func (h *handler) SorterRequestHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 		}
 
-		fmt.Println(rs)
-
 		data := map[string]interface{}{"Requests": rs, "RID": RID}
-		header := map[string]string{"Title": "ЭДО - Заявки"}
+		header := map[string]string{"Title": "ЭДО - Заявки", "Page": "Request"}
 		dialog := map[string]interface{}{"ReqInsertData": RID}
 
 		err = tmpl.ExecuteTemplate(w, "header", header)

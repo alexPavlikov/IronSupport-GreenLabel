@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"net/http"
 	"text/template"
 
@@ -17,6 +18,7 @@ type handler struct {
 func (h *handler) Register(router *httprouter.Router) {
 
 	router.HandlerFunc(http.MethodGet, "/chat", h.ChatHandler)
+	router.HandlerFunc(http.MethodGet, "/chat/add", h.ChatAddHandler)
 
 }
 
@@ -33,8 +35,33 @@ func (h *handler) ChatHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	err = tmpl.ExecuteTemplate(w, "chat", nil)
+	r.ParseForm()
+
+	// NOT WORK
+
+	group := r.FormValue("group")
+
+	if group == "" {
+		group = "Clear"
+	} else {
+		group = "NotClear"
+		fmt.Println(group)
+	}
+
+	data := map[string]interface{}{"Key": group}
+	fmt.Println(group)
+	err = tmpl.ExecuteTemplate(w, "chat", data)
 	if err != nil {
 		http.NotFound(w, r)
 	}
+}
+
+func (h *handler) ChatAddHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	name := r.FormValue("name")
+	one := r.FormValue("one")
+	two := r.FormValue("two")
+	three := r.FormValue("three")
+	fmt.Println(name, one, two, three)
 }

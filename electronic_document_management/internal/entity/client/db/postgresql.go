@@ -33,12 +33,9 @@ func (r *repository) InsertClient(ctx context.Context, clnt *client.Client) erro
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
-	rows, err := r.client.Query(ctx, query, &clnt.Name, &clnt.INN, &clnt.KPP, &clnt.OGRN, &clnt.Owner, &clnt.Phone, &clnt.Email, &clnt.Address, &clnt.CreateDate, &clnt.Status)
-	if err != nil {
-		return err
-	}
+	rows := r.client.QueryRow(ctx, query, clnt.Name, clnt.INN, clnt.KPP, clnt.OGRN, clnt.Owner, clnt.Phone, clnt.Email, clnt.Address, clnt.CreateDate, clnt.Status)
 
-	err = rows.Scan(&clnt.Id)
+	err := rows.Scan(&clnt.Id)
 	if err != nil {
 		return err
 	}
@@ -95,6 +92,43 @@ func (r *repository) SelectClients(ctx context.Context) (clnts []client.Client, 
 		clnts = append(clnts, cl)
 	}
 	return clnts, nil
+}
+
+func (r *repository) SelectClientsBySorted(ctx context.Context, c client.Client) (clients []client.Client, err error) {
+	query := `
+	SELECT 
+		id, name, inn, kpp, ogrn, owner, phone, email, address, create_date, status
+	FROM 
+		public."Client"
+	WHERE 
+		name ILIKE $1 OR inn ILIKE $2 OR ogrn ILIKE $3;
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	if c.Name != "" {
+		c.Name = "%" + c.Name + "%"
+	}
+	if c.INN != "" {
+		c.INN = "%" + c.INN + "%"
+	}
+	if c.OGRN != "" {
+		c.OGRN = "%" + c.OGRN + "%"
+	}
+
+	rows, err := r.client.Query(ctx, query, c.Name, c.INN, c.OGRN)
+	if err != nil {
+		return nil, err
+	}
+	var cl client.Client
+	for rows.Next() {
+		err = rows.Scan(&cl.Id, &cl.Name, &cl.INN, &cl.KPP, &cl.OGRN, &cl.Owner, &cl.Phone, &cl.Email, &cl.Address, &cl.CreateDate, &cl.Status)
+		if err != nil {
+			return nil, err
+		}
+		clients = append(clients, cl)
+	}
+	return clients, nil
 }
 
 func (r *repository) UpdateClient(ctx context.Context, cl *client.Client) error {

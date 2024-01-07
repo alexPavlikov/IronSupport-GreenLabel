@@ -2,6 +2,48 @@
 
 {{ template "dialog" }}
 
+<dialog class="dialogsub-small" id="dialoglistfile" style="max-height: 45%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Список загруженных файлов</h3>
+
+    <form style="width: 100%;" action="/edm/" class="content-small" autocomplete="off">
+        <span>Выберите файлы, которые нужно удалить</span>
+        <div style="width: 100%;">
+            <dialog class="dialog" id="dialogdelfileread" style="height: 90vh;">
+                <embed src="/data/1.pdf" width="100%" height="90%" />
+                <button onclick="window.dialogdelfileread.close();" aria-label="close" class="x">❌</button>
+                </dialog>
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text" onclick="windows.dialogdelfileread.showModal();">Файл_такой-то.docx</div>
+            </label>
+          
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text">Clouds</div>
+            </label>
+          
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text">Earth</div>
+            </label>
+          
+            <label class="rad-label">
+              <input type="radio" class="rad-input" name="rad">
+              <div class="rad-design"></div>
+              <div class="rad-text">Water</div>
+            </label>
+          
+          </div>
+        <button class="main-btn m-auto" style="position: absolute; bottom: 20px;">Применить</button>
+    </form>
+
+	<button onclick="window.dialoglistfile.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+
     <main>
 
         <dialog class="dialog-visible" id="dialogedit">
@@ -13,25 +55,38 @@
                         <div class="type">
                             <div class="sub-title"><span>Тип заявки</span></div>
                             <select name="type" id="">
-                                <option selected>{{ .Req.Title }}</option>
-                                <option value="1">hello</option>
+                                <option  style="background: rgb(212, 212, 212);" value="{{ .Req.Title }}" selected>{{ .Req.Title }}</option>
+                                {{ range $_, $t := .List.Title }}
+                                <option value="{{ $t.Id }}">{{ $t.Type }} - {{ $t.Equipment }}</option>
+                                {{ end }}
                             </select>
                         </div>
                         <div class="status">
                             <div class="sub-title"><span>Статус заявки</span></div>
                             <select name="status" id="">
-                                <option selected value="{{ .Req.Status.Name }}">{{ .Req.Status.Name }}</option>
-                                <option value="1">hello</option>
+                                <option  style="background: rgb(212, 212, 212);" selected value="{{ .Req.Status.Name }}">{{ .Req.Status.Name }}</option>
+                                {{ range $_, $t := .List.Status }}
+                                <option value="{{ $t.Name }}">{{ $t.Name }}</option>
+                                {{ end }}
                             </select>
                         </div>
                     </div>
                     <div class="priority">
                         <span>Приоритет заявки</span>
                         <select name="priority" style="margin-bottom: 20px;">
-                            <option selected value="{{ .Req.Priority }}">{{ .Req.Priority }}</option>
-                            <option style="color: red;" value="fa-chevron-up">&#xf077;</option>
-                            <option style="color: blue;" value="fa-chevron-down">&#xf078;</option>
-                            <option style="color: green;" value="minus-square">&#x2212;</option>
+                            <option selected value="{{ .Req.Priority }}">
+                                {{ if eq .Req.Priority "high"}}
+                                &#xf077;
+                                {{ else if eq .Req.Priority "normal" }}
+                                &#x2212;
+                                {{ else if eq .Req.Priority "low" }}
+                                &#xf078;
+                                {{ end }}
+                            </option>
+                            
+                            <option style="color: red;" value="high">&#xf077;</option>
+                            <option style="color: blue;" value="low">&#xf078;</option>
+                            <option style="color: green;" value="normal">&#x2212;</option>
                         </select>
                     </div>
                     <div class="description">
@@ -45,39 +100,49 @@
                         <div class="sub-title"><span>Выберите клиента</span></div>
                         <select name="client" id="">
                             <option selected value="{{ .Req.Client.Id }}">{{ .Req.Client.Name }}</option>
-                            <option value="1">hello</option>
+                            {{ range $_, $cl := .List.Client }}
+                            <option value="{{ $cl.Id }}">{{ $cl.Name }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="contract">
                         <div class="sub-title"><span>Выберите контракт</span></div>
                         <select name="contract" id="">
                             <option selected value="{{ .Req.Contract.Id }}">{{ .Req.Contract.Name }}</option>
-                            <option value="1">hello</option>
+                            {{ range $_, $ct := .List.Contract }}
+                            <option value="{{ $ct.Id }}">{{ $ct.Name }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="object">
                         <div class="sub-title"><span>Выберите объект</span></div>
                         <select name="object" id="">
                             <option selected value="{{ .Req.ClientObject.Id }}">{{ .Req.ClientObject.Object.Name }}</option>
-                            <option value="1">hello</option>
+                            {{ range $_, $ob := .List.ClientObject }}
+                            <option value="{{ $ob.ClientObjectId }}">{{ $ob.Name }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="equipment">
                         <div class="sub-title"><span>Выберите оборудование</span></div>
                         <select name="equipment" id="">
                             <option selected value="{{ .Req.Equipment.Id }}">{{ .Req.Equipment.Name }}</option>
-                            <option value="1">hello</option>
+                            {{ range $_, $eq := .List.Equipment }}
+                            <option value="{{ $eq.Id }}">{{ $eq.Name }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="worker">
                         <span>Выберите сотрудника</span>
                         <select name="worker" id="">
                             <option selected value="{{ .Req.Worker.Id }}">{{ .Req.Worker.FullName }}</option>
-                            <option value="1">hello</option>
+                            {{ range $_, $w := .List.Worker }}
+                            <option value="{{ $w.Id }}">{{ $w.FullName }} - {{ $w.Role }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="date">
-                        <span>Выберите новую дату исполнения ({{ .Req.EndDate }})</span>
+                        <span>Выберите дату исполнения</span>
                         <input type="date" name="date" value="{{ .Req.EndDate }}">
                     </div>
                 </div>

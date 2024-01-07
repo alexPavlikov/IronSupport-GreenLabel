@@ -42,7 +42,7 @@ func (h *handler) EquipmentHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Оборудование"}
+	title := map[string]string{"Title": "ЭДО - Оборудование", "Page": "Equipment"}
 	data := map[string]interface{}{"Equipments": eqs}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)

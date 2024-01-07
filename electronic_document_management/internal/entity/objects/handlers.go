@@ -40,7 +40,7 @@ func (h *handler) ObjectHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Объекты"}
+	title := map[string]string{"Title": "ЭДО - Объекты", "Page": "Object"}
 	data := map[string]interface{}{"Objs": objs}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)

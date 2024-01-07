@@ -145,7 +145,7 @@ func Run(router *httprouter.Router) *httprouter.Router {
 		logger.Fatalf("%s - %s", config.LOG_ERROR, err)
 	}
 
-	fmt.Println("!!!!!!!!!!!!!!!!!!!!", requests.RID)
+	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", requests.RID)
 
 	return router
 }

@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
@@ -21,6 +22,10 @@ func NewService(repository Repository, logger *logging.Logger) *Service {
 }
 
 func (s *Service) AddClient(ctx context.Context, client *Client) error {
+
+	client.CreateDate = time.Now().Format("02-01-2006")
+	client.Status = true
+
 	err := s.repository.InsertClient(ctx, client)
 	if err != nil {
 		return fmt.Errorf("%s - %s", config.LOG_ERROR, err)
@@ -38,6 +43,14 @@ func (s *Service) GetClient(ctx context.Context, id int) (client Client, err err
 
 func (s *Service) GetClients(ctx context.Context) (clients []Client, err error) {
 	clients, err = s.repository.SelectClients(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("%s - %s", config.LOG_ERROR, err)
+	}
+	return clients, nil
+}
+
+func (s *Service) GetClientsBySorted(ctx context.Context, c Client) (clients []Client, err error) {
+	clients, err = s.repository.SelectClientsBySorted(ctx, c)
 	if err != nil {
 		return nil, fmt.Errorf("%s - %s", config.LOG_ERROR, err)
 	}

@@ -53,38 +53,38 @@
 <dialog class="dialogsub-medium" id="dialogclient" style="height: 63%;">
     <h3 class="main-color" style="text-transform: uppercase;">Создать нового клиента</h3>
 
-    <form action="/edm/...." class="content-medium" autocomplete="off">
+    <form action="/edm/client/add" method="get" class="content-medium" autocomplete="off">
         <div class="content-medium-case">
             <div style="margin-right: 30px;">
                 <span>ИНН</span>
-                <input type="text" name="status" id="" placeholder="ИНН">
+                <input type="text" name="inn" id="" placeholder="ИНН">
             </div>
             <div style="margin-right: 30px;">
                 <span>КПП</span>
-                <input type="text" name="status" id="" placeholder="КПП">
+                <input type="text" name="kpp" id="" placeholder="КПП">
             </div>
             <div>
                 <span>ОГРН</span>
-                <input type="text" name="status" id="" placeholder="ОГРН">
+                <input type="text" name="ogrn" id="" placeholder="ОГРН">
             </div>
         </div>
         <span>Название компании</span>
-        <input type="text" name="status" id="" placeholder="Название">
+        <input type="text" name="name" id="" placeholder="Название">
         <span>Владелец компании</span>
-        <input type="text" name="status" id="" placeholder="Владелец">
+        <input type="text" name="owner" id="" placeholder="Владелец">
         <div class="content-medium-case">
             <div style="margin-right: 30px;">
                 <span>Контактный телефон</span>
-                <input type="text" name="status" id="" placeholder="Телефон">
+                <input type="tel" name="phone" id="" placeholder="Телефон">
             </div>
             <div>
                 <span>Электронная почта</span>
-                <input type="text" name="status" id="" placeholder="Почта">
+                <input type="email" name="email" id="" placeholder="Почта">
             </div>
         </div>
 
         <span>Фактический адрес</span>
-        <input type="text" name="status" id="" placeholder="Адрес">
+        <input type="text" name="address" id="" placeholder="Адрес">
         <button style="width: 105%;" class="main-btn m-auto">Создать</button>
     </form>
 
@@ -336,45 +336,5 @@
 
 
 
-<dialog class="dialogsub-small" id="dialoglistfile" style="max-height: 45%;">
-    <h3 class="main-color" style="text-transform: uppercase;">Список загруженных файлов</h3>
-
-    <form style="width: 100%;" action="/edm/" class="content-small" autocomplete="off">
-        <span>Выберите файлы, которые нужно удалить</span>
-        <div style="width: 100%;">
-            <dialog class="dialog" id="dialogdelfileread" style="height: 90vh;">
-                <embed src="/data/1.pdf" width="100%" height="90%" />
-                <button onclick="window.dialogdelfileread.close();" aria-label="close" class="x">❌</button>
-                </dialog>
-            <label class="rad-label">
-              <input type="radio" class="rad-input" name="rad">
-              <div class="rad-design"></div>
-              <div class="rad-text" onclick="windows.dialogdelfileread.showModal();">Файл_такой-то.docx</div>
-            </label>
-          
-            <label class="rad-label">
-              <input type="radio" class="rad-input" name="rad">
-              <div class="rad-design"></div>
-              <div class="rad-text">Clouds</div>
-            </label>
-          
-            <label class="rad-label">
-              <input type="radio" class="rad-input" name="rad">
-              <div class="rad-design"></div>
-              <div class="rad-text">Earth</div>
-            </label>
-          
-            <label class="rad-label">
-              <input type="radio" class="rad-input" name="rad">
-              <div class="rad-design"></div>
-              <div class="rad-text">Water</div>
-            </label>
-          
-          </div>
-        <button class="main-btn m-auto" style="position: absolute; bottom: 20px;">Применить</button>
-    </form>
-
-	<button onclick="window.dialoglistfile.close();" aria-label="close" class="x">❌</button>
-</dialog>
 
 {{ end }}

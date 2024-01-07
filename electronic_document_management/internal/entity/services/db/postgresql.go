@@ -48,9 +48,11 @@ func (r *repository) InsertServices(ctx context.Context, sr *services.Services) 
 func (r *repository) SelectServices(ctx context.Context) (srvs []services.Services, err error) {
 	query := `
 	SELECT 
-		id, equipment, type, cost
+		s.id, s.equipment, s.type, s.cost, eq.Name 
 	FROM 
-		public."Services"
+		public."Services" s
+	JOIN 
+		"Equipment" eq ON s.equipment = eq.Id
 	`
 
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
@@ -63,12 +65,12 @@ func (r *repository) SelectServices(ctx context.Context) (srvs []services.Servic
 	var src services.Services
 
 	for rows.Next() {
-		err = rows.Scan(&src.Id, &src.Equipment, &src.Type, &src.Cost)
+		err = rows.Scan(&src.Id, &src.Equipment, &src.Type, &src.Cost, &src.EquipmentStructure.Name)
 		if err != nil {
 			return nil, err
 		}
+
 		srvs = append(srvs, src)
-		fmt.Println(srvs)
 	}
 	return srvs, nil
 }
@@ -76,11 +78,13 @@ func (r *repository) SelectServices(ctx context.Context) (srvs []services.Servic
 func (r *repository) SelectService(ctx context.Context, id int) (srv services.Services, err error) {
 	query := `
 	SELECT 
-		id, equipment, type, cost 
+		s.id, s.equipment, s.type, s.cost, eq.Name 
 	FROM 
-		public."Services" 
+		public."Services" s
+	JOIN 
+		"Equipment" eq ON s.equipment = eq.Id
 	WHERE 
-		id = $1
+		s.id = 3
 	`
 
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
@@ -90,10 +94,11 @@ func (r *repository) SelectService(ctx context.Context, id int) (srv services.Se
 		return services.Services{}, err
 	}
 
-	err = rows.Scan(&srv.Id, &srv.Equipment, &srv.Type, &srv.Cost)
+	err = rows.Scan(&srv.Id, &srv.Equipment, &srv.Type, &srv.Cost, &srv.EquipmentStructure.Name)
 	if err != nil {
 		return services.Services{}, err
 	}
+
 	return srv, nil
 }
 

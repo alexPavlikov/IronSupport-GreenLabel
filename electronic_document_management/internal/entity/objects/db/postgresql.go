@@ -49,10 +49,11 @@ func (r *repository) InsertObject(ctx context.Context, obj *objects.Object) erro
 func (r *repository) SelectObject(ctx context.Context, id int) (obj objects.Object, err error) {
 	query := `
 	SELECT 
-		"Objects".id, "Objects".name, "Objects".address, "Objects".work_schedule, "Client_objects".id 
+		"Objects".id, "Objects".name, "Objects".address, "Objects".work_schedule, "Client_objects".id, "Client".Name 
 	FROM 
 		public."Objects" 
-	JOIN "Client_objects" ON "Objects".id = "Client_objects".object  
+	JOIN "Client_objects" ON "Objects".id = "Client_objects".object 
+	JOIN "Client" ON "Client".id = "Client_objects".client  
 	WHERE 
 		id = $1
 	`
@@ -64,7 +65,7 @@ func (r *repository) SelectObject(ctx context.Context, id int) (obj objects.Obje
 		return objects.Object{}, err
 	}
 
-	err = rows.Scan(&obj.Id, &obj.Name, &obj.Address, &obj.WorkSchedule, &obj.ClientObjectId)
+	err = rows.Scan(&obj.Id, &obj.Name, &obj.Address, &obj.WorkSchedule, &obj.ClientObjectId, &obj.Client.Name)
 	if err != nil {
 		return objects.Object{}, err
 	}
@@ -75,10 +76,11 @@ func (r *repository) SelectObject(ctx context.Context, id int) (obj objects.Obje
 func (r *repository) SelectObjects(ctx context.Context) (objs []objects.Object, err error) {
 	query := `
 	SELECT 
-		"Objects".id, "Objects".name, "Objects".address, "Objects".work_schedule, "Client_objects".id 
+		"Objects".id, "Objects".name, "Objects".address, "Objects".work_schedule, "Client_objects".id, "Client".Name 
 	FROM 
 		public."Objects" 
 	JOIN "Client_objects" ON "Objects".id = "Client_objects".object 
+	JOIN "Client" ON "Client".id = "Client_objects".client 
 	`
 
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
@@ -92,7 +94,7 @@ func (r *repository) SelectObjects(ctx context.Context) (objs []objects.Object, 
 
 	for rows.Next() {
 
-		err = rows.Scan(&obj.Id, &obj.Name, &obj.Address, &obj.WorkSchedule, &obj.ClientObjectId)
+		err = rows.Scan(&obj.Id, &obj.Name, &obj.Address, &obj.WorkSchedule, &obj.ClientObjectId, &obj.Client.Name)
 		if err != nil {
 			return nil, err
 		}
