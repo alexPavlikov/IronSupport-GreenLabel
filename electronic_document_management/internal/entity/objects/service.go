@@ -39,9 +39,10 @@ func (s *Service) GetObject(ctx context.Context, id int) (obj Object, err error)
 func (s *Service) GetObjects(ctx context.Context) (objs []Object, err error) {
 	objs, err = s.repository.SelectObjects(ctx)
 	if err != nil {
-		return nil, nil
+		fmt.Println(err)
+		return nil, err
 	}
-	return objs, err
+	return objs, nil
 }
 
 func (s *Service) UpdateObject(ctx context.Context, obj *Object) error {
@@ -49,6 +50,12 @@ func (s *Service) UpdateObject(ctx context.Context, obj *Object) error {
 	if err != nil {
 		return err
 	}
+
+	err = s.repository.UpdateClientObject(ctx, obj)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -58,4 +65,21 @@ func (s *Service) DeleteObject(ctx context.Context, id int) error {
 		return err
 	}
 	return nil
+}
+
+func (s *Service) GetClient(ctx context.Context) (cl []Client, err error) {
+	cl, err = s.repository.SelectClient(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl, nil
+}
+
+func (s *Service) GetObjectBySorted(ctx context.Context, ob *Object) (obs []Object, err error) {
+	obs, err = s.repository.SelectObjectBySorted(ctx, ob)
+	if err != nil {
+		return nil, err
+	}
+	return obs, nil
 }

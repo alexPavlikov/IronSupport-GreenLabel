@@ -48,7 +48,7 @@ func (r *repository) InsertClient(ctx context.Context, clnt *client.Client) erro
 func (r *repository) SelectClient(ctx context.Context, id int) (cl client.Client, err error) {
 	query := `
 	SELECT 
-		id, name, inn, kpp, ogrn, owner, phone, email, address, create_date, status
+		id, name, inn, kpp, ogrn, owner, phone, email, address, "create_date", status
 	FROM 
 		public."Client"
 	WHERE 
@@ -57,13 +57,11 @@ func (r *repository) SelectClient(ctx context.Context, id int) (cl client.Client
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
-	rows, err := r.client.Query(ctx, query, id)
-	if err != nil {
-		return client.Client{}, err
-	}
+	rows := r.client.QueryRow(ctx, query, id)
 
 	err = rows.Scan(&cl.Id, &cl.Name, &cl.INN, &cl.KPP, &cl.OGRN, &cl.Owner, &cl.Phone, &cl.Email, &cl.Address, &cl.CreateDate, &cl.Status)
 	if err != nil {
+		fmt.Println(err)
 		return client.Client{}, err
 	}
 	return cl, nil
@@ -136,14 +134,14 @@ func (r *repository) UpdateClient(ctx context.Context, cl *client.Client) error 
 	UPDATE 
 		public."Client"
 	SET 
-		name = $1, inn = $2, kpp = $3, ogrn = $4, owner = $5, phone = $6, email = $7, address = $8, create_date = $9
+		name = $1, inn = $2, kpp = $3, ogrn = $4, owner = $5, phone = $6, email = $7, address = $8, create_date = $9, status = $10
 	WHERE 
 		id = $11
 	`
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
-	_, err := r.client.Query(ctx, query, &cl.Name, &cl.INN, &cl.KPP, &cl.OGRN, &cl.Owner, &cl.Phone, &cl.Email, &cl.Address, &cl.CreateDate, &cl.Id)
+	_, err := r.client.Query(ctx, query, &cl.Name, &cl.INN, &cl.KPP, &cl.OGRN, &cl.Owner, &cl.Phone, &cl.Email, &cl.Address, &cl.CreateDate, &cl.Status, &cl.Id)
 	if err != nil {
 		return err
 	}

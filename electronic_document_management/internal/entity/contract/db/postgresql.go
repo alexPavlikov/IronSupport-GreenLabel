@@ -28,14 +28,14 @@ func (r *repository) InsertContract(ctx context.Context, contract *contract.Cont
 		(name, client, start_date, end_date, amount, file, status)
 	VALUES 
 		($1, $2, $3, $4, $5, $6, $7)
-	RETURNIMG id
+	RETURNING id
 	`
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
 	rows := r.client.QueryRow(ctx, query, &contract.Name, &contract.Client.Id, &contract.DataStart, &contract.DataEnd, &contract.Amount, &contract.File, &contract.Status)
 
-	err := rows.Scan(contract.Id)
+	err := rows.Scan(&contract.Id)
 	if err != nil {
 		return err
 	}
@@ -57,10 +57,8 @@ func (r *repository) SelectContract(ctx context.Context, id int) (contract contr
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
-	rows, err := r.client.Query(ctx, query, id)
-	if err != nil {
-		return contract, err
-	}
+	rows := r.client.QueryRow(ctx, query, id)
+
 	err = rows.Scan(&contract.Id, &contract.Name, &contract.Client.Id, &contract.DataStart, &contract.DataEnd, &contract.Amount, &contract.File, &contract.Status)
 	if err != nil {
 		return contract, err
@@ -72,6 +70,52 @@ func (r *repository) SelectContract(ctx context.Context, id int) (contract contr
 	}
 
 	return contract, nil
+}
+
+func (r *repository) SelectContractsBySort(ctx context.Context, ct contract.Contract) (cts []contract.Contract, err error) {
+	query := `
+	SELECT 
+		"Contract".id, "Contract".name, "Contract".client, "Contract".start_date, "Contract".end_date, "Contract".amount, "Contract".file, "Contract".status, 
+		"Client".name
+	FROM 
+		public."Contract"
+	JOIN "Client" ON "Client".id = "Contract".client	
+	WHERE 
+		"Client".name ILIKE $1 OR "Contract".start_date ILIKE $2 OR "Contract".end_date ILIKE $3 OR "Contract".status = $4;
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	var contract contract.Contract
+
+	if ct.Client.Name != "" {
+		ct.Client.Name = "%" + ct.Client.Name + "%"
+	}
+	if ct.DataStart != "" {
+		ct.DataStart = "%" + ct.DataStart + "%"
+	}
+	if ct.DataEnd != "" {
+		ct.DataEnd = "%" + ct.DataEnd + "%"
+	}
+
+	rows, err := r.client.Query(ctx, query, ct.Client.Name, ct.DataStart, ct.DataEnd, ct.Status)
+	if err != nil {
+		return cts, err
+	}
+	for rows.Next() {
+		err = rows.Scan(&contract.Id, &contract.Name, &contract.Client.Id, &contract.DataStart, &contract.DataEnd, &contract.Amount, &contract.File, &contract.Status, &contract.Client.Name)
+		if err != nil {
+			return nil, err
+		}
+		contract.Client, err = r.getClientObject(ctx, contract.Client.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		cts = append(cts, contract)
+	}
+
+	return cts, nil
 }
 
 func (r *repository) SelectContracts(ctx context.Context) (contracts []contract.Contract, err error) {
@@ -112,17 +156,16 @@ func (r *repository) UpdateContract(ctx context.Context, contract *contract.Cont
 	UPDATE 
 		public."Contract"
 	SET 
-		name = $1, client = $2, start_date = $3, end_date = $4, amount = $5, file = $6, status = $7
+		name = $1, client = $2, start_date = $3, end_date = $4, amount = $5, status = $6
 	WHERE 
-		id = $8
+		id = $7
 	`
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
-	_, err := r.client.Query(ctx, query, &contract.Name, &contract.Client.Id, &contract.DataStart, &contract.DataEnd, &contract.Amount, &contract.File, &contract.Status, &contract.Id)
-	if err != nil {
-		return err
-	}
+	fmt.Println("llllllllllll", contract.Name, contract.Client.Id, contract.DataStart, contract.DataEnd, contract.Amount, contract.Status, contract.Id)
+
+	_ = r.client.QueryRow(ctx, query, contract.Name, contract.Client.Id, contract.DataStart, contract.DataEnd, contract.Amount, contract.Status, contract.Id)
 
 	r.logger.LogEvents("Изменен", fmt.Sprintf("%s c id=:%d", "контракт", &contract.Id))
 
@@ -170,4 +213,31 @@ func (r *repository) getClientObject(ctx context.Context, id int) (cl contract.C
 	}
 
 	return cl, nil
+}
+
+//-----
+
+func (r *repository) SelectClients(ctx context.Context) (clnts []contract.Client, err error) {
+	query := `
+	SELECT 
+		id, name, inn, kpp, ogrn, owner, phone, email, address, create_date, status
+	FROM 
+		public."Client"
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	rows, err := r.client.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	var cl contract.Client
+	for rows.Next() {
+		err = rows.Scan(&cl.Id, &cl.Name, &cl.INN, &cl.KPP, &cl.OGRN, &cl.Owner, &cl.Phone, &cl.Email, &cl.Address, &cl.CreateDate, &cl.Status)
+		if err != nil {
+			return nil, err
+		}
+		clnts = append(clnts, cl)
+	}
+	return clnts, nil
 }

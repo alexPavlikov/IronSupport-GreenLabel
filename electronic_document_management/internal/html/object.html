@@ -2,11 +2,39 @@
 
 {{ template "dialog" }}
 
+<dialog class="dialogsub-medium" id="dialogobject">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый объект</h3>
+
+    <form action="/edm/object/add" class="content-medium" autocomplete="off">
+        <span>Название объекта</span>
+        <input type="text" name="name" id="" placeholder="Объект">
+        <span>Адрес объекта</span>
+        <input type="text" name="address" id="" placeholder="Адрес">
+        <span>Время работы объекта</span>
+        <input type="text" name="time" id="" placeholder="Время работы">
+        <select class="select" name="client" id="" style="margin-bottom: 40px; width: 106%;">
+            <option disabled selected>Клиент</option>
+            {{ range $_, $cl := .Clients }}
+            <option value="{{ $cl.Id }}">{{ $cl.INN }} {{ $cl.Name }}</option>
+            {{ end }}
+        </select>
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogobject.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
 <main>
 
     <div class="sorted">
         <form class="sort-client" action="/edm/object/sorted/" method="post">
-            <input type="text" placeholder="Клиент">
+            <input type="text" placeholder="Название" name="name">
+            <select name="client" id="" style="padding: 5px 10px;">
+                <option disabled selected>Клиент</option>
+                {{ range $_, $cl := .Clients }}
+                <option value="{{ $cl.Id }}">{{ $cl.INN }} {{ $cl.Name }}</option>
+                {{ end }}
+            </select>
             <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
         </form>
     </div>
@@ -33,8 +61,16 @@
                 <td>{{ $o.Name }}</td>
                 <td>{{ $o.Address }}</td>
                 <td>{{ $o.WorkSchedule }}</td>
-                <td>{{ $o.Client.Id }} - {{ $o.Client.Name }}</td>
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                <td>{{ $o.Client.INN }} - {{ $o.Client.Name }}</td>
+                <!-- <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td> -->
+                <td class="edit">
+                    <form action="/edm/object/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$o.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {{ end }}
         </tbody>

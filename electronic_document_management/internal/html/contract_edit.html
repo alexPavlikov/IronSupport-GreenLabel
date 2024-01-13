@@ -1,0 +1,41 @@
+{{ define "contractedit" }}
+
+<dialog class="dialogsub-medium dialog-visible" id="dialogcontract">
+    <h3 class="main-color" style="text-transform: uppercase;">Редактировать контракт</h3>
+
+    <form action="/edm/contract/edits" method="get" class="content-medium" autocomplete="off">
+        <input type="text" name="id" value="{{ .Contract.Id }}" style="display: none;">
+        <span>Название контракта</span>
+        <input type="text" name="name" id="" value="{{ .Contract.Name }}" placeholder="Название">
+        <select class="select" name="client" id="" style="margin-bottom: 20px; width: 106%;">
+            <option value="{{ .Contract.Client }}" disabled selected>Клиент</option>
+            {{ range $_, $ct := .Contract.ClientsAll }}
+            <option value="{{ $ct.Id }}">{{ $ct.INN }} {{ $ct.Name }}</option>
+            {{ end }}
+        </select>
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;">
+                <span>Дата начала</span>
+                <input type="date" name="startdate" value="{{ .Contract.DataStart }}" id="" placeholder="Дата">
+            </div>
+            <div>
+                <span>Дата окончания</span>
+                <input type="date" name="enddate" value="{{ .Contract.DataEnd }}" id="" placeholder="Дата">
+            </div>
+        </div>
+    
+        <span>Стоимость контракта</span>
+        <input type="number" name="price" value="{{ .Contract.Amount }}" id="" placeholder="Стоимость">
+        <span>Скан контракта</span>
+        <input type="file" name="file" id="" placeholder="Котракт">
+        <button class="main-btn m-auto">Обновить</button>
+    </form>
+
+    <form action="/edm/contract" method="get">
+	    <button onclick="window.dialogcontract.close();" aria-label="close" class="x">❌</button>
+    </form>
+</dialog>
+
+{{ template "footer" }}
+
+{{ end }}

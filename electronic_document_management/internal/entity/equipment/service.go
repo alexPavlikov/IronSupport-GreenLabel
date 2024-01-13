@@ -59,3 +59,30 @@ func (s *Service) DeleteEquipment(ctx context.Context, id int) error {
 	}
 	return nil
 }
+
+func (s *Service) GetEquipmentsBySort(ctx context.Context, eq *Equipment) (eqs []Equipment, err error) {
+	eqs, err = s.repository.SelectEquipmentsBySort(ctx, eq)
+	if err != nil {
+		return nil, err
+	}
+	return eqs, nil
+}
+
+func (s *Service) GetAllSortVal(ctx context.Context) (sort SortEq, err error) {
+	sort.Manufacture, err = s.repository.SelectAllManufacture(ctx)
+	if err != nil {
+		return sort, err
+	}
+
+	sort.Model, err = s.repository.SelectAllModel(ctx)
+	if err != nil {
+		return sort, err
+	}
+
+	sort.Type, err = s.repository.SelectAllType(ctx)
+	if err != nil {
+		return sort, err
+	}
+
+	return sort, nil
+}

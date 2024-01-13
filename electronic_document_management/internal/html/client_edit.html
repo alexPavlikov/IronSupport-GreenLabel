@@ -1,0 +1,72 @@
+{{ define "client_edit" }}
+
+
+    <dialog class="dialogsub-medium dialog-visible" id="dialogclientedit" style="height: 63%;">
+        <h3 class="main-color" style="text-transform: uppercase;">Редактирование контагента c id={{.Client.Id}}</h3>
+    
+        <form action="/edm/client/edits" method="get" class="content-medium" autocomplete="off">
+            <input type="text" name="id" value="{{.Client.Id}}" style="display: none;">
+            <div class="content-medium-case">
+                <div style="margin-right: 30px;">
+                    <span>ИНН</span>
+                    <input type="text" name="inn" id="" placeholder="ИНН" value="{{.Client.INN}}">
+                </div>
+                <div style="margin-right: 30px;">
+                    <span>КПП</span>
+                    <input type="text" name="kpp" id="" placeholder="КПП" value="{{.Client.KPP}}">
+                </div>
+                <div>
+                    <span>ОГРН</span>
+                    <input type="text" name="ogrn" id="" placeholder="ОГРН" value="{{.Client.OGRN}}">
+                </div>
+            </div>
+            <span>Название компании</span>
+            <input type="text" name="name" id="" placeholder="Название" value="{{.Client.Name}}">
+            <!-- <span>Владелец компании</span>
+            <input type="text" name="owner" id="" placeholder="Владелец" value="{{.Client.Owner}}"> -->
+            <div class="content-medium-case">
+                <div style="margin-right: 30px;">
+                    <span>Владелец компании</span>
+            <input type="text" name="owner" id="" placeholder="Владелец" value="{{.Client.Owner}}">
+                </div>
+                <div>
+                    <span>Статус клиента</span>
+                   <select name="status" id="" style=" width: 100%; padding: 10px 10px;">
+                    <option style="background-color: rgb(219, 219, 219);" disabled selected value="{{ .Client.Status }}">
+                        {{ if eq .Client.Status true }} 
+                            Активен
+                        {{ else }}
+                            Не активен
+                        {{ end }}
+                    </option>
+                    <option value="true">Активен</option>
+                    <option value="false">Не активен</option>
+                   </select>
+                </div>
+            </div>
+            <div class="content-medium-case">
+                <div style="margin-right: 30px;">
+                    <span>Контактный телефон</span>
+                    <input type="tel" name="phone" id="" placeholder="Телефон" value="{{.Client.Phone}}">
+                </div>
+                <div>
+                    <span>Электронная почта</span>
+                    <input type="email" name="email" id="" placeholder="Почта" value="{{.Client.Email}}">
+                </div>
+            </div>
+    
+            <span>Фактический адрес</span>
+            <input type="text" name="address" id="" placeholder="Адрес" value="{{.Client.Address}}">
+            <button style="width: 105%;" class="main-btn m-auto">Обновить</button>
+        </form>
+    
+        <!-- <button onclick="window.dialogclientedit.close();" aria-label="close" class="x">❌</button> -->
+        <form action="/edm/client" method="get">
+            <button onclick="window.dialogedit.close();" aria-label="close" class="x">❌</button>
+        </form>
+    </dialog>
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

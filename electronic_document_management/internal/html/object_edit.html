@@ -1,0 +1,35 @@
+{{ define "objectedit" }}
+
+<body>
+    
+    <dialog class="dialogsub-medium dialog-visible" id="dialogobject">
+        <h3 class="main-color" style="text-transform: uppercase;">Редактирование объект с id = {{ .Objectedit.Id }}</h3>
+    
+        <form action="/edm/object/edits" class="content-medium" autocomplete="off">
+            <input type="text" name="id" id="" value="{{ .Objectedit.Id }}">
+            <span>Название объекта</span>
+            <input type="text" name="name" id="" value="{{ .Objectedit.Name }}" placeholder="Объект">
+            <span>Адрес объекта</span>
+            <input type="text" name="address" id="" value="{{ .Objectedit.Address }}" placeholder="Адрес">
+            <span>Время работы объекта</span>
+            <input type="text" name="time" id="" value="{{ .Objectedit.WorkSchedule }}" placeholder="Время работы">
+            <select class="select" name="client" id="" style="margin-bottom: 40px; width: 106%;">
+                <option disabled selected value="{{ .Objectedit.Client.Id }}">Клиент</option>
+                {{ range $_, $cl := .Clients }}
+                <option value="{{ $cl.Id }}">{{ $cl.INN }} {{ $cl.Name }}</option>
+                {{ end }}
+            </select>
+            <button class="main-btn m-auto">Обновить</button>
+        </form>
+    
+        <form action="/edm/object" method="get">
+            <button onclick="window.dialogedit.close();" aria-label="close" class="x">❌</button>
+        </form>
+    </dialog>
+    
+
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

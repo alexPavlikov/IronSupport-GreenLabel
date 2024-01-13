@@ -10,3 +10,9 @@ type Equipment struct {
 	Contract     string
 	CreateDate   string
 }
+
+type SortEq struct {
+	Type        []string
+	Manufacture []string
+	Model       []string
+}

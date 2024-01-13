@@ -2,19 +2,70 @@
 
 {{ template "dialog" }}
 
+<dialog class="dialogsub-medium" id="dialogequipments">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новое оборудование</h3>
+
+    <form action="/edm/equipment/add" class="content-medium" autocomplete="off">
+        <div class="content-medium-case">
+            <div style="    margin-right: 30px;">
+                <span>Название оборудование</span>
+                <input type="text" name="name" id="" placeholder="Название">
+            </div>
+            <div>
+                <span>Тип оборудования</span>
+                <input type="text" name="type" id="" placeholder="Тип">
+            </div>
+        </div>
+        <div class="content-medium-case">
+            <div style="    margin-right: 30px;">
+                <span>Производитель</span>
+                <input type="text" name="manufacture" id="" placeholder="Производитель">
+            </div>
+            <div>
+                <span>Модель</span>
+                <input type="text" name="model" id="" placeholder="Модель">
+            </div>
+        </div>
+        <span>Уникальный номер оборудования</span>
+        <input type="text" name="number" id="" placeholder="Уникальный номер">
+        <span>Инструкция для оборудования</span>
+        <input type="file" name="file" id="" placeholder="Инструкция">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogequipments.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
 <main>
 
     <div class="sorted">
         <form class="sort-client" action="/edm/equipment/sorted/" method="post">
-            <input type="text" placeholder="ИНН">
-            <input type="text" placeholder="КПП">
-            <input type="text" placeholder="ОГРН">
+            <input type="text" name="name" placeholder="Название">
+            <select style="padding: 5px 10px; margin: 0 20px;" name="type" id="">
+                <option selected disabled>Тип</option>
+                {{ range $_, $t := .Sort.Type }}
+                <option value="{{ $t }}">{{ $t }}</option>
+                {{ end  }}
+            </select>
+            <select style="padding: 5px 10px; margin: 0 20px;" name="manufacture" id="">
+                <option selected disabled>Производитель</option>
+                {{ range $_, $mn := .Sort.Manufacture }}
+                <option value="{{ $mn }}">{{ $mn }}</option>
+                {{ end  }}
+            </select>
+            <select style="padding: 5px 10px; margin: 0 20px;" name="model">
+                <option selected disabled>Модель</option>
+                {{ range $_, $m := .Sort.Model }}
+                <option value="{{ $m }}">{{ $m }}</option>
+                {{ end  }}
+            </select>
+            <input type="text" name="unique" placeholder="Уникальный номер">
             <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
         </form>
     </div>
 
     <div class="add">
-        <button class="main-btn" onclick="window.dialogequipment.showModal();">Создать оборудование</button>
+        <button class="main-btn" onclick="window.dialogequipments.showModal();">Создать оборудование</button>
     </div>
 
     <table class="table-sortable">
@@ -43,7 +94,14 @@
                 <td>{{ $e.UniqueNumber }}</td>
                 <td>{{ $e.Contract }}</td>
                 <td>{{ $e.CreateDate }}</td>
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                <td class="edit">
+                    <form action="/edm/equipment/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$e.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {{ end }}
         </tbody>

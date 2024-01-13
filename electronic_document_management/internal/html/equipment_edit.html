@@ -1,0 +1,62 @@
+{{ define "equipment_edit" }}
+
+<body>
+    
+    
+<dialog class="dialogsub-medium dialog-visible" id="dialogequipments">
+    <h3 class="main-color" style="text-transform: uppercase;">Редактирование оборудование с id={{ .Eq.Id }}</h3>
+
+    <form action="/edm/equipment/edits" class="content-medium" autocomplete="off">
+        <input type="text" name="id" value="{{ .Eq.Id }}" style="display: none;">
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;"  style="width: 50%;">
+                <span>Название оборудование</span>
+                <input type="text" name="name" id="" placeholder="Название" value="{{ .Eq.Name }}">
+            </div>
+            <div style="width: 50%;">
+                <span>Тип</span>
+                <select name="type" id="" class="select" style="margin-bottom: 20px; width: 106%;">
+                    <option style="background-color: rgb(219, 219, 219);" selected value="{{ .Eq.Type }}">{{ .Eq.Type }}</option>
+                    {{ range $_, $t := .Sort.Type }}
+                    <option value="{{ $t }}">{{ $t }}</option>
+                    {{ end }}
+                </select>
+            </div>
+        </div>
+        <div class="content-medium-case">
+            <div style="    margin-right: 30px;">
+                <span>Производитель</span>
+                <select name="manufacture" id="" class="select" style="margin-bottom: 20px; width: 106%;">
+                    <option style="background-color: rgb(219, 219, 219);" selected value="{{ .Eq.Manufacture }}">{{ .Eq.Manufacture }}</option>
+                    {{ range $_, $mn := .Sort.Manufacture }}
+                    <option value="{{ $mn }}">{{ $mn }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div>
+                <span>Модель</span>
+                <select name="model" id="" class="select" style="margin-bottom: 20px; width: 106%;">
+                    <option style="background-color: rgb(219, 219, 219);" selected value="{{ .Eq.Model }}">{{ .Eq.Model }}</option>
+                    {{ range $_, $m := .Sort.Model }}
+                    <option value="{{ $m }}">{{ $m }}</option>
+                    {{ end }}
+                </select>
+            </div>
+        </div>
+        <span>Уникальный номер оборудования</span>
+        <input type="text" name="number" id="" placeholder="Уникальный номер" value="{{ .Eq.UniqueNumber }}">
+        <span>Инструкция для оборудования</span>
+        <input type="file" name="file" id="" placeholder="Инструкция">
+        <button class="main-btn m-auto">Обновить</button>
+    </form>
+
+    <form action="/edm/equipment" method="get">
+	    <button onclick="window.dialogcontract.close();" aria-label="close" class="x">❌</button>
+    </form>
+</dialog>
+
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

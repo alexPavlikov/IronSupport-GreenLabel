@@ -91,38 +91,9 @@
 	<button onclick="window.dialogclient.close();" aria-label="close" class="x">❌</button>
 </dialog>
 
-<dialog class="dialogsub-medium" id="dialogcontract">
-    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый контракт</h3>
 
-    <form action="/edm/...." class="content-medium" autocomplete="off">
-        <span>Название контракта</span>
-        <input type="text" name="status" id="" placeholder="Название">
-        <select class="select" name="type" id="" style="margin-bottom: 20px; width: 106%;">
-            <option disabled selected>Клиент</option>
-            <option value="1">hello</option>
-        </select>
-        <div class="content-medium-case">
-            <div style="margin-right: 30px;">
-                <span>Дата начала</span>
-                <input type="date" name="status" id="" placeholder="Дата">
-            </div>
-            <div>
-                <span>Дата окончания</span>
-                <input type="date" name="status" id="" placeholder="Дата">
-            </div>
-        </div>
-    
-        <span>Стоимость контракта</span>
-        <input type="number" name="status" id="" placeholder="Стоимость">
-        <span>Скан контракта</span>
-        <input type="file" name="status" id="" placeholder="Котракт">
-        <button class="main-btn m-auto">Создать</button>
-    </form>
 
-	<button onclick="window.dialogcontract.close();" aria-label="close" class="x">❌</button>
-</dialog>
-
-<dialog class="dialogsub-medium" id="dialogobject">
+<!-- <dialog class="dialogsub-medium" id="dialogobject">
     <h3 class="main-color" style="text-transform: uppercase;">Добавить новый объект</h3>
 
     <form action="/edm/...." class="content-medium" autocomplete="off">
@@ -140,7 +111,7 @@
     </form>
 
 	<button onclick="window.dialogobject.close();" aria-label="close" class="x">❌</button>
-</dialog>
+</dialog> -->
 
 <dialog class="dialogsub-medium" id="dialogequipment">
     <h3 class="main-color" style="text-transform: uppercase;">Добавить новое оборудование</h3>
@@ -203,9 +174,9 @@
 <dialog class="dialogsub-small" id="dialogworkerrole">
     <h3 class="main-color" style="text-transform: uppercase;">Создать новую роль сотрудникам</h3>
 
-    <form action="/edm/...." class="content-small" autocomplete="off">
+    <form action="/edm/user/role/add" class="content-small" autocomplete="off">
         <span>Роль сотрудника</span>
-        <input type="text" name="title" id="" placeholder="Тип">
+        <input type="text" name="name" id="" placeholder="Название">
         <button class="main-btn m-auto">Создать</button>
     </form>
 

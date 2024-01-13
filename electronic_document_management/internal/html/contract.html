@@ -2,13 +2,46 @@
 
 {{ template "dialog" }}
 
+<dialog class="dialogsub-medium" id="dialogcontract">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый контракт</h3>
+
+    <form action="/edm/contract/add" class="content-medium" autocomplete="off">
+        <span>Название контракта</span>
+        <input type="text" name="name" id="" placeholder="Название">
+        <select class="select" name="client" id="" style="margin-bottom: 20px; width: 106%;">
+            <option disabled selected>Клиент</option>
+            {{ range $_, $cl := .Clients }}
+            <option value="{{ $cl.Id }}">{{ $cl.Name }}</option>
+            {{ end }}
+        </select>
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;">
+                <span>Дата начала</span>
+                <input type="date" name="startdate" id="" placeholder="Дата">
+            </div>
+            <div>
+                <span>Дата окончания</span>
+                <input type="date" name="enddate" id="" placeholder="Дата">
+            </div>
+        </div>
+    
+        <span>Стоимость контракта</span>
+        <input type="number" name="price" id="" placeholder="Стоимость">
+        <span>Скан контракта</span>
+        <input type="file" name="file" id="" placeholder="Котракт">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogcontract.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
 <main>
 
     <div class="sorted">
         <form class="sort-client" action="/edm/contract/sorted/" method="post">
-            <input type="text" placeholder="Клиент">
-            <input type="text" placeholder="Дата начала">
-            <input type="text" placeholder="Дата окончания">
+            <input type="text" name="client" placeholder="Клиент">
+            <input type="text" name="start" placeholder="Дата начала">
+            <input type="text" name="end" placeholder="Дата окончания">
             <select style="padding: 5px 10px;" name="status" id="">
                 <option disabled selected>Статус</option>
                 <option value="true">Активен</option>
@@ -41,7 +74,7 @@
             <tr>
                 <td style="text-align: center;">{{ $ct.Id }}</td>
                 <td>{{ $ct.Name }}</td>
-                <td>{{ $ct.Name }}</td>
+                <td>{{ $ct.Client.INN }} {{ $ct.Client.Name }}</td>
                 <td>{{ $ct.DataStart }}</td>
                 <td>{{ $ct.DataEnd }}</td>
                 <td>{{ $ct.Amount }}</td>
@@ -51,7 +84,15 @@
                 {{ else }}
                 <td>Не активен</td>
                 {{ end }}
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                <!-- <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td> -->
+                <td class="edit">
+                    <form action="/edm/contract/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$ct.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {{ end }}
         </tbody>

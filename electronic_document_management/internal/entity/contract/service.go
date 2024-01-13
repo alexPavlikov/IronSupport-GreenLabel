@@ -59,3 +59,19 @@ func (s *Service) CloseContract(ctx context.Context, id int) error {
 	}
 	return nil
 }
+
+func (s *Service) GetContractsBySort(ctx context.Context, ct Contract) ([]Contract, error) {
+	contracts, err := s.repository.SelectContractsBySort(ctx, ct)
+	if err != nil {
+		return nil, err
+	}
+	return contracts, nil
+}
+
+func (s *Service) GetAllClients(ctx context.Context) ([]Client, error) {
+	cls, err := s.repository.SelectClients(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return cls, nil
+}

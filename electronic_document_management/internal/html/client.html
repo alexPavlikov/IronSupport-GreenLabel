@@ -2,6 +2,8 @@
 
 {{ template "dialog" }}
 
+
+
 <main>
 
     <div class="sorted">
@@ -48,8 +50,22 @@
                 <td>{{ $cl.Email }}</td>
                 <td>{{ $cl.Address }}</td>
                 <td>{{ $cl.CreateDate }}</td>
-                <td>{{ $cl.Status }}</td>
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                <td>
+                    {{ if eq $cl.Status true }}
+                        Активен
+                    {{ else }}
+                        Не активен
+                    {{ end }}
+                </td>
+                <!-- <td class="edit" onclick="window.dialogclientedit.showModal();"><button><i class="fa-solid fa-pen-to-square"></i></button></td> -->
+                <td class="edit">
+                    <form action="/edm/client/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$cl.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {{ end }}
         </tbody>

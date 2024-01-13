@@ -65,7 +65,7 @@ func (s *Service) CloseRequest(ctx context.Context, status string, id int) error
 func (s *Service) GetRequestsBySort(ctx context.Context, req Request) (rs []Request, err error) {
 	rs, err = s.repository.SelectRequestsBySort(ctx, req)
 	if err != nil {
-		return nil, fmt.Errorf("%s - %s", config.LOG_ERROR)
+		return nil, fmt.Errorf("%s - %s", config.LOG_ERROR, err.Error())
 	}
 	return rs, nil
 }

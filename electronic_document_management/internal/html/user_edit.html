@@ -1,0 +1,33 @@
+{{ define "user_edit" }}
+
+<body>
+    <dialog class="dialogsub-medium dialog-visible" id="dialogworkers" style="height: 65%;">
+        <h3 class="main-color" style="text-transform: uppercase;">Создать нового сотрудника</h3>
+    
+        <form action="/edm/user/add" class="content-medium" autocomplete="off">
+            <span>Фамилия/Имя/Отчество</span>
+            <input type="text" name="fio" id="" placeholder="ФИО">
+            <span>Почта</span>
+            <input type="email" name="email" id="" placeholder="Почта">
+            <span>Телефон</span>
+            <input type="tel" name="phone" id="" placeholder="Номер телефона">
+            <span>Фото</span>
+            <input type="file" name="status" accept="image/*" placeholder="Статус">
+            <div class="sub-title" style="width: 97%;"><span>Роль пользователя</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogworkerrole.showModal();">Создать</a></div>
+            <select class="select" name="role" id="" style="margin-bottom: 40px;">
+                <option disabled selected>Роль пользователя</option>
+                {{ range $_, $rl := .Role }}
+                <option value="{{ $rl }}">{{ $rl }}</option>
+                {{ end }}
+            </select>
+            <button class="main-btn m-auto">Создать</button>
+        </form>
+    
+        <button onclick="window.dialogworkers.close();" aria-label="close" class="x">❌</button>
+    </dialog>
+    
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

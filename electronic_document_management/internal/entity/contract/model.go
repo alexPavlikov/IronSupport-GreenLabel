@@ -9,6 +9,8 @@ type Contract struct {
 	Amount    int
 	File      string
 	Status    bool
+
+	ClientsAll []Client
 }
 
 type Client struct {
