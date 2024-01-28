@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
@@ -39,41 +40,45 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) RequestsHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
-	if err != nil {
-		fmt.Println(err)
-		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
-		w.WriteHeader(http.StatusNotFound)
-	}
+	if !user.UserAuth.Err {
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+		if err != nil {
+			fmt.Println(err)
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			w.WriteHeader(http.StatusNotFound)
+		}
 
-	reqs, err := h.service.GetRequests(context.TODO())
-	if err != nil {
-		h.logger.Errorf("%s - failed load RequestsHandler due to err: %s", config.LOG_ERROR, err)
-		http.NotFound(w, r)
-	}
+		reqs, err := h.service.GetRequests(context.TODO())
+		if err != nil {
+			h.logger.Errorf("%s - failed load RequestsHandler due to err: %s", config.LOG_ERROR, err)
+			http.NotFound(w, r)
+		}
 
-	fmt.Println(reqs[0].ClientObject.Object.Id, reqs[0].ClientObject.Object.Name)
+		fmt.Println("RIIIIIIIIIIIIIIIIID", RID.UserAuth)
 
-	data := map[string]interface{}{"Requests": reqs, "RID": RID}
-	header := map[string]string{"Title": "ЭДО - Заявки", "Page": "Request"}
-	dialog := map[string]interface{}{"ReqInsertData": RID}
+		data := map[string]interface{}{"Requests": reqs, "RID": RID, "OK": false}
+		header := map[string]string{"Title": "ЭДО - Заявки", "Page": "Request"}
+		dialog := map[string]interface{}{"ReqInsertData": RID}
 
-	err = tmpl.ExecuteTemplate(w, "header", header)
-	if err != nil {
-		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
-		//http.NotFound(w, r)
-	}
+		err = tmpl.ExecuteTemplate(w, "header", header)
+		if err != nil {
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			//http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "request", data)
-	if err != nil {
-		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
-		//http.NotFound(w, r)
-	}
+		err = tmpl.ExecuteTemplate(w, "request", data)
+		if err != nil {
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			//http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "dialog", dialog)
-	if err != nil {
-		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
-		//http.NotFound(w, r)
+		err = tmpl.ExecuteTemplate(w, "dialog", dialog)
+		if err != nil {
+			h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+			//http.NotFound(w, r)
+		}
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 }
 
@@ -235,7 +240,7 @@ func (h *handler) SorterRequestHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 		}
 
-		data := map[string]interface{}{"Requests": rs, "RID": RID}
+		data := map[string]interface{}{"Requests": rs, "RID": RID, "OK": true}
 		header := map[string]string{"Title": "ЭДО - Заявки", "Page": "Request"}
 		dialog := map[string]interface{}{"ReqInsertData": RID}
 

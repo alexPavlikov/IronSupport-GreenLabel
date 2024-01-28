@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
@@ -40,35 +41,40 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) EquipmentHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
-	if err != nil {
-		http.NotFound(w, r)
-	}
+	if !user.UserAuth.Err {
 
-	eqs, err := h.service.GetEquipments(context.TODO())
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
-	}
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	sort, err := h.service.GetAllSortVal(context.TODO())
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
-	}
+		eqs, err := h.service.GetEquipments(context.TODO())
+		if err != nil {
+			fmt.Println(err)
+			http.NotFound(w, r)
+		}
 
-	title := map[string]string{"Title": "ЭДО - Оборудование", "Page": "Equipment"}
-	data := map[string]interface{}{"Equipments": eqs, "Sort": sort}
+		sort, err := h.service.GetAllSortVal(context.TODO())
+		if err != nil {
+			fmt.Println(err)
+			http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "header", title)
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
-	}
-	err = tmpl.ExecuteTemplate(w, "equipment", data)
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
+		title := map[string]string{"Title": "ЭДО - Оборудование", "Page": "Equipment"}
+		data := map[string]interface{}{"Equipments": eqs, "Sort": sort, "OK": false}
+
+		err = tmpl.ExecuteTemplate(w, "header", title)
+		if err != nil {
+			fmt.Println(err)
+			http.NotFound(w, r)
+		}
+		err = tmpl.ExecuteTemplate(w, "equipment", data)
+		if err != nil {
+			fmt.Println(err)
+			http.NotFound(w, r)
+		}
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 }
 
@@ -189,7 +195,7 @@ func (h *handler) EditEquipmentHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(eq)
 
 	title := map[string]string{"Title": "ЭДО - Редактирование оборудования", "Page": "Equipment"}
-	data := map[string]interface{}{"Eq": eq, "Sort": sort}
+	data := map[string]interface{}{"Eq": eq, "Sort": sort, "OK": true}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {

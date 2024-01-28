@@ -29,4 +29,5 @@ type RequestInsertDate struct {
 	Equipment    []equipment.Equipment
 	Contract     []contract.Contract
 	Status       []ReqStatus
+	UserAuth     user.User
 }

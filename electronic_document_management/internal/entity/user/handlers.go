@@ -6,10 +6,12 @@ import (
 	"net/http"
 	"strconv"
 	"text/template"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -18,16 +20,23 @@ type handler struct {
 	logger  *logging.Logger
 }
 
+var UserAuth Auth
+
 // Register implements handlers.Handlers.
 func (h *handler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodGet, "/edm/user", h.UserHandler)
 	router.HandlerFunc(http.MethodPost, "/edm/user/sorted", h.SortUserHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/user/sorted", h.SortUserHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/user/add", h.AddUserHandler)
-	router.HandlerFunc(http.MethodGet, "/edm/equipment/edit", h.EditUserHandler)
-	router.HandlerFunc(http.MethodGet, "/edm/equipment/edits", h.EditPostUserHandler)
+	router.HandlerFunc(http.MethodGet, "/edm/user/edit", h.EditUserHandler)
+	router.HandlerFunc(http.MethodGet, "/edm/user/edits", h.EditPostUserHandler)
+	router.HandlerFunc(http.MethodGet, "/edm/user/account", h.AccountHandler)
 
 	router.HandlerFunc(http.MethodGet, "/edm/user/role/add", h.AddRoleUserHandler)
+
+	router.HandlerFunc(http.MethodGet, "/user/auth", h.UserAuthHandler)
+	router.HandlerFunc(http.MethodGet, "/user/auth/authconfirm", h.AuthUserConfirm)
+	router.HandlerFunc(http.MethodGet, "/user/auth/reg-confirm", h.RegUserConfirm)
 }
 
 func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
@@ -38,35 +47,40 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) UserHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
-	if err != nil {
-		http.NotFound(w, r)
-	}
+	if !UserAuth.Err {
 
-	users, err := h.service.GetUsers(context.TODO())
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	role, err := h.service.GetRole(context.TODO())
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		users, err := h.service.GetUsers(context.TODO())
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	fmt.Println(users)
+		role, err := h.service.GetRole(context.TODO())
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	title := map[string]string{"Title": "ЭДО - Пользователи", "Page": "User"}
-	data := map[string]interface{}{"User": users, "Role": role}
+		fmt.Println(users)
 
-	err = tmpl.ExecuteTemplate(w, "header", title)
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		title := map[string]string{"Title": "ЭДО - Пользователи", "Page": "User"}
+		data := map[string]interface{}{"User": users, "Role": role, "OK": false}
 
-	err = tmpl.ExecuteTemplate(w, "user", data)
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
+		err = tmpl.ExecuteTemplate(w, "header", title)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+
+		err = tmpl.ExecuteTemplate(w, "user", data)
+		if err != nil {
+			fmt.Println(err)
+			http.NotFound(w, r)
+		}
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 }
 
@@ -123,7 +137,7 @@ func (h *handler) SortUserHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		data := map[string]interface{}{"User": users, "Role": role}
+		data := map[string]interface{}{"User": users, "Role": role, "OK": true}
 		header := map[string]string{"Title": "ЭДО - Сотрудники", "Page": "User"}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 
@@ -193,8 +207,13 @@ func (h *handler) EditUserHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
+	role, err := h.service.GetRole(context.TODO())
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
 	title := map[string]string{"Title": "ЭДО - Редактирование сотрудника", "Page": "User"}
-	data := map[string]interface{}{"User": us}
+	data := map[string]interface{}{"User": us, "Role": role}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
@@ -213,6 +232,13 @@ func (h *handler) EditPostUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	var us User
 
+	us.Id, _ = strconv.Atoi(r.FormValue("id"))
+	us.FullName = r.FormValue("fio")
+	us.Email = r.FormValue("email")
+	us.Phone = r.FormValue("phone")
+	us.Image = r.FormValue("avatar")
+	us.Role = r.FormValue("role")
+
 	fmt.Println(us)
 
 	err := h.service.UpdateUser(context.TODO(), &us)
@@ -221,4 +247,110 @@ func (h *handler) EditPostUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/edm/user", http.StatusSeeOther)
+}
+
+func (h *handler) AccountHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	arr := utils.ReadCookies(r)
+	user, err := h.service.GetAuthUser(context.TODO(), arr[0], arr[1])
+	if err != nil {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
+	}
+
+	title := map[string]string{"Title": "ЭДО - Пользователи", "Page": "User"}
+	data := map[string]interface{}{"User": user}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+	err = tmpl.ExecuteTemplate(w, "account", data)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+}
+
+func (h *handler) UserAuthHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./html/*.html")
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	r.ParseForm()
+	v := r.FormValue("val")
+
+	text := "singup"
+	if v != "" {
+		text = "reg"
+	}
+
+	// title := map[string]interface{}{}
+	data := map[string]interface{}{"Content": text, "UserAuth": UserAuth, "Title": "Авторизация"}
+
+	err = tmpl.ExecuteTemplate(w, "auth", data)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+}
+
+func (h *handler) AuthUserConfirm(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	var u User
+	var err error
+
+	u.Email = r.FormValue("email")
+	u.Password = r.FormValue("pass")
+
+	if u.Email != "" && u.Password != "" {
+
+		fmt.Println("read form auth", u)
+
+		UserAuth.Us, err = h.service.GetAuthUser(context.TODO(), u.Email, u.Password)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("GetAuthUser", UserAuth.Us, UserAuth.Err)
+
+		if err != nil {
+			fmt.Println(err)
+			UserAuth.Err = true
+			http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
+		} else if UserAuth.Us.Password == u.Password {
+			UserAuth.Err = false
+
+			expires := time.Now().AddDate(1, 0, 0)
+			cookie := &http.Cookie{
+				Name:  "Id",
+				Value: UserAuth.Us.Email + " " + UserAuth.Us.Password,
+				//MaxAge:  300,
+				Expires: expires,
+				Path:    "/",
+			}
+			http.SetCookie(w, cookie)
+			http.Redirect(w, r, "/IronSupport", http.StatusSeeOther)
+
+		} else if UserAuth.Us.Password != u.Password {
+			UserAuth.Err = true
+			http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
+		}
+	}
+
+}
+
+func (h *handler) RegUserConfirm(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	var u User
+
+	u.FullName = r.FormValue("fullname")
+	u.Email = r.FormValue("email")
+	u.Phone = r.FormValue("phone")
+	u.Password = r.FormValue("pass")
+	// pass := r.FormValue("xpass")
+
 }

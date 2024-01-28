@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/equipment"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/services"
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
@@ -84,18 +85,16 @@ func (r *repository) SelectService(ctx context.Context, id int) (srv services.Se
 	JOIN 
 		"Equipment" eq ON s.equipment = eq.Id
 	WHERE 
-		s.id = 3
+		s.id = $1
 	`
 
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
 
-	rows, err := r.client.Query(ctx, query, id)
-	if err != nil {
-		return services.Services{}, err
-	}
+	rows := r.client.QueryRow(ctx, query, id)
 
 	err = rows.Scan(&srv.Id, &srv.Equipment, &srv.Type, &srv.Cost, &srv.EquipmentStructure.Name)
 	if err != nil {
+		fmt.Println(err)
 		return services.Services{}, err
 	}
 
@@ -142,4 +141,100 @@ func (r *repository) DeleteServices(ctx context.Context, id int) error {
 	r.logger.LogEvents("Удалена", fmt.Sprintf("%s c id=:%d", "услуга", id))
 
 	return nil
+}
+
+func (r *repository) SelectServiceType(ctx context.Context) (types []string, err error) {
+	query := `
+	SELECT name FROM public."Services_type"
+	`
+
+	rows, err := r.client.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var t string
+
+	for rows.Next() {
+		err = rows.Scan(&t)
+		if err != nil {
+			return nil, err
+		}
+
+		types = append(types, t)
+	}
+	return types, nil
+}
+
+func (r *repository) InsertServicesType(ctx context.Context, types string) error {
+	query := `
+	INSERT INTO 
+		public."Services_type" (name) 
+	VALUES 
+		($1)
+	`
+
+	fmt.Println(types)
+
+	_ = r.client.QueryRow(ctx, query, types)
+	return nil
+}
+
+func (r *repository) SelectAllEquipment(ctx context.Context) (eqs []equipment.Equipment, err error) {
+	query := `
+		SELECT 
+			id, name, type, manufacturer, model, unique_number, contract, create_date
+		FROM 
+			public."Equipment"
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	rows, err := r.client.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var eq equipment.Equipment
+
+	for rows.Next() {
+		err = rows.Scan(&eq.Id, &eq.Name, &eq.Type, &eq.Manufacture, &eq.Model, &eq.UniqueNumber, &eq.Contract, &eq.CreateDate)
+		if err != nil {
+			return nil, err
+		}
+
+		eqs = append(eqs, eq)
+	}
+	return eqs, nil
+}
+
+func (r *repository) SelectServicesBySort(ctx context.Context, srv *services.Services) (srvc []services.Services, err error) {
+	query := `
+	SELECT 
+		s.id, s.equipment, s.type, s.cost, eq.Name 
+	FROM 
+		public."Services" s
+	JOIN 
+		"Equipment" eq ON s.equipment = eq.Id
+	WHERE s.equipment = $1 OR s.type = $2
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	rows, err := r.client.Query(ctx, query, &srv.Equipment, &srv.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	var s services.Services
+
+	for rows.Next() {
+		err = rows.Scan(&s.Id, &s.Equipment, &s.Type, &s.Cost, &s.EquipmentStructure.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		srvc = append(srvc, s)
+	}
+	return srvc, nil
 }

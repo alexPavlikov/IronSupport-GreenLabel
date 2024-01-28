@@ -25,16 +25,16 @@ func NewRepository(client dbClient.Client, logger *logging.Logger) user.Reposito
 func (r *repository) InsertUser(ctx context.Context, user *user.User) error {
 	query := `
 	INSERT INTO
-		public."User" (email, full_name, phone, image, role)
+		public."User" (email, full_name, phone, image, role, password)
 	VALUES
-		($1, $2, $3, $4, $5)
+		($1, $2, $3, $4, $5, $6)
 	RETURNING
 		id
 	`
 
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
 
-	rows := r.client.QueryRow(ctx, query, &user.Email, &user.FullName, &user.Phone, &user.Image, &user.Role)
+	rows := r.client.QueryRow(ctx, query, &user.Email, &user.FullName, &user.Phone, &user.Image, &user.Role, &user.Password)
 	err := rows.Scan(&user.Id)
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func (r *repository) InsertUserRole(ctx context.Context, name string) error {
 
 	_ = r.client.QueryRow(ctx, query, name)
 
-	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=:%d", "роль", name))
+	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=:%s", "роль", name))
 
 	return nil
 }
@@ -63,7 +63,7 @@ func (r *repository) InsertUserRole(ctx context.Context, name string) error {
 func (r *repository) SelectUser(ctx context.Context, id int) (us user.User, err error) {
 	query := `
 		SELECT
-			id, email, full_name, phone, image, role
+			id, email, full_name, phone, image, role, password
 		FROM
 			public."User"
 		WHERE
@@ -71,12 +71,29 @@ func (r *repository) SelectUser(ctx context.Context, id int) (us user.User, err 
 
 	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
 
-	rows, err := r.client.Query(ctx, query, id)
+	rows := r.client.QueryRow(ctx, query, id)
+
+	err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role, &us.Password)
 	if err != nil {
 		return user.User{}, err
 	}
+	return us, nil
+}
 
-	err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role)
+func (r *repository) SelectAuthUser(ctx context.Context, email string, pass string) (us user.User, err error) {
+	query := `
+		SELECT
+			id, email, full_name, phone, image, role, password
+		FROM
+			public."User"
+		WHERE
+			email = $1 AND password = $2`
+
+	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
+
+	rows := r.client.QueryRow(ctx, query, email, pass)
+
+	err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role, &us.Password)
 	if err != nil {
 		return user.User{}, err
 	}
@@ -87,7 +104,7 @@ func (r *repository) SelectUser(ctx context.Context, id int) (us user.User, err 
 func (r *repository) SelectUsers(ctx context.Context) (users []user.User, err error) {
 	query := `
 	SELECT
-		id, email, full_name, phone, image, role
+		id, email, full_name, phone, image, role, password
 	FROM
 		public."User"`
 
@@ -100,7 +117,7 @@ func (r *repository) SelectUsers(ctx context.Context) (users []user.User, err er
 
 	var us user.User
 	for rows.Next() {
-		err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role)
+		err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role, &us.Password)
 		if err != nil {
 			return nil, err
 		}
@@ -109,10 +126,10 @@ func (r *repository) SelectUsers(ctx context.Context) (users []user.User, err er
 	return users, nil
 }
 
-func (r *repository) SelectUsersBySory(ctx context.Context, usr *user.User) (users []user.User, err error) {
+func (r *repository) SelectUsersBySort(ctx context.Context, usr *user.User) (users []user.User, err error) {
 	query := `
 	SELECT
-		id, email, full_name, phone, image, role
+		id, email, full_name, phone, image, role, password
 	FROM
 		public."User"
 	WHERE full_name ILIKE $1 OR email ILIKE $2 OR phone ILIKE $3 OR role = $4	
@@ -127,7 +144,7 @@ func (r *repository) SelectUsersBySory(ctx context.Context, usr *user.User) (use
 
 	var us user.User
 	for rows.Next() {
-		err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role)
+		err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role, &us.Password)
 		if err != nil {
 			return nil, err
 		}
@@ -141,14 +158,14 @@ func (r *repository) UpdateUser(ctx context.Context, user *user.User) error {
 	UPDATE
 		public."User"
 	SET
-		email = $1, full_name = $2, phone = $3, image = $4, role = $5
+		email = $1, full_name = $2, phone = $3, role = $4
 	WHERE
-		id = $6
+		id = $5
 	`
 
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
 
-	_, err := r.client.Query(ctx, query, &user.Email, &user.FullName, &user.Phone, &user.Image, &user.Role, &user.Id)
+	_, err := r.client.Query(ctx, query, &user.Email, &user.FullName, &user.Phone, &user.Role, &user.Password, &user.Id)
 	if err != nil {
 		return err
 	}

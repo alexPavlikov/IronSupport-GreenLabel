@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
@@ -40,29 +41,35 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) ClientHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
-	if err != nil {
-		h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
-		http.NotFound(w, r)
-	}
 
-	clients, err := h.service.GetClients(context.TODO())
-	if err != nil {
-		fmt.Println("Errro", err)
-	}
+	if !user.UserAuth.Err {
 
-	title := map[string]interface{}{"Title": "ЭДО - Клиенты", "Page": "Client"}
-	data := map[string]interface{}{"Clients": clients}
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+		if err != nil {
+			h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
+			http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "header", title)
-	if err != nil {
-		h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
-		http.NotFound(w, r)
-	}
-	err = tmpl.ExecuteTemplate(w, "client", data)
-	if err != nil {
-		h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
-		http.NotFound(w, r)
+		clients, err := h.service.GetClients(context.TODO())
+		if err != nil {
+			fmt.Println("Errro", err)
+		}
+
+		title := map[string]interface{}{"Title": "ЭДО - Клиенты", "Page": "Client"}
+		data := map[string]interface{}{"Clients": clients, "OK": false}
+
+		err = tmpl.ExecuteTemplate(w, "header", title)
+		if err != nil {
+			h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
+			http.NotFound(w, r)
+		}
+		err = tmpl.ExecuteTemplate(w, "client", data)
+		if err != nil {
+			h.logger.Tracef("%s - failed open ClientHandler", config.LOG_ERROR)
+			http.NotFound(w, r)
+		}
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 }
 
@@ -122,7 +129,7 @@ func (h *handler) SorterClientHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(clients)
 
-		data := map[string]interface{}{"Clients": clients}
+		data := map[string]interface{}{"Clients": clients, "OK": true}
 		header := map[string]string{"Title": "ЭДО - Клиенты", "Page": "Client"}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 

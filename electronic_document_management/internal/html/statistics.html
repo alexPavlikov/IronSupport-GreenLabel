@@ -1,0 +1,31 @@
+{{ define "statistics" }}
+
+<body>
+    
+    <div class="stat">
+        <div class="stat-item only">
+            <div class="stat-item-obj">
+                <form action="/edm/statistics/only">
+                    <button>Сформировать личный отчет по заявкам</button>
+                </form>
+            </div>
+        </div>
+        <div class="stat-item all">
+            <div class="stat-item-obj">
+                <form action="/edm/statistics/all/month">
+                    <button>Сформировать общий отчет по заявкам за месяц</button>
+                </form>
+            </div>
+            <div class="stat-item-obj">
+                <form action="/edm/statistics/all/year">
+                    <button>Сформировать общий отчет по заявкамза год</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

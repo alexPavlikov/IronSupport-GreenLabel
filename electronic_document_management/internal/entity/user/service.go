@@ -6,6 +6,7 @@ import (
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 )
 
 type Service struct {
@@ -21,6 +22,9 @@ func NewService(repository Repository, logger *logging.Logger) *Service {
 }
 
 func (s *Service) AddUser(ctx context.Context, user *User) error {
+
+	user.Password = utils.CreateMd5Hash(user.Password)
+
 	err := s.repository.InsertUser(ctx, user)
 	if err != nil {
 		return fmt.Errorf("%s - %s", config.LOG_ERROR, err)
@@ -44,6 +48,15 @@ func (s *Service) GetUser(ctx context.Context, id int) (us User, err error) {
 	return us, nil
 }
 
+func (s *Service) GetAuthUser(ctx context.Context, email string, pass string) (us User, err error) {
+	us, err = s.repository.SelectAuthUser(ctx, email, pass)
+	if err != nil {
+		fmt.Println(err)
+		return User{}, fmt.Errorf("%s - failed to get auth user", config.LOG_ERROR)
+	}
+	return us, nil
+}
+
 func (s *Service) GetUsers(ctx context.Context) (users []User, err error) {
 	users, err = s.repository.SelectUsers(ctx)
 	if err != nil {
@@ -53,7 +66,7 @@ func (s *Service) GetUsers(ctx context.Context) (users []User, err error) {
 }
 
 func (s *Service) GetUserBySort(ctx context.Context, us *User) (users []User, err error) {
-	users, err = s.repository.SelectUsersBySory(ctx, us)
+	users, err = s.repository.SelectUsersBySort(ctx, us)
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +82,7 @@ func (s *Service) GetRole(ctx context.Context) (role []string, err error) {
 }
 
 func (s *Service) UpdateUser(ctx context.Context, user *User) error {
+	user.Password = utils.CreateMd5Hash(user.Password)
 	err := s.repository.UpdateUser(ctx, user)
 	if err != nil {
 		return fmt.Errorf("%s - %s", config.LOG_ERROR, err)

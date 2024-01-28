@@ -305,6 +305,7 @@ td {
     min-height: 8vh;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .sorted form {
@@ -349,4 +350,15 @@ span {
 
 .goback:hover {
     opacity: 0.8;
+}
+
+.del {
+    position: absolute;
+    right: 5%;
+   margin: auto;
+}
+
+.del button {
+    font-size: 16px;
+    font-weight: 700;
 }

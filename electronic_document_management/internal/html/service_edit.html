@@ -1,0 +1,37 @@
+{{ define "service_edit" }}
+
+<body>
+    
+    <dialog class="dialogsub-small dialog-visible" id="dialogservices" style="max-height: 35%; height: 35vh;">
+        <h3 class="main-color" style="text-transform: uppercase;">Редактирование услуги с id={{.Ser.Id}}</h3>
+    
+        <form action="/edm/service/edits" class="content-small" autocomplete="off">
+                <input type="text" name="id" value="{{ .Ser.Id }}" style="display: none;">
+                <div class="sub-title" style="width: 97%;"><span>Оборудование</span></div>
+                <select name="equipment" id="" class="select">
+                    <option value="{{ .Ser.Equipment }}" selected style="background-color: rgb(108, 108, 108);">{{ .Ser.Equipment }} - {{ .Ser.EquipmentStructure.Name }}</option>
+                    {{ range $_, $eq := .Eq }}
+                    <option value="{{ $eq.Id }}">{{ $eq.Name }} - {{ $eq.Manufacture }} - {{ $eq.Model }}- {{ $eq.Type }}</option>
+                    {{ end }}
+                </select>
+                <div class="sub-title" style="width: 97%;"><span>Тип услуги</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogservicetype.showModal();">Создать</a></div>
+                <select name="type" id=""  class="select">
+                    <option value="{{ .Ser.Type }}" selected style="background-color: rgb(108, 108, 108);">{{ .Ser.Type }}</option>
+                    {{ range $_, $t := .Type }}
+                    <option value="{{ $t }}">{{ $t }}</option>
+                    {{ end }}
+                </select>
+            <input type="number" name="cost" id="" placeholder="Стоимость" value="{{ .Ser.Cost }}">
+            <button class="main-btn m-auto">Обновить</button>
+        </form>
+    
+        <form action="/edm/service" method="get">
+            <button aria-label="close" class="x">❌</button>
+        </form>
+    </dialog>
+
+</body>
+
+{{ template "footer" }}
+
+{{ end }}

@@ -37,6 +37,9 @@
             </select>
             <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
         </form>
+        {{ if eq .OK true }}
+        <form class="del" action="/edm/object"><button class="main-btn" type="submit">Удалить сортировку</button></form>
+        {{ end }}
     </div>
 
     <div class="add">

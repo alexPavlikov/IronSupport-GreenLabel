@@ -2,24 +2,55 @@
 
 {{ template "dialog" }}
 
+<dialog class="dialogsub-small" id="dialogservices" style="max-height: 35%;">
+    <h3 class="main-color" style="text-transform: uppercase;">Создать услугу</h3>
+
+    <form action="/edm/service/add" class="content-small" autocomplete="off">
+
+            <div class="sub-title" style="width: 97%;"><span>Оборудование</span></div>
+            <select name="equipment" id="" class="select">
+                {{ range $_, $eq := .Eq }}
+                <option value="{{ $eq.Id }}">{{ $eq.Name }} - {{ $eq.Manufacture }} - {{ $eq.Model }}- {{ $eq.Type }}</option>
+                {{ end }}
+            </select>
+            <div class="sub-title" style="width: 97%;"><span>Тип услуги</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogservicetype.showModal();">Создать</a></div>
+            <select name="type" id=""  class="select">
+                {{ range $_, $t := .Type }}
+                <option value="{{ $t }}">{{ $t }}</option>
+                {{ end }}
+            </select>
+        <input type="number" name="cost" id="" placeholder="Стоимость">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogservices.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
 <main>
 
     <div class="sorted">
         <form class="sort-client" action="/edm/service/sorted/" method="post">
-            <select name="client-sort">
+            <select name="equipment">
                 <option disabled selected>Оборудование</option>
-                <option value="1">ООО "Hello"</option>
+                {{ range $_, $e := .Eq }}
+                <option value="{{ $e.Id }}">{{ $e.Name }}</option>
+                {{ end }}
             </select>
-            <select name="client-sort">
+            <select name="type">
                 <option disabled selected>Тип услуги</option>
-                <option value="1">ООО "Hello"</option>
+                {{ range $_, $tp := .Type }}
+                <option value="{{ $tp }}">{{ $tp }}</option>
+                {{ end }}
             </select>
             <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
         </form>
+        {{ if eq .OK true }}
+        <form class="del" action="/edm/service"><button class="main-btn" type="submit">Удалить сортировку</button></form>
+        {{ end }}
     </div>
 
     <div class="add">
-        <button class="main-btn" onclick="window.dialogservice.showModal();">Добавить услугу</button>
+        <button class="main-btn" onclick="window.dialogservices.showModal();">Добавить услугу</button>
     </div>
 
     <table class="table-sortable">
@@ -46,7 +77,14 @@
                 <td>{{ $s.Equipment }} - {{ $s.EquipmentStructure.Name }}</td>
                 <td>{{ $s.Type }}</td>
                 <td>{{ $s.Cost }}</td>
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                <td class="edit">
+                    <form action="/edm/service/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$s.Id}}">
+                        <button class="edtbtn" onclick="window.dialogedit.showModal();">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {{ end }}
         </tbody>

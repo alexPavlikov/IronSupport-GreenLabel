@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
+	"strings"
 	"text/template"
 	"time"
 
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
@@ -70,9 +73,39 @@ func (h *handler) ISHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
+	v := utils.ReadCookies(r)
+	if v != nil {
+		// link := "/user/auth/authconfirm?email=" + v[0] + "&" + "pass=" + v[1]
+		// fmt.Println(link)
+		// http.Redirect(w, r, link, http.StatusSeeOther)
+
+		apiUrl := "http://127.0.0.1:10000"
+		resource := "/user/auth/authconfirm"
+		data := url.Values{}
+		data.Set("email", v[0])
+		data.Set("pass", v[1])
+
+		u, _ := url.ParseRequestURI(apiUrl)
+		u.Path = resource
+		urlStr := u.String()
+
+		client := &http.Client{}
+		r, _ := http.NewRequest(http.MethodGet, urlStr, strings.NewReader(data.Encode()))
+		// r.Header.Add("Authorization", "auth_token=\"XXXXXXX\"")
+		// r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+		resp, _ := client.Do(r)
+		fmt.Println(resp.Status)
+
+		//http.Redirect(w, r, "/IronSupport", http.StatusSeeOther)
+
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
+	}
+
 	err = tmpl.ExecuteTemplate(w, "isgl", nil)
 	if err != nil {
-		h.logger.Tracef("%s - failed open RequestsHandler", config.LOG_ERROR)
+		h.logger.Tracef("%s - failed open ISHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
 	}
 }

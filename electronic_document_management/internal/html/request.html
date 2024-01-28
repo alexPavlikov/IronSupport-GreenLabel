@@ -40,6 +40,9 @@
                 </select>
                 <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
             </form>
+            {{ if eq .OK true }}
+            <form class="del" action="/edm/request"><button class="main-btn" type="submit">Удалить сортировку</button></form>
+            {{ end }}
         </div>
 
         <table class="table-sortable">

@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
@@ -38,32 +39,38 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) ContractHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
-	if err != nil {
-		http.NotFound(w, r)
-	}
 
-	contracts, err := h.service.GetContracts(context.TODO())
-	if err != nil {
-		http.NotFound(w, r)
-	}
+	if !user.UserAuth.Err {
 
-	cls, err := h.service.GetAllClients(context.TODO())
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	title := map[string]string{"Title": "ЭДО - Контракты", "Page": "Contract"}
-	data := map[string]interface{}{"Contracts": contracts, "Clients": cls}
+		contracts, err := h.service.GetContracts(context.TODO())
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "header", title)
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		cls, err := h.service.GetAllClients(context.TODO())
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "contract", data)
-	if err != nil {
-		http.NotFound(w, r)
+		title := map[string]string{"Title": "ЭДО - Контракты", "Page": "Contract"}
+		data := map[string]interface{}{"Contracts": contracts, "Clients": cls, "OK": false}
+
+		err = tmpl.ExecuteTemplate(w, "header", title)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+
+		err = tmpl.ExecuteTemplate(w, "contract", data)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 }
 
@@ -106,7 +113,7 @@ func (h *handler) SortContractHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(contracts)
 
-		data := map[string]interface{}{"Contracts": contracts}
+		data := map[string]interface{}{"Contracts": contracts, "OK": true}
 		header := map[string]string{"Title": "ЭДО - Контракты", "Page": "Contract"}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 

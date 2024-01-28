@@ -2,7 +2,6 @@ package edm_app
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/client"
@@ -17,8 +16,11 @@ import (
 	requests_db "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/requests/db"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/services"
 	services_db "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/services/db"
+	stat "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/statistics"
+	stat_db "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/statistics/db"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	user_db "github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user/db"
+
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/server"
 	"github.com/julienschmidt/httprouter"
@@ -75,11 +77,18 @@ func Run(router *httprouter.Router) *httprouter.Router {
 	uHan := user.NewHandler(uSer, logger)
 	uHan.Register(router)
 
+	logger.Info(config.LOG_INFO, " - Start service handlers")
 	sRep := services_db.NewRepository(server.ClientPostgreSQL, logger)
 	sSer := services.NewService(sRep, logger)
 	sHan := services.NewHandler(sSer, logger)
-
 	sHan.Register(router)
+
+	logger.Info(config.LOG_INFO, " - Start statistics handlers")
+	stRep := stat_db.NewRepository(server.ClientPostgreSQL, logger)
+	stSer := stat.NewService(stRep, logger)
+	stHan := stat.NewHandler(stSer, logger)
+
+	stHan.Register(router)
 
 	requests.ClientsDTO, err = cSer.GetClients(context.TODO())
 	if err != nil {
@@ -145,7 +154,7 @@ func Run(router *httprouter.Router) *httprouter.Router {
 		logger.Fatalf("%s - %s", config.LOG_ERROR, err)
 	}
 
-	fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", requests.RID)
+	requests.RID.UserAuth = user.UserAuth.Us
 
 	return router
 }

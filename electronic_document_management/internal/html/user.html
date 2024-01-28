@@ -42,6 +42,9 @@
             </select>
             <button type="submit" class="main-btn"><i class="fa-regular fa-square-check"></i></button>
         </form>
+        {{ if eq .OK true }}
+        <form class="del" action="/edm/user"><button class="main-btn" type="submit">Удалить сортировку</button></form>
+        {{ end }}
     </div>
 
     <div class="add">
@@ -71,7 +74,14 @@
                 <td>{{ $us.Phone }}</td>
                 <td>{{ $us.Image }}</td>
                 <td>{{ $us.Role }}</td>
-                <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
+                <td class="edit">
+                    <form action="/edm/user/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$us.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
 
             {{ end }}

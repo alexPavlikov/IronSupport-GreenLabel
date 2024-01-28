@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
 	"github.com/julienschmidt/httprouter"
@@ -40,32 +41,37 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 }
 
 func (h *handler) ObjectHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./electronic_document_management/internal//html/*.html")
-	if err != nil {
-		http.NotFound(w, r)
-	}
+	if !user.UserAuth.Err {
 
-	objs, err := h.service.GetObjects(context.TODO())
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		tmpl, err := template.ParseGlob("./electronic_document_management/internal//html/*.html")
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	clt, err := h.service.GetClient(context.TODO())
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		objs, err := h.service.GetObjects(context.TODO())
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	title := map[string]string{"Title": "ЭДО - Объекты", "Page": "Object"}
-	data := map[string]interface{}{"Objs": objs, "Clients": clt}
+		clt, err := h.service.GetClient(context.TODO())
+		if err != nil {
+			http.NotFound(w, r)
+		}
 
-	err = tmpl.ExecuteTemplate(w, "header", title)
-	if err != nil {
-		http.NotFound(w, r)
-	}
+		title := map[string]string{"Title": "ЭДО - Объекты", "Page": "Object"}
+		data := map[string]interface{}{"Objs": objs, "Clients": clt, "OK": false}
 
-	err = tmpl.ExecuteTemplate(w, "object", data)
-	if err != nil {
-		http.NotFound(w, r)
+		err = tmpl.ExecuteTemplate(w, "header", title)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+
+		err = tmpl.ExecuteTemplate(w, "object", data)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+	} else {
+		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 }
 
@@ -120,7 +126,7 @@ func (h *handler) SorterObjectHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		data := map[string]interface{}{"Objs": objects, "Clients": clt}
+		data := map[string]interface{}{"Objs": objects, "Clients": clt, "OK": true}
 		header := map[string]string{"Title": "ЭДО - Объекты", "Page": "Object"}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 

@@ -7,4 +7,10 @@ type User struct {
 	Phone    string
 	Image    string
 	Role     string
+	Password string
+}
+
+type Auth struct {
+	Us  User
+	Err bool
 }

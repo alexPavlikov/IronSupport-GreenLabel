@@ -1,29 +1,34 @@
 {{ define "user_edit" }}
 
+{{ template "dialog" }}
+
 <body>
     <dialog class="dialogsub-medium dialog-visible" id="dialogworkers" style="height: 65%;">
-        <h3 class="main-color" style="text-transform: uppercase;">Создать нового сотрудника</h3>
+        <h3 class="main-color" style="text-transform: uppercase;">Редактирование сотрудника с id={{.User.Id}}</h3>
     
-        <form action="/edm/user/add" class="content-medium" autocomplete="off">
+        <form action="/edm/user/edits" class="content-medium" autocomplete="off">
+            <input type="text" name="id" id="" value="{{ .User.Id }}" style="display: none;">
             <span>Фамилия/Имя/Отчество</span>
-            <input type="text" name="fio" id="" placeholder="ФИО">
+            <input type="text" name="fio" id="" placeholder="ФИО" value="{{.User.FullName}}">
             <span>Почта</span>
-            <input type="email" name="email" id="" placeholder="Почта">
+            <input type="email" name="email" id="" placeholder="Почта" value="{{.User.Email}}">
             <span>Телефон</span>
-            <input type="tel" name="phone" id="" placeholder="Номер телефона">
+            <input type="tel" name="phone" id="" placeholder="Номер телефона" value="{{.User.Phone}}">
             <span>Фото</span>
-            <input type="file" name="status" accept="image/*" placeholder="Статус">
+            <input type="file" name="avatar" accept="image/*" placeholder="Статус">
             <div class="sub-title" style="width: 97%;"><span>Роль пользователя</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogworkerrole.showModal();">Создать</a></div>
             <select class="select" name="role" id="" style="margin-bottom: 40px;">
-                <option disabled selected>Роль пользователя</option>
+                <option disabled selected>{{.User.Role}}</option>
                 {{ range $_, $rl := .Role }}
                 <option value="{{ $rl }}">{{ $rl }}</option>
                 {{ end }}
             </select>
-            <button class="main-btn m-auto">Создать</button>
+            <button class="main-btn m-auto">Обновить</button>
         </form>
     
-        <button onclick="window.dialogworkers.close();" aria-label="close" class="x">❌</button>
+        <form action="/edm/user" method="get">
+            <button aria-label="close" class="x">❌</button>
+        </form>
     </dialog>
     
 </body>
