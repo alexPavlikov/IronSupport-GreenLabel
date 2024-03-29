@@ -22,7 +22,9 @@
                     {{ end }}
                 </select>
             <input type="number" name="cost" id="" placeholder="Стоимость" value="{{ .Ser.Cost }}">
+            {{ if eq .Auth "Admin" }}
             <button class="main-btn m-auto">Обновить</button>
+            {{ end }}
         </form>
     
         <form action="/edm/service" method="get">

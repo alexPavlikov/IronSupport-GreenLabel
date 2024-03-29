@@ -86,3 +86,11 @@ func (s *Service) GetAllSortVal(ctx context.Context) (sort SortEq, err error) {
 
 	return sort, nil
 }
+
+func (s *Service) FindEquipment(ctx context.Context, find string) (eq []Equipment, err error) {
+	eq, err = s.repository.FindEquipment(ctx, find)
+	if err != nil {
+		return nil, err
+	}
+	return eq, nil
+}

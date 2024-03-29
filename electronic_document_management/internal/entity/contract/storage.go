@@ -10,5 +10,7 @@ type Repository interface {
 	UpdateContract(ctx context.Context, contract *Contract) error
 	CloseContract(ctx context.Context, id int) error
 
+	FindContract(ctx context.Context, text string) (cts []Contract, err error)
+
 	SelectClients(ctx context.Context) (clnts []Client, err error)
 }

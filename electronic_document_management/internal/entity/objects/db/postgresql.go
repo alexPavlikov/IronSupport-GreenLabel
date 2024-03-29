@@ -3,6 +3,7 @@ package objects_db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/objects"
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
@@ -50,7 +51,7 @@ func (r *repository) InsertObject(ctx context.Context, obj *objects.Object) erro
 		return err
 	}
 
-	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=:%d", "объект", &obj.Id))
+	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=%d / %s", "объект", obj.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -185,7 +186,7 @@ func (r *repository) UpdateObject(ctx context.Context, obj *objects.Object) erro
 		return err
 	}
 
-	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=:%d", "объект", &obj.Id))
+	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=%d / %s", "объект", obj.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -207,7 +208,7 @@ func (r *repository) UpdateClientObject(ctx context.Context, obj *objects.Object
 		return err
 	}
 
-	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=:%d", "объект", &obj.Id))
+	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=%d / %s", "объект", obj.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -228,7 +229,7 @@ func (r *repository) DeleteObject(ctx context.Context, id int) error {
 		return err
 	}
 
-	r.logger.LogEvents("Удален", fmt.Sprintf("%s c id=:%d", "объект", id))
+	r.logger.LogEvents("Удален", fmt.Sprintf("%s c id=%d / %s", "объект", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -297,7 +298,49 @@ func (r *repository) InsertClientObject(ctx context.Context, client int, obj int
 		return err
 	}
 
-	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=:%d", "объект", id))
+	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=%d / %s", "объект", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
+}
+
+func (r *repository) FindObject(ctx context.Context, find string) (obs []objects.Object, err error) {
+	query := `
+	SELECT 
+		"Objects".id, "Objects".name, "Objects".address, "Objects".work_schedule, "Client_objects".id, "Client".Name, "Client".Id  
+	FROM 
+		public."Objects" 
+	JOIN "Client_objects" ON "Objects".id = "Client_objects".object 
+	JOIN "Client" ON "Client".id = "Client_objects".client
+	WHERE "Objects".name ILIKE $1 OR "Client".Name ILIKE $1 OR "Objects".address ILIKE $1
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	find = "%" + find + "%"
+
+	rows, err := r.client.Query(ctx, query, find)
+	if err != nil {
+		return nil, err
+	}
+
+	var obj objects.Object
+
+	for rows.Next() {
+
+		err = rows.Scan(&obj.Id, &obj.Name, &obj.Address, &obj.WorkSchedule, &obj.ClientObjectId, &obj.Client.Name, &obj.Client.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		obj.Client, err = r.SelectClientById(ctx, obj.Client.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		obs = append(obs, obj)
+	}
+
+	fmt.Println(obs)
+
+	return obs, nil
 }

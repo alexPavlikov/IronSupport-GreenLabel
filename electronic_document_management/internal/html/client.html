@@ -18,9 +18,11 @@
         {{ end }}
     </div>
 
+    {{ if eq .Auth "Admin" }}
     <div class="add">
         <button class="main-btn" onclick="window.dialogclient.showModal();">Создать клиента</button>
     </div>
+    {{ end }}
 
     <table class="table-sortable">
         <thead>

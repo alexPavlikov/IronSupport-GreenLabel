@@ -24,6 +24,9 @@ var UserAuth Auth
 
 // Register implements handlers.Handlers.
 func (h *handler) Register(router *httprouter.Router) {
+
+	UserAuth.Err = true
+
 	router.HandlerFunc(http.MethodGet, "/edm/user", h.UserHandler)
 	router.HandlerFunc(http.MethodPost, "/edm/user/sorted", h.SortUserHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/user/sorted", h.SortUserHandler)
@@ -37,6 +40,9 @@ func (h *handler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodGet, "/user/auth", h.UserAuthHandler)
 	router.HandlerFunc(http.MethodGet, "/user/auth/authconfirm", h.AuthUserConfirm)
 	router.HandlerFunc(http.MethodGet, "/user/auth/reg-confirm", h.RegUserConfirm)
+	router.HandlerFunc(http.MethodGet, "/user/exit", h.UserExitHandler)
+
+	router.HandlerFunc(http.MethodGet, "/edm/user/find", h.UserFindHandler)
 }
 
 func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
@@ -45,6 +51,8 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 		logger:  logger,
 	}
 }
+
+var Events []string
 
 func (h *handler) UserHandler(w http.ResponseWriter, r *http.Request) {
 	if !UserAuth.Err {
@@ -64,10 +72,15 @@ func (h *handler) UserHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		fmt.Println(users)
+		Events, err = utils.ReadEventFile()
+		if err != nil {
+			fmt.Println(err)
+		}
 
-		title := map[string]string{"Title": "ЭДО - Пользователи", "Page": "User"}
-		data := map[string]interface{}{"User": users, "Role": role, "OK": false}
+		arr := utils.ReadCookies(r)
+
+		title := map[string]interface{}{"Title": "ЭДО - Пользователи", "Page": "User", "Events": Events, "Auth": arr[2]}
+		data := map[string]interface{}{"User": users, "Role": role, "OK": false, "Auth": arr[2]}
 
 		err = tmpl.ExecuteTemplate(w, "header", title)
 		if err != nil {
@@ -137,8 +150,10 @@ func (h *handler) SortUserHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		data := map[string]interface{}{"User": users, "Role": role, "OK": true}
-		header := map[string]string{"Title": "ЭДО - Сотрудники", "Page": "User"}
+		arr := utils.ReadCookies(r)
+
+		data := map[string]interface{}{"User": users, "Role": role, "OK": true, "Auth": arr[2]}
+		header := map[string]interface{}{"Title": "ЭДО - Сотрудники", "Page": "User", "Events": Events, "Auth": arr[2]}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 
 		err = tmpl.ExecuteTemplate(w, "header", header)
@@ -212,8 +227,10 @@ func (h *handler) EditUserHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Редактирование сотрудника", "Page": "User"}
-	data := map[string]interface{}{"User": us, "Role": role}
+	arr := utils.ReadCookies(r)
+
+	title := map[string]interface{}{"Title": "ЭДО - Редактирование сотрудника", "Page": "User", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"User": us, "Role": role, "Auth": arr[2]}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
@@ -261,8 +278,8 @@ func (h *handler) AccountHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Пользователи", "Page": "User"}
-	data := map[string]interface{}{"User": user}
+	title := map[string]interface{}{"Title": "ЭДО - Пользователи", "Page": "User", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"User": user, "Auth": arr[2]}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
@@ -326,7 +343,7 @@ func (h *handler) AuthUserConfirm(w http.ResponseWriter, r *http.Request) {
 			expires := time.Now().AddDate(1, 0, 0)
 			cookie := &http.Cookie{
 				Name:  "Id",
-				Value: UserAuth.Us.Email + " " + UserAuth.Us.Password,
+				Value: UserAuth.Us.Email + " " + UserAuth.Us.Password + " " + UserAuth.Us.Role,
 				//MaxAge:  300,
 				Expires: expires,
 				Path:    "/",
@@ -353,4 +370,45 @@ func (h *handler) RegUserConfirm(w http.ResponseWriter, r *http.Request) {
 	u.Password = r.FormValue("pass")
 	// pass := r.FormValue("xpass")
 
+}
+
+func (h *handler) UserFindHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	r.ParseForm()
+
+	text := r.FormValue("text")
+
+	us, err := h.service.FindUser(context.TODO(), text)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	title := map[string]interface{}{"Title": "ЭДО - Поиск", "Page": "User", "Events": Events}
+	data := map[string]interface{}{"Text": text, "Cat": "User", "User": us}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+	err = tmpl.ExecuteTemplate(w, "find", data)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+}
+
+func (h *handler) UserExitHandler(w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:  "Id",
+		Value: "",
+		//MaxAge:  300,
+		Expires: time.Unix(0, 0),
+		Path:    "/",
+	}
+	http.SetCookie(w, cookie)
+
+	http.Redirect(w, r, "/user/auth", http.StatusSeeOther)
 }

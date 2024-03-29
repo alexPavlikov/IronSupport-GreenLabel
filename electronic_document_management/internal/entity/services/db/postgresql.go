@@ -3,6 +3,7 @@ package services_db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/equipment"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/services"
@@ -41,7 +42,7 @@ func (r *repository) InsertServices(ctx context.Context, sr *services.Services) 
 		return err
 	}
 
-	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=:%d", "услуга", &sr.Id))
+	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=%d / %s", "услуга", sr.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -118,7 +119,7 @@ func (r *repository) UpdateServices(ctx context.Context, srv *services.Services)
 		return err
 	}
 
-	r.logger.LogEvents("Изменена", fmt.Sprintf("%s c id=:%d", "услуга", &srv.Id))
+	r.logger.LogEvents("Изменена", fmt.Sprintf("%s c id=%d / %s", "услуга", srv.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -138,7 +139,7 @@ func (r *repository) DeleteServices(ctx context.Context, id int) error {
 		return err
 	}
 
-	r.logger.LogEvents("Удалена", fmt.Sprintf("%s c id=:%d", "услуга", id))
+	r.logger.LogEvents("Удалена", fmt.Sprintf("%s c id=%d / %s", "услуга", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -222,6 +223,39 @@ func (r *repository) SelectServicesBySort(ctx context.Context, srv *services.Ser
 	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
 
 	rows, err := r.client.Query(ctx, query, &srv.Equipment, &srv.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	var s services.Services
+
+	for rows.Next() {
+		err = rows.Scan(&s.Id, &s.Equipment, &s.Type, &s.Cost, &s.EquipmentStructure.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		srvc = append(srvc, s)
+	}
+	return srvc, nil
+}
+
+func (r *repository) FindService(ctx context.Context, find string) (srvc []services.Services, err error) {
+	query := `
+	SELECT 
+		s.id, s.equipment, s.type, s.cost, eq.name 
+	FROM 
+		public."Services" s
+	JOIN 
+		"Equipment" eq ON s.equipment = eq.Id
+	WHERE eq.name ILIKE $1 OR s.type ILIKE $1
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	find = "%" + find + "%"
+
+	rows, err := r.client.Query(ctx, query, find)
 	if err != nil {
 		return nil, err
 	}

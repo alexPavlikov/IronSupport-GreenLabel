@@ -84,6 +84,7 @@ func (h *handler) ISHandler(w http.ResponseWriter, r *http.Request) {
 		data := url.Values{}
 		data.Set("email", v[0])
 		data.Set("pass", v[1])
+		data.Set("role", v[2])
 
 		u, _ := url.ParseRequestURI(apiUrl)
 		u.Path = resource

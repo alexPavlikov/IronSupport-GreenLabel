@@ -67,9 +67,11 @@
         {{ end }}
     </div>
 
+    {{ if eq .Auth "Admin" }}
     <div class="add">
         <button class="main-btn" onclick="window.dialogequipments.showModal();">Создать оборудование</button>
     </div>
+    {{ end }}
 
     <table class="table-sortable">
         <thead>

@@ -11,6 +11,7 @@ import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -29,6 +30,8 @@ func (h *handler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodGet, "/edm/contract/sorted", h.SortContractHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/contract/edit", h.EditContractHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/contract/edits", h.EditPostContractHandler)
+
+	router.HandlerFunc(http.MethodGet, "/edm/contract/find", h.ContractFindHandler)
 }
 
 func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
@@ -37,6 +40,8 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 		logger:  logger,
 	}
 }
+
+var Events []string
 
 func (h *handler) ContractHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -57,8 +62,15 @@ func (h *handler) ContractHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		title := map[string]string{"Title": "ЭДО - Контракты", "Page": "Contract"}
-		data := map[string]interface{}{"Contracts": contracts, "Clients": cls, "OK": false}
+		Events, err = utils.ReadEventFile()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		arr := utils.ReadCookies(r)
+
+		title := map[string]interface{}{"Title": "ЭДО - Контракты", "Page": "Contract", "Events": Events, "Auth": arr[2]}
+		data := map[string]interface{}{"Contracts": contracts, "Clients": cls, "OK": false, "Auth": arr[2]}
 
 		err = tmpl.ExecuteTemplate(w, "header", title)
 		if err != nil {
@@ -111,10 +123,10 @@ func (h *handler) SortContractHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 		}
 
-		fmt.Println(contracts)
+		arr := utils.ReadCookies(r)
 
-		data := map[string]interface{}{"Contracts": contracts, "OK": true}
-		header := map[string]string{"Title": "ЭДО - Контракты", "Page": "Contract"}
+		data := map[string]interface{}{"Contracts": contracts, "OK": true, "Auth": arr[2]}
+		header := map[string]interface{}{"Title": "ЭДО - Контракты", "Page": "Contract", "Events": Events, "Auth": arr[2]}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 
 		err = tmpl.ExecuteTemplate(w, "header", header)
@@ -184,8 +196,10 @@ func (h *handler) EditContractHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Редактирование контракта", "Page": "Contract"}
-	data := map[string]interface{}{"Contract": contract}
+	arr := utils.ReadCookies(r)
+
+	title := map[string]interface{}{"Title": "ЭДО - Редактирование контракта", "Page": "Contract", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"Contract": contract, "Auth": arr[2]}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
@@ -213,8 +227,6 @@ func (h *handler) EditPostContractHandler(w http.ResponseWriter, r *http.Request
 	contract.File = r.FormValue("file")
 	contract.Status = true
 
-	fmt.Println("??????????????????????????????????????????????????????????????", contract)
-
 	err := h.service.UpdateContract(context.TODO(), &contract)
 	if err != nil {
 		fmt.Println(err)
@@ -222,4 +234,34 @@ func (h *handler) EditPostContractHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	http.Redirect(w, r, "/edm/contract", http.StatusSeeOther)
+}
+
+func (h *handler) ContractFindHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	r.ParseForm()
+
+	text := r.FormValue("text")
+
+	ct, err := h.service.FindContract(context.TODO(), text)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	arr := utils.ReadCookies(r)
+
+	title := map[string]interface{}{"Title": "ЭДО - Поиск", "Page": "Contract", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"Text": text, "Cat": "Contract", "Contracts": ct, "Auth": arr}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+	err = tmpl.ExecuteTemplate(w, "find", data)
+	if err != nil {
+		http.NotFound(w, r)
+	}
 }

@@ -47,7 +47,9 @@
         <input type="text" name="number" id="" placeholder="Уникальный номер" value="{{ .Eq.UniqueNumber }}">
         <span>Инструкция для оборудования</span>
         <input type="file" name="file" id="" placeholder="Инструкция">
+        {{ if eq .Auth "Admin" }}
         <button class="main-btn m-auto">Обновить</button>
+        {{ end }}
     </form>
 
     <form action="/edm/equipment" method="get">

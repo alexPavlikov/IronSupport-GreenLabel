@@ -11,4 +11,6 @@ type Repository interface {
 	SelectClient(ctx context.Context) (clnts []Client, err error)
 	SelectObjectBySorted(ctx context.Context, ob *Object) (obs []Object, err error)
 	UpdateClientObject(ctx context.Context, obj *Object) error
+
+	FindObject(ctx context.Context, find string) (obs []Object, err error)
 }

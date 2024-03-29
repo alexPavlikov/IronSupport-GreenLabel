@@ -1,0 +1,166 @@
+{{ define "answer" }}
+
+<style>
+    .answer {
+        margin: 40px 25% 0 30%;
+        width: 45%;
+        display: flex;
+        flex-direction: row;
+        position: relative;
+    }
+
+    .answer .answer-main {
+        width: 75%;
+        border-right: 2px solid rgb(107, 107, 107);
+        position: relative;
+    }
+
+    .answer .answer-main .answer-title {
+        width: 100%;
+        font-size: 22px;
+        margin-bottom: 40px;
+        padding: 0 10px;
+    }
+
+    .answer .answer-main .answer-title span {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .answer .answer-main textarea {
+        width: 80%;
+        text-indent: 20px;
+        font-size: 20px;
+        padding: 10px;
+        resize: none;
+        outline-width: 0;
+        border: 1px solid gray;
+    }
+
+    .answer .answer-main textarea:hover {
+        cursor: default;
+        border: 1px solid gray;
+    }
+
+    .answer .answer-main .comments {
+        margin: 20px auto;
+        width: 100%;
+        position: relative;
+        border-top: 2px solid rgb(107, 107, 107);
+    }
+
+    .answer .answer-main .comments form {
+        width: 100%;
+        position: relative;
+        padding: 0;
+        margin: 0;
+    }
+
+    .answer .answer-main .comments form input[type="text"] {
+        width: 75%;
+        padding: 5px 0;
+        margin: 0;
+        border-radius: none;
+        border-right: none;
+        border: 1px solid gray;
+        outline-width: 0;
+        font-size: 20px;
+        text-indent: 10px;
+    }
+    .answer .answer-main .comments form input[type="submit"] {
+        width: 20%;
+        padding: 5px 0;
+        margin: 0;
+        border-radius: none;
+        border-left: none;
+        border: 1px solid gray;
+        font-size: 20px;
+        background-color: rgb(4, 160, 56);
+        color: white;
+    }
+
+    .answer .answer-main .comments form input[type="submit"]:hover {
+        cursor: pointer;
+        opacity: .8;
+    }
+
+    .answer .answer-main .comments .answers-comment {
+        width: 100%;
+        position: relative;                                          
+    }
+
+    .answer .answer-main .comments .answers-comment .answer-mes {
+        display: flex;
+        flex-direction: row;
+        max-width: 80%;
+        margin: 20px 10%;
+     
+        padding: 10px;
+        border-radius: 15px;
+    }
+
+    .answer .answer-main .comments .answers-comment .answer-mes .text {
+        text-align: left;
+        width: 75%;
+        border-right: 2px solid rgb(4, 160, 56);
+    }
+
+    .answer .answer-main .comments .answers-comment .answer-mes .author {
+        text-align: center;
+        width: 25%;
+        font-weight: 700;
+    }
+
+    .answer .answer-support {
+        width: 25%;
+        margin: 0 20px;
+
+    }
+
+</style>
+
+<body>
+
+    <div class="answer">
+       <div class="answer-main">
+            <div class="answer-title">
+                <span>Название заявки</span>
+                <div>{{  .Req.Id }} - {{  .Req.Name }}</div>
+            </div>
+            <textarea name="" id="" cols="30" rows="10" readonly>{{  .Req.Description }}</textarea>
+            <div class="comments">
+
+                <div class="answers-comment">
+                    <div class="answer-mes">
+                        <div class="text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque suscipit illum maxime, magni soluta aliquid corrupti ipsa deleniti debitis doloremque itaque quisquam, laborum pariatur fugiat. Ex voluptas fugit alias libero.</div>
+                        <div class="author">alex pav</div>
+                    </div>
+                </div>
+
+                {{  range $_, $ra := .Answer  }}
+
+                <div class="answers-comment">
+                    <div class="answer-mes">
+                        <div class="text">{{ $ra.Text }}</div>
+                        <div class="author">{{ $ra.Worker.FullName }}</div>
+                    </div>
+                </div>
+
+                {{ end }}
+
+                <form action="/edm/request/answer" method="post" style="margin-top: 30px;">
+                    <input type="text" name="request" style="display: none;" value="{{  .Req.Id }}">
+                    <input type="text" name="user" style="display: none;" value="{{  .User.Id }}">
+                    <input type="text" name="text"><input type="submit">
+                </form>
+            </div>
+       </div>
+       <div class="answer-support">
+        <span>Ответственный</span>
+            <div class="responsible">{{  .Req.Worker.FullName }} </div>
+       </div>
+    </div>
+
+</body>
+
+{{ end }}

@@ -13,4 +13,6 @@ type Repository interface {
 	SelectAllType(ctx context.Context) (types []string, err error)
 	SelectAllManufacture(ctx context.Context) (manufacturers []string, err error)
 	SelectAllModel(ctx context.Context) (models []string, err error)
+
+	FindEquipment(ctx context.Context, find string) (eqs []Equipment, err error)
 }

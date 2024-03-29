@@ -12,6 +12,7 @@ import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -31,6 +32,8 @@ func (h *handler) Register(router *httprouter.Router) {
 
 	router.HandlerFunc(http.MethodGet, "/edm/equipment/edit", h.EditEquipmentHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/equipment/edits", h.EditPostEquipmentHandler)
+
+	router.HandlerFunc(http.MethodGet, "/edm/equipment/find", h.EquipmentFindHandler)
 }
 
 func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
@@ -39,6 +42,8 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 		logger:  logger,
 	}
 }
+
+var Events []string
 
 func (h *handler) EquipmentHandler(w http.ResponseWriter, r *http.Request) {
 	if !user.UserAuth.Err {
@@ -60,8 +65,15 @@ func (h *handler) EquipmentHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		title := map[string]string{"Title": "ЭДО - Оборудование", "Page": "Equipment"}
-		data := map[string]interface{}{"Equipments": eqs, "Sort": sort, "OK": false}
+		Events, err = utils.ReadEventFile()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		arr := utils.ReadCookies(r)
+
+		title := map[string]interface{}{"Title": "ЭДО - Оборудование", "Page": "Equipment", "Events": Events, "Auth": arr[2]}
+		data := map[string]interface{}{"Equipments": eqs, "Sort": sort, "OK": false, "Auth": arr[2]}
 
 		err = tmpl.ExecuteTemplate(w, "header", title)
 		if err != nil {
@@ -150,8 +162,10 @@ func (h *handler) SortHandlerEquipment(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		data := map[string]interface{}{"Equipments": eqs, "Sort": sort}
-		header := map[string]string{"Title": "ЭДО - Оборудование", "Page": "Equipment"}
+		arr := utils.ReadCookies(r)
+
+		data := map[string]interface{}{"Equipments": eqs, "Sort": sort, "Auth": arr[2]}
+		header := map[string]interface{}{"Title": "ЭДО - Оборудование", "Page": "Equipment", "Events": Events, "Auth": arr[2]}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 
 		err = tmpl.ExecuteTemplate(w, "header", header)
@@ -194,7 +208,7 @@ func (h *handler) EditEquipmentHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(eq)
 
-	title := map[string]string{"Title": "ЭДО - Редактирование оборудования", "Page": "Equipment"}
+	title := map[string]interface{}{"Title": "ЭДО - Редактирование оборудования", "Page": "Equipment", "Events": Events}
 	data := map[string]interface{}{"Eq": eq, "Sort": sort, "OK": true}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
@@ -229,4 +243,34 @@ func (h *handler) EditPostEquipmentHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	http.Redirect(w, r, "/edm/equipment", http.StatusSeeOther)
+}
+
+func (h *handler) EquipmentFindHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	r.ParseForm()
+
+	text := r.FormValue("text")
+
+	eq, err := h.service.FindEquipment(context.TODO(), text)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	arr := utils.ReadCookies(r)
+
+	title := map[string]interface{}{"Title": "ЭДО - Поиск", "Page": "Equipment", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"Text": text, "Cat": "Equipment", "Equipments": eq, "Auth": arr[2]}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+	err = tmpl.ExecuteTemplate(w, "find", data)
+	if err != nil {
+		http.NotFound(w, r)
+	}
 }

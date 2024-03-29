@@ -69,3 +69,29 @@ func (s *Service) GetRequestsBySort(ctx context.Context, req Request) (rs []Requ
 	}
 	return rs, nil
 }
+
+//---
+
+func (s *Service) AddAnswerRequest(ctx context.Context, ra *ReqAns) error {
+	err := s.repository.InsertRequestAnswer(ctx, ra)
+	if err != nil {
+		return fmt.Errorf("%s - %s", config.LOG_ERROR, err.Error())
+	}
+	return nil
+}
+
+func (s *Service) GetAnswerRequest(ctx context.Context, id int) (ra []ReqAns, err error) {
+	ra, err = s.repository.SelectRequestAnswer(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return ra, nil
+}
+
+func (s *Service) FindRequest(ctx context.Context, find string) (rs []Request, err error) {
+	rs, err = s.repository.FindRequests(ctx, find)
+	if err != nil {
+		return nil, err
+	}
+	return rs, nil
+}

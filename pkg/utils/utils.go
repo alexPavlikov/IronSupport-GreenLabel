@@ -1,10 +1,12 @@
 package utils
 
 import (
+	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -46,4 +48,30 @@ func CreateMd5Hash(text string) string {
 		panic(err)
 	}
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func ReadEventFile() (lines []string, err error) {
+	path := "./logs/events.log"
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		if scanner.Text() == "" {
+			continue
+		} else {
+			lines = append(lines, scanner.Text())
+		}
+	}
+
+	var arr []string
+
+	for i := len(lines) - 1; i > 0; i-- {
+		arr = append(arr, lines[i])
+	}
+
+	return arr, scanner.Err()
 }

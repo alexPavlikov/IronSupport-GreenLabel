@@ -1,0 +1,340 @@
+{{ define "find" }}
+
+
+{{ if eq .Cat "Request" }}
+
+<main>
+
+    <h1 style="text-align: center;">Результат поиска по значению: "{{ .Text }}"</h1>
+
+<table class="table-sortable">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>Заголовок</th>
+            <th>Тема</th>
+            <th>Клиент</th>
+            <th>Работник</th>
+            <th>Объект</th>
+            <th>Оборудование</th>
+            <th>Контракт</th>
+            <th>Описание</th>
+            <th>Создана</th>
+            <th>Закончена</th>
+            <th>Статус</th>
+            <th><i class="fa-solid fa-chevron-up"></i></th>
+            <th><i class="fa-solid fa-paperclip"></i></th>
+            <th><i class="fa-solid fa-pen-to-square"></i></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {{ range $_, $rs := .Req }}
+
+        <tr>
+            <td style="text-align: center;">{{ $rs.Id }}</td>
+            <td><a href="/edm/request/answer?id={{ $rs.Id }}" style="text-decoration: none; font-weight: 700;">{{ $rs.Name }}</a></td>
+            <td>{{ $rs.Title }}</td>
+            <td>{{ $rs.Client.Id }} - {{ $rs.Client.Name }}</td>
+            <td>{{ $rs.Worker.FullName }}</td>
+            <td>{{ $rs.ClientObject.Id }} - {{ $rs.ClientObject.Object.Name }}</td>
+            <td>{{ $rs.Equipment.Id }} - {{ $rs.Equipment.Name }}</td>
+            <td>{{ $rs.Contract.Id }} - {{ $rs.Contract.Name }}</td>
+            <td>{{ $rs.Description }}</td>
+            <td>{{ $rs.StartDate }}</td>
+            <td>{{ $rs.EndDate }}</td>
+            <td {{ $rs.Status.Color }}>{{ $rs.Status.Name }}</td>
+                {{ if eq $rs.Priority "high"}}
+                <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
+                {{ else if eq $rs.Priority "normal" }}
+                <td style="text-align: center;"><i class="fa-solid fa-minus"></i></td>
+                {{ else if eq $rs.Priority "low" }}
+                <td style="text-align: center;"><i class="fa-solid fa-chevron-down"></i></td>
+                {{ end }}
+            <td class="click" onclick="window.dialogfiles.showModal();">+</td>
+            <td class="edit">
+                <form action="/edm/request/edit" method="get">
+                    <input style="display: none;" name="id" type="text" value="{{$rs.Id}}">
+                    <button class="edtbtn" onclick="window.dialogedit.showModal();">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+
+        {{ end }}
+    </tbody>
+</table>
+</main>
+
+{{ else if eq .Cat "Client" }}
+
+<main>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>ИНН</th>
+                <th>КПП</th>
+                <th>ОГРН</th>
+                <th>Владелец</th>
+                <th>Телефон</th>
+                <th>Почта</th>
+                <th>Адрес</th>
+                <th>Дата создания</th>
+                <th>Статус</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{ range $_, $cl := .Clients }}
+            <tr>
+                <td style="text-align: center;">{{ $cl.Id }}</td>
+                <td>{{ $cl.Name }}</td>
+                <td>{{ $cl.INN }}</td>
+                <td>{{ $cl.KPP }}</td>
+                <td>{{ $cl.OGRN }}</td>
+                <td>{{ $cl.Owner }}</td>
+                <td>{{ $cl.Phone }}</td>
+                <td>{{ $cl.Email }}</td>
+                <td>{{ $cl.Address }}</td>
+                <td>{{ $cl.CreateDate }}</td>
+                <td>
+                    {{ if eq $cl.Status true }}
+                        Активен
+                    {{ else }}
+                        Не активен
+                    {{ end }}
+                </td>
+                <!-- <td class="edit" onclick="window.dialogclientedit.showModal();"><button><i class="fa-solid fa-pen-to-square"></i></button></td> -->
+                <td class="edit">
+                    <form action="/edm/client/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$cl.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</main>
+
+{{ else if eq .Cat "Object" }}
+
+<main>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Адрес</th>
+                <th>Время работы</th>
+                <th>Клиент</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range $_, $o := .Objs }}
+            <tr>
+                <td style="text-align: center;">{{ $o.Id }}</td>
+                <td>{{ $o.Name }}</td>
+                <td>{{ $o.Address }}</td>
+                <td>{{ $o.WorkSchedule }}</td>
+                <td>{{ $o.Client.INN }} - {{ $o.Client.Name }}</td>
+                <!-- <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td> -->
+                <td class="edit">
+                    <form action="/edm/object/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$o.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</main>
+
+{{ else if eq .Cat "Equipment" }}
+
+<main>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Производитель</th>
+                <th>Модель</th>
+                <th>Уникальный номер</th>
+                <th>Инструкция</th>
+                <th>Дата добавления</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{ range $_, $e := .Equipments }}
+            <tr>
+                <td style="text-align: center;">{{ $e.Id }}</td>
+                <td>{{ $e.Name }}</td>
+                <td>{{ $e.Type }}</td>
+                <td>{{ $e.Manufacture }}</td>
+                <td>{{ $e.Model }}</td>
+                <td>{{ $e.UniqueNumber }}</td>
+                <td>{{ $e.Contract }}</td>
+                <td>{{ $e.CreateDate }}</td>
+                <td class="edit">
+                    <form action="/edm/equipment/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$e.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</main>
+
+{{ else if eq .Cat "Contract" }}
+
+<main>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Клиент</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Стоимость</th>
+                <th>Документ</th>
+                <th>Статус</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range $_, $ct := .Contracts }}
+            <tr>
+                <td style="text-align: center;">{{ $ct.Id }}</td>
+                <td>{{ $ct.Name }}</td>
+                <td>{{ $ct.Client.INN }} {{ $ct.Client.Name }}</td>
+                <td>{{ $ct.DataStart }}</td>
+                <td>{{ $ct.DataEnd }}</td>
+                <td>{{ $ct.Amount }}</td>
+                <td>{{ $ct.File }}</td>
+                {{ if eq $ct.Status true }}
+                <td>Активен</td>
+                {{ else }}
+                <td>Не активен</td>
+                {{ end }}
+                <!-- <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td> -->
+                <td class="edit">
+                    <form action="/edm/contract/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$ct.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</main>
+
+{{ else if eq .Cat "User" }}
+
+<main>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Почта</th>
+                <th>ФИО</th>
+                <th>Телефон</th>
+                <th>Фото</th>
+                <th>Роль</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{ range $_, $us := .User }}
+
+            <tr>
+                <td style="text-align: center;">{{ $us.Id }}</td>
+                <td>{{ $us.Email }}</td>
+                <td>{{ $us.FullName }}</td>
+                <td>{{ $us.Phone }}</td>
+                <td>{{ $us.Image }}</td>
+                <td>{{ $us.Role }}</td>
+                <td class="edit">
+                    <form action="/edm/user/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$us.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+            {{ end }}
+        
+        </tbody>
+    </table>
+</main>
+
+{{ else if eq .Cat "Service" }}
+
+<main>
+
+    <table class="table-sortable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Оборудование</th>
+                <th>Тип</th>
+                <th>Стоимость</th>
+                <th><i class="fa-solid fa-pen-to-square"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{ range $_, $s := .Services }}
+            <tr>
+                <td style="text-align: center;">{{ $s.Id }}</td>
+                <td>{{ $s.Equipment }} - {{ $s.EquipmentStructure.Name }}</td>
+                <td>{{ $s.Type }}</td>
+                <td>{{ $s.Cost }}</td>
+                <td class="edit">
+                    <form action="/edm/service/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$s.Id}}">
+                        <button class="edtbtn" onclick="window.dialogedit.showModal();">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</main>
+
+{{ end }}
+
+{{ template "footer" }}
+
+{{ end }}

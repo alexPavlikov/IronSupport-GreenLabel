@@ -83,3 +83,11 @@ func (s *Service) GetObjectBySorted(ctx context.Context, ob *Object) (obs []Obje
 	}
 	return obs, nil
 }
+
+func (s *Service) FindObject(ctx context.Context, find string) (obj []Object, err error) {
+	obj, err = s.repository.FindObject(ctx, find)
+	if err != nil {
+		return nil, err
+	}
+	return obj, nil
+}

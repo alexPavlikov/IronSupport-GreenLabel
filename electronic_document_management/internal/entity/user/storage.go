@@ -14,4 +14,6 @@ type Repository interface {
 	SelectRole(ctx context.Context) (role []string, err error)
 	InsertUserRole(ctx context.Context, name string) error
 	SelectAuthUser(ctx context.Context, email string, pass string) (us User, err error)
+
+	FindUser(ctx context.Context, find string) (users []User, err error)
 }

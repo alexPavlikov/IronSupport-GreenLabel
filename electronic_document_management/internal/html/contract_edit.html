@@ -28,7 +28,9 @@
         <input type="number" name="price" value="{{ .Contract.Amount }}" id="" placeholder="Стоимость">
         <span>Скан контракта</span>
         <input type="file" name="file" id="" placeholder="Котракт">
+        {{ if eq .Auth "Admin" }}
         <button class="main-btn m-auto">Обновить</button>
+        {{ end }}
     </form>
 
     <form action="/edm/contract" method="get">

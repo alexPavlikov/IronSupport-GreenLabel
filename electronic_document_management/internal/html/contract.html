@@ -54,9 +54,11 @@
         {{ end }}
     </div>
 
+    {{ if eq .Auth "Admin" }}
     <div class="add">
         <button class="main-btn" onclick="window.dialogcontract.showModal();">Добавить контракт</button>
     </div>
+    {{ end }}
 
     <table class="table-sortable">
         <thead>

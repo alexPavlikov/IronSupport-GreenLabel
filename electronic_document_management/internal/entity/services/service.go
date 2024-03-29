@@ -92,3 +92,11 @@ func (s *Service) GetServiceBySort(ctx context.Context, srv *Services) (services
 	}
 	return services, nil
 }
+
+func (s *Service) FindService(ctx context.Context, find string) (sr []Services, err error) {
+	sr, err = s.repository.FindService(ctx, find)
+	if err != nil {
+		return nil, err
+	}
+	return sr, nil
+}

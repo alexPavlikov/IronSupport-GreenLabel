@@ -72,3 +72,11 @@ func (s *Service) DeleteClient(ctx context.Context, id int) error {
 	}
 	return nil
 }
+
+func (s *Service) FindClient(ctx context.Context, text string) (cl []Client, err error) {
+	cl, err = s.repository.FindClient(ctx, text)
+	if err != nil {
+		return nil, err
+	}
+	return cl, nil
+}

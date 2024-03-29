@@ -19,7 +19,9 @@
                 <option value="{{ $cl.Id }}">{{ $cl.INN }} {{ $cl.Name }}</option>
                 {{ end }}
             </select>
+            {{ if eq .Auth "Admin" }}
             <button class="main-btn m-auto">Обновить</button>
+            {{ end }}
         </form>
     
         <form action="/edm/object" method="get">

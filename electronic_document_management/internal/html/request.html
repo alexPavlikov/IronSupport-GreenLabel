@@ -49,6 +49,7 @@
             <thead>
                 <tr>
                     <th>id</th>
+                    <th>Заголовок</th>
                     <th>Тема</th>
                     <th>Клиент</th>
                     <th>Работник</th>
@@ -65,27 +66,12 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <tr>
-                    <td style="text-align: center;">1</td>
-                    <td>Hello</td>
-                    <td>Client</td>
-                    <td>Worker</td>
-                    <td>Object</td>
-                    <td>Equipment</td>
-                    <td>Contract</td>
-                    <td>Description</td>
-                    <td>Start</td>
-                    <td>End</td>
-                    <td style="background-color: aqua;">Закрыта</td>
-                    <td style="text-align: center;"><i class="fa-solid fa-chevron-up"></i></td>
-                    <td style="text-align: center;">+</td>
-                    <td class="edit"><button><i class="fa-solid fa-pen-to-square"></i></button></td>
-                </tr> -->
 
                 {{ range $_, $rs := .Requests }}
 
                 <tr>
                     <td style="text-align: center;">{{ $rs.Id }}</td>
+                    <td><a href="/edm/request/answer?id={{ $rs.Id }}" style="text-decoration: none; font-weight: 700;">{{ $rs.Name }}</a></td>
                     <td>{{ $rs.Title }}</td>
                     <td>{{ $rs.Client.Id }} - {{ $rs.Client.Name }}</td>
                     <td>{{ $rs.Worker.FullName }}</td>
@@ -103,7 +89,7 @@
                         {{ else if eq $rs.Priority "low" }}
                         <td style="text-align: center;"><i class="fa-solid fa-chevron-down"></i></td>
                         {{ end }}
-                        <td class="click" onclick="window.dialogfiles.showModal();">+</td>
+                    <td class="click" onclick="window.dialogfiles.showModal();">+</td>
                     <td class="edit">
                         <form action="/edm/request/edit" method="get">
                             <input style="display: none;" name="id" type="text" value="{{$rs.Id}}">

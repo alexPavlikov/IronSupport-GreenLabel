@@ -3,6 +3,7 @@ package user_db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
@@ -40,7 +41,7 @@ func (r *repository) InsertUser(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=:%d", "пользователь", &user.Id))
+	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=%d / %s", "пользователь", user.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -54,7 +55,7 @@ func (r *repository) InsertUserRole(ctx context.Context, name string) error {
 
 	_ = r.client.QueryRow(ctx, query, name)
 
-	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=:%s", "роль", name))
+	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s - %s / %s", "роль", name, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -170,7 +171,7 @@ func (r *repository) UpdateUser(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=:%d", "пользователь", &user.Id))
+	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=%d / %s", "пользователь", user.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -190,7 +191,7 @@ func (r *repository) DeleteUser(ctx context.Context, id int) error {
 		return err
 	}
 
-	r.logger.LogEvents("Удален", fmt.Sprintf("%s c id=:%d", "пользователь", id))
+	r.logger.LogEvents("Удален", fmt.Sprintf("%s c id=%d / %s", "пользователь", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -215,4 +216,33 @@ func (r *repository) SelectRole(ctx context.Context) (role []string, err error) 
 		role = append(role, rl)
 	}
 	return role, nil
+}
+
+func (r *repository) FindUser(ctx context.Context, find string) (users []user.User, err error) {
+	query := `
+	SELECT
+		id, email, full_name, phone, image, role, password
+	FROM
+		public."User"
+	WHERE full_name ILIKE $1 OR email ILIKE $1 OR phone ILIKE $1 OR role = $1	
+	`
+
+	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
+
+	find = "%" + find + "%"
+
+	rows, err := r.client.Query(ctx, query, find)
+	if err != nil {
+		return nil, err
+	}
+
+	var us user.User
+	for rows.Next() {
+		err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role, &us.Password)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, us)
+	}
+	return users, nil
 }

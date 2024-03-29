@@ -3,6 +3,7 @@ package client_db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/client"
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
@@ -40,7 +41,7 @@ func (r *repository) InsertClient(ctx context.Context, clnt *client.Client) erro
 		return err
 	}
 
-	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=:%d", "клиент", &clnt.Id))
+	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=%d / %s", "клиент", clnt.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -146,7 +147,7 @@ func (r *repository) UpdateClient(ctx context.Context, cl *client.Client) error 
 		return err
 	}
 
-	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=:%d", "клиент", &cl.Id))
+	r.logger.LogEvents("Обновлен", fmt.Sprintf("%s c id=%d / %s", "клиент", cl.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -167,7 +168,36 @@ func (r *repository) DeleteClient(ctx context.Context, id int) error {
 		return err
 	}
 
-	r.logger.LogEvents("Удален", fmt.Sprintf("%s c id=:%d", "клиент", id))
+	r.logger.LogEvents("Удален", fmt.Sprintf("%s c id=%d / %s", "клиент", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
+}
+
+func (r *repository) FindClient(ctx context.Context, text string) (cls []client.Client, err error) {
+	query := `
+	SELECT 
+		id, name, inn, kpp, ogrn, owner, phone, email, address, create_date, status
+	FROM 
+		public."Client"
+	WHERE 
+		"Client".name ILIKE $1 OR "Client".inn ILIKE $1 OR "Client".ogrn ILIKE $1 OR "Client".owner ILIKE $1
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	text = "%" + text + "%"
+
+	rows, err := r.client.Query(ctx, query, text)
+	if err != nil {
+		return nil, err
+	}
+	var cl client.Client
+	for rows.Next() {
+		err = rows.Scan(&cl.Id, &cl.Name, &cl.INN, &cl.KPP, &cl.OGRN, &cl.Owner, &cl.Phone, &cl.Email, &cl.Address, &cl.CreateDate, &cl.Status)
+		if err != nil {
+			return nil, err
+		}
+		cls = append(cls, cl)
+	}
+	return cls, nil
 }

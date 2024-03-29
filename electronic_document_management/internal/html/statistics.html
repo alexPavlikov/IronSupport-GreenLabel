@@ -1,5 +1,52 @@
 {{ define "statistics" }}
 
+<style>
+    .stat {
+        margin: 50px 30%;
+        position: relative;
+    }
+
+    .stat .stat-item {
+        width: 100%;
+        height: 70px; 
+        position: relative;
+    }
+
+    .stat .stat-item .stat-item-obj {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        margin: 20px auto;
+    }
+
+    
+    .stat .stat-item .stat-item-obj form {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .stat .stat-item .stat-item-obj button {
+        width: 100%;
+        height: 100%;
+        font-size: 24px;
+        border-radius: 25px;
+        border: 4px solid rgb(4, 160, 56);
+        color: rgb(4, 160, 56);
+        font-weight: 800;
+        background-color: inherit;
+
+        transition: all 1s ease-out;
+    }
+
+    .stat .stat-item .stat-item-obj button:hover {
+        cursor: pointer;
+        background-color: rgb(4, 160, 56);
+        color: white;
+    }
+
+</style>
+
 <body>
     
     <div class="stat">
@@ -18,11 +65,89 @@
             </div>
             <div class="stat-item-obj">
                 <form action="/edm/statistics/all/year">
-                    <button>Сформировать общий отчет по заявкамза год</button>
+                    <button>Сформировать общий отчет по заявкам за год</button>
                 </form>
             </div>
         </div>
+        <div class="container-stat" id="container1"></div>
+    <div class="container-stat" id="container2"></div>
+    <div class="container-stat" id="container-circel"></div>
+   <div class="container-stat" id="container-area"></div>
     </div>
+
+    
+
+    <script src="https://cdn.anychart.com/js/latest/anychart-bundle.min.js"></script>
+    <script>
+        anychart.onDocumentLoad(function() {
+            let t1 = 123;
+            let t2 = 321;
+            let t3 = 213;     
+
+            var chart = anychart.column([
+                
+                ["Redmi", Number(t1)],
+                ["Xiaomi", Number(t2)],
+                ["Poco", Number(t3)]
+            ]);
+            chart.title("Кол-во типов телефонов в магазине по фирмам (ед.)");
+            chart.container("container1").draw();
+        });
+
+            let t4 = 11
+            let t5 = 22;
+            let t6 = 33; 
+
+        anychart.onDocumentLoad(function() {
+
+            var chart = anychart.column([
+                
+                ["Redmi", Number(t4)],
+                ["Xiaomi", Number(t5)],
+                ["Poco", Number(t6)]
+            ]);
+            chart.title("Общая цена товара в наличие по фирмам (рос.руб) ");
+            chart.container("container2").draw();
+        });
+
+
+        anychart.onDocumentLoad(function() {
+            var data = [
+        {x: "Redmi", value: Number(t4)},
+        {x: "Xiaomi", value: Number(t5)},
+        {x: "Poco", value: Number(t6)}
+        ];
+        chart = anychart.pie(data);
+        chart.title("Процентное соотношение общей цены товара в наличие по фирмам (% / рос.руб) ");
+        chart.innerRadius("30%");
+
+        chart.container("container-circel");
+        chart.draw();
+        });   
+
+        p1 = "1";
+        p2 = "2";
+        p3 = "3";
+        p4 = "4";
+        p5 = "5";
+        
+        anychart.onDocumentLoad(function() {
+            var data = [
+                ["1", p1],
+                ["2", p2],
+                ["3", p3],
+                ["4", p4],
+                ["5", p5]
+                ];
+                
+                chart = anychart.area();
+                var series = chart.area(data);
+                chart.title("График день-продажи (рос.руб) ");
+                chart.container("container-area");
+                chart.draw();
+        }); 
+
+    </script
 
 </body>
 

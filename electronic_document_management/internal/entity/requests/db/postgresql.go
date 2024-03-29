@@ -26,24 +26,24 @@ type repository struct {
 func (r *repository) InsertRequest(ctx context.Context, req *requests.Request) error {
 	query := `
 	INSERT INTO public."Request"
-	(title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, status)
-	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+	(title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, status, name)
+	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
 	RETURNING id
 	`
 
 	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
-	fmt.Println(req.Id, req.Title, req.Client.Id, req.Worker.Id, req.ClientObject.Object.Id, req.Equipment.Id, req.Contract.Id, req.Description, req.Priority, req.StartDate, req.EndDate, req.Status.Name)
+	fmt.Println(req.Id, req.Title, req.Client.Id, req.Worker.Id, req.ClientObject.Object.Id, req.Equipment.Id, req.Contract.Id, req.Description, req.Priority, req.StartDate, req.EndDate, req.Status.Name, req.Name)
 
 	req.StartDate = time.Now().Format("2006-01-02")
 
-	rows := r.client.QueryRow(ctx, query, req.Title, req.Client.Id, req.Worker.Id, req.ClientObject.Object.Id, req.Equipment.Id, req.Contract.Id, req.Description, req.Priority, req.StartDate, req.EndDate, req.Status.Name)
+	rows := r.client.QueryRow(ctx, query, req.Title, req.Client.Id, req.Worker.Id, req.ClientObject.Object.Id, req.Equipment.Id, req.Contract.Id, req.Description, req.Priority, req.StartDate, req.EndDate, req.Status.Name, req.Name)
 	err := rows.Scan(&req.Id)
 	if err != nil {
 		fmt.Println("error", err)
 		return err
 	}
 
-	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=:%d на сотрудника - %s", "заявка", req.Id, fmt.Sprint(req.Worker.Id)))
+	r.logger.LogEvents("Добавлена", fmt.Sprintf("%s c id=%d на сотрудника - %d / %s", "заявка", req.Id, req.Worker.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -52,7 +52,7 @@ func (r *repository) InsertRequest(ctx context.Context, req *requests.Request) e
 func (r *repository) SelectRequest(ctx context.Context, id int) (req requests.Request, err error) {
 	query := `
 	SELECT 
-		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status
+		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status, name
 	FROM 
 		public."Request"
 	WHERE 
@@ -69,7 +69,7 @@ func (r *repository) SelectRequest(ctx context.Context, id int) (req requests.Re
 	var status string
 
 	for rows.Next() {
-		err = rows.Scan(&req.Id, &req.Title, &client, &worker, &client_object, &equipment, &contract, &req.Description, &req.Priority, &req.StartDate, &req.EndDate, pq.Array(&req.Files), &status)
+		err = rows.Scan(&req.Id, &req.Title, &client, &worker, &client_object, &equipment, &contract, &req.Description, &req.Priority, &req.StartDate, &req.EndDate, pq.Array(&req.Files), &status, &req.Name)
 		if err != nil {
 			return requests.Request{}, err
 		}
@@ -77,7 +77,7 @@ func (r *repository) SelectRequest(ctx context.Context, id int) (req requests.Re
 		if err != nil {
 			return requests.Request{}, err
 		}
-		req.Worker, err = r.getRequestWorker(ctx, worker)
+		req.Worker, err = r.GetRequestWorker(ctx, worker)
 		if err != nil {
 			return requests.Request{}, err
 		}
@@ -105,7 +105,7 @@ func (r *repository) SelectRequest(ctx context.Context, id int) (req requests.Re
 func (r *repository) SelectRequests(ctx context.Context) (reqs []requests.Request, err error) {
 	query := `
 	SELECT 
-		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status
+		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status, name
 	FROM 
 		public."Request"`
 
@@ -121,7 +121,7 @@ func (r *repository) SelectRequests(ctx context.Context) (reqs []requests.Reques
 
 	for rows.Next() {
 		var rt requests.Request
-		err = rows.Scan(&rt.Id, &rt.Title, &client, &worker, &client_object, &equipment, &contract, &rt.Description, &rt.Priority, &rt.StartDate, &rt.EndDate, pq.Array(&rt.Files), &status)
+		err = rows.Scan(&rt.Id, &rt.Title, &client, &worker, &client_object, &equipment, &contract, &rt.Description, &rt.Priority, &rt.StartDate, &rt.EndDate, pq.Array(&rt.Files), &status, &rt.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -130,7 +130,7 @@ func (r *repository) SelectRequests(ctx context.Context) (reqs []requests.Reques
 		if err != nil {
 			return nil, err
 		}
-		rt.Worker, err = r.getRequestWorker(ctx, worker)
+		rt.Worker, err = r.GetRequestWorker(ctx, worker)
 		if err != nil {
 			return nil, err
 		}
@@ -159,10 +159,10 @@ func (r *repository) SelectRequests(ctx context.Context) (reqs []requests.Reques
 func (r *repository) SelectRequestsBySort(ctx context.Context, req requests.Request) (rs []requests.Request, err error) {
 	query := `
 	SELECT 
-		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status
+		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status, name
 	FROM 
 		public."Request"
-	WHERE client = $1 OR worker = $2 OR client_object = $3 OR equipment = $4 OR status = $5
+	WHERE client = $1 AND worker = $2 AND client_object = $3 AND equipment = $4 AND status = $5
 	`
 
 	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
@@ -177,7 +177,7 @@ func (r *repository) SelectRequestsBySort(ctx context.Context, req requests.Requ
 	var status string
 
 	for rows.Next() {
-		err = rows.Scan(&rt.Id, &rt.Title, &client, &worker, &client_object, &equipment, &contract, &rt.Description, &rt.Priority, &rt.StartDate, &rt.EndDate, pq.Array(&rt.Files), &status)
+		err = rows.Scan(&rt.Id, &rt.Title, &client, &worker, &client_object, &equipment, &contract, &rt.Description, &rt.Priority, &rt.StartDate, &rt.EndDate, pq.Array(&rt.Files), &status, &rt.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -186,7 +186,7 @@ func (r *repository) SelectRequestsBySort(ctx context.Context, req requests.Requ
 		if err != nil {
 			return nil, err
 		}
-		rt.Worker, err = r.getRequestWorker(ctx, worker)
+		rt.Worker, err = r.GetRequestWorker(ctx, worker)
 		if err != nil {
 			return nil, err
 		}
@@ -218,18 +218,18 @@ func (r *repository) UpdateRequest(ctx context.Context, req *requests.Request) e
 	UPDATE 
 		public."Request"
 	SET 
-		title = $1, client = $2, worker = $3, client_object = $4, equipment = $5, contract = $6, description = $7, priority = $8, status = $9
+		title = $1, client = $2, worker = $3, client_object = $4, equipment = $5, contract = $6, description = $7, priority = $8, status = $9, name = $10
 	WHERE
-		id = $10`
+		id = $11`
 
 	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
 
-	_, err := r.client.Query(ctx, query, req.Title, req.Client.Id, req.Worker.Id, req.ClientObject.Object.Id, req.Equipment.Id, req.Contract.Id, req.Description, req.Priority, req.Status.Name, req.Id)
+	_, err := r.client.Query(ctx, query, req.Title, req.Client.Id, req.Worker.Id, req.ClientObject.Object.Id, req.Equipment.Id, req.Contract.Id, req.Description, req.Priority, req.Status.Name, req.Name, req.Id)
 	if err != nil {
 		return err
 	}
 
-	r.logger.LogEvents("Изменена", fmt.Sprintf("%s c id=:%d сотрудником - %s", "заявка", req.Id, fmt.Sprint(req.Worker.Id)))
+	r.logger.LogEvents("Изменена", fmt.Sprintf("%s c id=%d сотрудником - %d / %s", "заявка", req.Id, req.Worker.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -251,7 +251,7 @@ func (r *repository) CloseRequest(ctx context.Context, status string, id int) er
 		return err
 	}
 
-	r.logger.LogEvents("Закрыта", fmt.Sprintf("%s c id=:%d", "заявка", id))
+	r.logger.LogEvents("Закрыта", fmt.Sprintf("%s c id=%d / %s", "заявка", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -293,7 +293,7 @@ func (r *repository) getRequestClient(ctx context.Context, id int) (cl client.Cl
 
 	return cl, nil
 }
-func (r *repository) getRequestWorker(ctx context.Context, id int) (us user.User, err error) {
+func (r *repository) GetRequestWorker(ctx context.Context, id int) (us user.User, err error) {
 	query := `
 	SELECT 
 		id, email, full_name, phone, image, role 
@@ -468,6 +468,141 @@ func (r *repository) GetRequestStatus(ctx context.Context) (rs []requests.ReqSta
 		}
 
 		rs = append(rs, p)
+	}
+	return rs, nil
+}
+
+func (r *repository) InsertRequestAnswer(ctx context.Context, ra *requests.ReqAns) error {
+	query := `
+	INSERT INTO public."Request_answer" (request_id, worker_id, text) VALUES ($1, $2, $3) RETURNING id
+	`
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	rows := r.client.QueryRow(ctx, query, ra.Request.Id, ra.Worker.Id, ra.Text)
+	err := rows.Scan(&ra.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *repository) SelectRequestAnswer(ctx context.Context, rid int) (ra []requests.ReqAns, err error) {
+	query := `
+		SELECT id, request_id, worker_id, "text" FROM public."Request_answer" WHERE request_id = $1
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	rows, err := r.client.Query(ctx, query, rid)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+
+		var req requests.ReqAns
+
+		err = rows.Scan(&req.Id, &req.Request.Id, &req.Worker.Id, &req.Text)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Request, err = r.SelectRequest(ctx, req.Request.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Worker, err = r.GetRequestWorker(ctx, req.Worker.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		ra = append(ra, req)
+	}
+	return ra, nil
+}
+
+func (r *repository) GetRequestWorkerByEmail(ctx context.Context, email string) (us user.User, err error) {
+	query := `
+	SELECT 
+		id, email, full_name, phone, image, role 
+	FROM 
+		public."User"
+	WHERE 
+		email = $1
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	rows := r.client.QueryRow(ctx, query, email)
+	err = rows.Scan(&us.Id, &us.Email, &us.FullName, &us.Phone, &us.Image, &us.Role)
+	if err != nil {
+		return user.User{}, err
+	}
+
+	return us, nil
+}
+
+func (r *repository) FindRequests(ctx context.Context, find string) (rs []requests.Request, err error) {
+	query := `
+	SELECT 
+		"Request".id, "Request".title, "Request".client, "Request".worker, "Request".client_object, "Request".equipment, "Request".contract, "Request".description, "Request".priority, "Request".start_date, "Request".end_date, "Request".files, "Request".status, "Request".name
+	FROM 
+		public."Request"
+		JOIN "Client" ON "Request".client = "Client".id
+		JOIN "User" ON "Request".worker = "User".id
+		JOIN "Client_objects" ON "Request".client_object = "Client_objects".id
+		JOIN "Objects" ON "Client_objects".object = "Objects".id
+		JOIN "Equipment" ON "Request".equipment = "Equipment".id
+	WHERE "Client".name ILIKE $1 OR "Request".title ILIKE $1 OR "Request".name ILIKE $1 OR "User".full_name ILIKE $1 OR "Objects".name ILIKE $1 OR "Equipment".name ILIKE $1
+	
+	`
+
+	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))
+
+	find = "%" + find + "%"
+
+	rows, err := r.client.Query(ctx, query, find)
+	if err != nil {
+		return nil, err
+	}
+
+	var rt requests.Request
+	var client, worker, client_object, equipment, contract int
+	var status string
+
+	for rows.Next() {
+		err = rows.Scan(&rt.Id, &rt.Title, &client, &worker, &client_object, &equipment, &contract, &rt.Description, &rt.Priority, &rt.StartDate, &rt.EndDate, pq.Array(&rt.Files), &status, &rt.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		rt.Client, err = r.getRequestClient(ctx, client)
+		if err != nil {
+			return nil, err
+		}
+		rt.Worker, err = r.GetRequestWorker(ctx, worker)
+		if err != nil {
+			return nil, err
+		}
+		rt.Contract, err = r.getRequestContract(ctx, contract)
+		if err != nil {
+			return nil, err
+		}
+		rt.Equipment, err = r.getRequestEquipment(ctx, equipment)
+		if err != nil {
+			return nil, err
+		}
+		rt.ClientObject, err = r.getRequestClientObject(ctx, client_object)
+		if err != nil {
+			return nil, err
+		}
+		rt.Status, err = r.getRequestStatus(ctx, status)
+		if err != nil {
+			return nil, err
+		}
+
+		rs = append(rs, rt)
 	}
 	return rs, nil
 }

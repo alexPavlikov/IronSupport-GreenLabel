@@ -57,7 +57,9 @@
     
             <span>Фактический адрес</span>
             <input type="text" name="address" id="" placeholder="Адрес" value="{{.Client.Address}}">
+            {{ if eq .Auth "Admin" }}
             <button style="width: 105%;" class="main-btn m-auto">Обновить</button>
+            {{ end }}
         </form>
     
         <!-- <button onclick="window.dialogclientedit.close();" aria-label="close" class="x">❌</button> -->

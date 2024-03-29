@@ -16,4 +16,6 @@ type Repository interface {
 	InsertServicesType(ctx context.Context, types string) error
 	SelectAllEquipment(ctx context.Context) (eqs []equipment.Equipment, err error)
 	SelectServicesBySort(ctx context.Context, srv *Services) (srvc []Services, err error)
+
+	FindService(ctx context.Context, find string) (srvc []Services, err error)
 }

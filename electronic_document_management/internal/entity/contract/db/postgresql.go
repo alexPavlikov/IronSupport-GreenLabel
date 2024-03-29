@@ -3,6 +3,7 @@ package contract_db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/contract"
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
@@ -40,7 +41,7 @@ func (r *repository) InsertContract(ctx context.Context, contract *contract.Cont
 		return err
 	}
 
-	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=:%d", "контракт", &contract.Id))
+	r.logger.LogEvents("Добавлен", fmt.Sprintf("%s c id=%d / %s", "контракт", contract.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -167,7 +168,7 @@ func (r *repository) UpdateContract(ctx context.Context, contract *contract.Cont
 
 	_ = r.client.QueryRow(ctx, query, contract.Name, contract.Client.Id, contract.DataStart, contract.DataEnd, contract.Amount, contract.Status, contract.Id)
 
-	r.logger.LogEvents("Изменен", fmt.Sprintf("%s c id=:%d", "контракт", &contract.Id))
+	r.logger.LogEvents("Изменен", fmt.Sprintf("%s c id=%d / %s", "контракт", contract.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -189,7 +190,7 @@ func (r *repository) CloseContract(ctx context.Context, id int) error {
 		return err
 	}
 
-	r.logger.LogEvents("Закрыт", fmt.Sprintf("%s c id=:%d", "контракт", id))
+	r.logger.LogEvents("Закрыт", fmt.Sprintf("%s c id=%d / %s", "контракт", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -240,4 +241,41 @@ func (r *repository) SelectClients(ctx context.Context) (clnts []contract.Client
 		clnts = append(clnts, cl)
 	}
 	return clnts, nil
+}
+
+func (r *repository) FindContract(ctx context.Context, text string) (cts []contract.Contract, err error) {
+	query := `
+	SELECT 
+		"Contract".id, "Contract".name, "Contract".client, "Contract".start_date, "Contract".end_date, "Contract".amount, "Contract".file, "Contract".status, "Client".name
+	FROM 
+		public."Contract"
+	JOIN "Client" ON "Client".id = "Contract".client	
+	WHERE 
+		"Client".name ILIKE $1 OR "Contract".name ILIKE $1;
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	var contract contract.Contract
+
+	text = "%" + text + "%"
+
+	rows, err := r.client.Query(ctx, query, text)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		err = rows.Scan(&contract.Id, &contract.Name, &contract.Client.Id, &contract.DataStart, &contract.DataEnd, &contract.Amount, &contract.File, &contract.Status, &contract.Client.Name)
+		if err != nil {
+			return nil, err
+		}
+		contract.Client, err = r.getClientObject(ctx, contract.Client.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		cts = append(cts, contract)
+	}
+
+	return cts, nil
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -30,6 +31,8 @@ func (h *handler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodGet, "/edm/service/sorted", h.SortServiceHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/service/edit", h.EditServiceHandler)
 	router.HandlerFunc(http.MethodGet, "/edm/service/edits", h.EditPostServiceHandler)
+
+	router.HandlerFunc(http.MethodGet, "/edm/service/find", h.ServicesFindHandler)
 }
 
 func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
@@ -38,6 +41,8 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 		logger:  logger,
 	}
 }
+
+var Events []string
 
 func (h *handler) ServicesHandler(w http.ResponseWriter, r *http.Request) {
 	if !user.UserAuth.Err {
@@ -62,8 +67,15 @@ func (h *handler) ServicesHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		title := map[string]string{"Title": "ЭДО - Услуги", "Page": "Service"}
-		data := map[string]interface{}{"Services": services, "Type": types, "Eq": eq, "OK": false}
+		Events, err = utils.ReadEventFile()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		arr := utils.ReadCookies(r)
+
+		title := map[string]interface{}{"Title": "ЭДО - Услуги", "Page": "Service", "Events": Events, "Auth": arr[2]}
+		data := map[string]interface{}{"Services": services, "Type": types, "Eq": eq, "OK": false, "Auth": arr[2]}
 
 		err = tmpl.ExecuteTemplate(w, "header", title)
 		if err != nil {
@@ -155,8 +167,10 @@ func (h *handler) SortServiceHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		title := map[string]string{"Title": "ЭДО - Услуги", "Page": "Service"}
-		data := map[string]interface{}{"Services": services, "Type": types, "Eq": eq}
+		arr := utils.ReadCookies(r)
+
+		title := map[string]interface{}{"Title": "ЭДО - Услуги", "Page": "Service", "Events": Events, "Auth": arr[2]}
+		data := map[string]interface{}{"Services": services, "Type": types, "Eq": eq, "Auth": arr[2]}
 		// dialog := map[string]interface{}{"ReqInsertData": RID}
 
 		err = tmpl.ExecuteTemplate(w, "header", title)
@@ -200,8 +214,10 @@ func (h *handler) EditServiceHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	title := map[string]string{"Title": "ЭДО - Услуги", "Page": "Service"}
-	data := map[string]interface{}{"Ser": services, "Type": types, "Eq": eq, "OK": true}
+	arr := utils.ReadCookies(r)
+
+	title := map[string]interface{}{"Title": "ЭДО - Услуги", "Page": "Service", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"Ser": services, "Type": types, "Eq": eq, "OK": true, "Auth": arr[2]}
 
 	err = tmpl.ExecuteTemplate(w, "header", title)
 	if err != nil {
@@ -233,4 +249,34 @@ func (h *handler) EditPostServiceHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	http.Redirect(w, r, "/edm/service", http.StatusSeeOther)
+}
+
+func (h *handler) ServicesFindHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	r.ParseForm()
+
+	text := r.FormValue("text")
+
+	sr, err := h.service.FindService(context.TODO(), text)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	arr := utils.ReadCookies(r)
+
+	title := map[string]interface{}{"Title": "ЭДО - Поиск", "Page": "Service", "Events": Events, "Auth": arr[2]}
+	data := map[string]interface{}{"Text": text, "Cat": "Service", "Services": sr, "Auth": arr[2]}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+	err = tmpl.ExecuteTemplate(w, "find", data)
+	if err != nil {
+		http.NotFound(w, r)
+	}
 }

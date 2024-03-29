@@ -11,4 +11,7 @@ type Repository interface {
 	SelectClientsBySorted(ctx context.Context, c Client) (clients []Client, err error)
 	UpdateClient(ctx context.Context, cl *Client) error
 	DeleteClient(ctx context.Context, id int) error
+
+	//---
+	FindClient(ctx context.Context, text string) (cls []Client, err error)
 }

@@ -1,12 +1,14 @@
 package stat
 
 import (
+	"fmt"
 	"net/http"
 	"text/template"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/user"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -37,6 +39,8 @@ func NewHandler(service *Service, logger *logging.Logger) handlers.Handlers {
 		logger:  logger,
 	}
 }
+
+var Events []string
 
 // func (h *handler) UserHandler(w http.ResponseWriter, r *http.Request) {
 // 	tmpl, err := template.ParseGlob("./electronic_document_management/internal/html/*.html")
@@ -263,7 +267,14 @@ func (h *handler) StatHandler(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 
-		title := map[string]interface{}{"Title": "ЭДО - Статистика", "Page": "Statistics"}
+		Events, err = utils.ReadEventFile()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		arr := utils.ReadCookies(r)
+
+		title := map[string]interface{}{"Title": "ЭДО - Статистика", "Page": "Statistics", "Events": Events, "Auth": arr[2]}
 		data := map[string]interface{}{}
 
 		err = tmpl.ExecuteTemplate(w, "header", title)

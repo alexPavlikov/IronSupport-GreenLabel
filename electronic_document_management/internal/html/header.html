@@ -1,4 +1,5 @@
 {{ define "header" }}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,21 +13,53 @@
 <link rel="stylesheet" href="/assets/css/dialog.css">
 <link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
 
+
+<dialog class="dialogsub-small"  style="min-height: 75vh;" id="dialognews">
+    <h3 class="main-color" style="text-transform: uppercase;">Новости</h3>
+
+    {{ range $_, $e := .Events }}
+
+    <div style="padding: 10px 0;">{{ $e }}</div>
+
+    {{ end }}
+
+	<button onclick="window.dialognews.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+
 <header>
     <div class="headers box-header logo">
        <a href="/ironsupport"><img src="/assets/image/logo.webp" alt="Green Label г.Донецк"></a>
     </div>
-    <div class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div>
+    {{ if eq .Auth "Admin" }}
+        {{ if eq .Page "Request" }}
+        <div class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div>
+        {{ else }}
+        <div style="visibility: hidden;" class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div>
+        {{ end }}
+    {{ else }}
+    <div style="visibility: hidden;" class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div>
+    {{ end }}
     <div class="headers box-header-center">
         <button onclick="window.dialognews.showModal();" style=" width: 40%;" class="text-btn"><i class="fa-solid fa-envelope-open-text main-color"></i> События</button>
-            <form class="find">
-                <input type="text" placeholder="Искать здесь...">
+            <form class="find" action="/edm/find" method="get"> 
+                <select name="category" id="" style=" border: 1px solid rgb(4, 160, 56);border-right: none; color: grey;">
+                    <option value="title">Категория</option>
+                    <option value="Request">Заявки</option>
+                    <option value="Client">Клиенты</option>
+                    <option value="Contract">Контракты</option>
+                    <option value="Object">Объекты</option>
+                    <option value="Equipment">Оборуд.</option>
+                    <option value="Worker">Сотрудник</option>
+                    <option value="Service">Услуги</option>
+                </select>
+                <input name="text" type="text" placeholder="Искать здесь..." style="border-left: none;">
                 <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
     </div>
     <div class="headers box-header-right">
         <a href="/edm/user/account" class="main-btn" style="margin-right: 20px;;"><i class="fa-regular fa-user" style="padding: 0 10px; font-weight: 700;"></i></a>
-        <form action="/exit" method="get"><button id="exit" class="main-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></form>
+        <form action="/user/exit" method="get"><button id="exit" class="main-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></form>
     </div>
 </header>
 

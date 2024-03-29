@@ -15,16 +15,6 @@
     <button onclick="window.dialogfilesread.close();" aria-label="close" class="x">❌</button>
 </dialog>
 
-
-
-<dialog class="dialogsub-small"  style="min-height: 75vh;" id="dialognews">
-    <h3 class="main-color" style="text-transform: uppercase;">Новости</h3>
-
-   
-
-	<button onclick="window.dialognews.close();" aria-label="close" class="x">❌</button>
-</dialog>
-
 <dialog class="dialogsub-small" id="dialogtype">
     <h3 class="main-color" style="text-transform: uppercase;">Создать новый тип заявки</h3>
 
@@ -215,16 +205,79 @@
 	<button onclick="window.dialogservicetype.close();" aria-label="close" class="x">❌</button>
 </dialog>
 
+<dialog class="dialogsub-medium" id="dialogcontract">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый контракт</h3>
+
+    <form action="/edm/contract/add" class="content-medium" autocomplete="off">
+        <span>Название контракта</span>
+        <input type="text" name="name" id="" placeholder="Название">
+        <select class="select" name="client" id="" style="margin-bottom: 20px; width: 106%;">
+            <option disabled selected>Клиент</option>
+            {{ range $_, $c := .ReqInsertData.Client }}
+                <option value="{{ $c.Id }}">{{ $c.INN }} {{ $c.KPP }} {{ $c.OGRN }} {{ $c.Name }}</option>
+            {{ end }}
+        </select>
+        <div class="content-medium-case">
+            <div style="margin-right: 30px;">
+                <span>Дата начала</span>
+                <input type="date" name="startdate" id="" placeholder="Дата">
+            </div>
+            <div>
+                <span>Дата окончания</span>
+                <input type="date" name="enddate" id="" placeholder="Дата">
+            </div>
+        </div>
+    
+        <span>Стоимость контракта</span>
+        <input type="number" name="price" id="" placeholder="Стоимость">
+        <span>Скан контракта</span>
+        <input type="file" name="file" id="" placeholder="Котракт">
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogcontract.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
+<dialog class="dialogsub-medium" id="dialogobject">
+    <h3 class="main-color" style="text-transform: uppercase;">Добавить новый объект</h3>
+
+    <form action="/edm/object/add" class="content-medium" autocomplete="off">
+        <span>Название объекта</span>
+        <input type="text" name="name" id="" placeholder="Объект">
+        <span>Адрес объекта</span>
+        <input type="text" name="address" id="" placeholder="Адрес">
+        <span>Время работы объекта</span>
+        <input type="text" name="time" id="" placeholder="Время работы">
+        <select class="select" name="client" id="" style="margin-bottom: 40px; width: 106%;">
+            <option disabled selected>Клиент</option>
+            {{ range $_, $c := .ReqInsertData.Client }}
+            <option value="{{ $c.Id }}">{{ $c.INN }} {{ $c.KPP }} {{ $c.OGRN }} {{ $c.Name }}</option>
+            {{ end }}
+        </select>
+        <button class="main-btn m-auto">Создать</button>
+    </form>
+
+	<button onclick="window.dialogobject.close();" aria-label="close" class="x">❌</button>
+</dialog>
+
 <dialog id="dialog">
     <h3 class="main-color" style="text-transform: uppercase;">Новая заявка</h3>
     <form action="/edm/request/add" class="content"  autocomplete="off">
         <div class="content-col" style="width: 60%; padding: 0 20px;">
+
+            <div class="class">
+                <div class="type">
+                    <div class="sub-title"><span>Заголовок заявки</span></div>
+                    <input style="font-size: 20px; width: 100%;" name="name" type="text" placeholder="Краткое название заявки">
+                </div>
+            </div>
+
             <div class="class">
                 <div class="type">
                     <div class="sub-title"><span>Тип заявки</span><a class="text-btn primary" style="padding: 0;" onclick="window.dialogtype.showModal();">Создать</a></div>
                     <select name="type">
                         {{ range $_, $t := .ReqInsertData.Title }}
-                        <option value="{{ $t.Type }}">{{ $t.Id }} {{ $t.Equipment }} {{ $t.Type }}</option>
+                        <option value="{{ $t.Type }}">{{ $t.Id }} {{ $t.Type }} -  {{ $t.EquipmentStructure.Name }}</option>
                         {{ end }}
                     </select>
                 </div>
@@ -249,7 +302,7 @@
             </div>
             <div class="description">
                 <span>Описание</span>
-                <textarea name="description" id="" rows="9" placeholder="Опишите подробности заявки"></textarea>
+                <textarea name="description" id="" rows="7" placeholder="Опишите подробности заявки"></textarea>
             </div>
             <div class="file" style="margin-top: 10px;"><a class="text-btn ">Загрузить файл <i class="fa-solid fa-download"></i></a></div>
         </div>

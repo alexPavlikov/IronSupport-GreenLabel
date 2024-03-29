@@ -238,6 +238,7 @@ main {
 
 td {
     border: 1px solid gray;
+    padding: 5px;
 }
 
 .table-sortable .th-sort-asc::after {
@@ -362,3 +363,8 @@ span {
     font-size: 16px;
     font-weight: 700;
 }
+
+select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }

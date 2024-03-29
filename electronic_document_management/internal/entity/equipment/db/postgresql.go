@@ -3,6 +3,7 @@ package equipment_db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/alexPavlikov/IronSupport-GreenLabel/electronic_document_management/internal/entity/equipment"
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
@@ -41,7 +42,7 @@ func (r *repository) InsertEquipment(ctx context.Context, eq *equipment.Equipmen
 		return err
 	}
 
-	r.logger.LogEvents("Добавлено", fmt.Sprintf("%s c id=:%d", "оборудование", &eq.Id))
+	r.logger.LogEvents("Добавлено", fmt.Sprintf("%s c id=%d / %s", "оборудование", eq.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -144,7 +145,7 @@ func (r *repository) UpdateEquipment(ctx context.Context, eq *equipment.Equipmen
 		return err
 	}
 
-	r.logger.LogEvents("Обновлено", fmt.Sprintf("%s c id=:%d", "оборудование", &eq.Id))
+	r.logger.LogEvents("Обновлено", fmt.Sprintf("%s c id=%d / %s", "оборудование", eq.Id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -164,7 +165,7 @@ func (r *repository) DeleteEquipment(ctx context.Context, id int) error {
 		return err
 	}
 
-	r.logger.LogEvents("Удалено", fmt.Sprintf("%s c id=:%d", "оборудование", id))
+	r.logger.LogEvents("Удалено", fmt.Sprintf("%s c id=%d / %s", "оборудование", id, fmt.Sprint(time.Now().Format("15:04 2006-01-02"))))
 
 	return nil
 }
@@ -241,4 +242,35 @@ func (r *repository) SelectAllModel(ctx context.Context) (models []string, err e
 		models = append(models, m)
 	}
 	return models, nil
+}
+
+func (r *repository) FindEquipment(ctx context.Context, find string) (eqs []equipment.Equipment, err error) {
+	query := `
+		SELECT 
+			id, name, type, manufacturer, model, unique_number, contract, create_date
+		FROM 
+			public."Equipment"
+		WHERE name ILIKE $1 OR type ILIKE $1 OR manufacturer ILIKE $1 OR model ILIKE $1 OR unique_number ILIKE $1
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	find = "%" + find + "%"
+
+	rows, err := r.client.Query(ctx, query, find)
+	if err != nil {
+		return nil, err
+	}
+
+	var e equipment.Equipment
+
+	for rows.Next() {
+		err = rows.Scan(&e.Id, &e.Name, &e.Type, &e.Manufacture, &e.Model, &e.UniqueNumber, &e.Contract, &e.CreateDate)
+		if err != nil {
+			return nil, err
+		}
+
+		eqs = append(eqs, e)
+	}
+	return eqs, nil
 }

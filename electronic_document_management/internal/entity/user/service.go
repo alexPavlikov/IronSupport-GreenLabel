@@ -97,3 +97,11 @@ func (s *Service) UpdateUser(ctx context.Context, user *User) error {
 // 	}
 // 	return nil
 // }
+
+func (s *Service) FindUser(ctx context.Context, find string) (us []User, err error) {
+	us, err = s.repository.FindUser(ctx, find)
+	if err != nil {
+		return nil, err
+	}
+	return us, nil
+}

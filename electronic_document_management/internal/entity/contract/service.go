@@ -75,3 +75,12 @@ func (s *Service) GetAllClients(ctx context.Context) ([]Client, error) {
 	}
 	return cls, nil
 }
+
+func (s *Service) FindContract(ctx context.Context, text string) (ct []Contract, err error) {
+	ct, err = s.repository.FindContract(ctx, text)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return ct, nil
+}

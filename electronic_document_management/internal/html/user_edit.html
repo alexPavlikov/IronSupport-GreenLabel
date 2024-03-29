@@ -23,7 +23,9 @@
                 <option value="{{ $rl }}">{{ $rl }}</option>
                 {{ end }}
             </select>
+            {{ if eq .Auth "Admin" }}
             <button class="main-btn m-auto">Обновить</button>
+            {{ end }}
         </form>
     
         <form action="/edm/user" method="get">

@@ -51,6 +51,14 @@
             <form method="get" action="/edm/request/edits" class="content"  autocomplete="off">
                 <input type="text" name="id" id="" style="display: none;" value="{{ .Req.Id }}">
                 <div class="content-col" style="width: 60%; padding: 0 20px;">
+
+                    <div class="class">
+                        <div class="type">
+                            <div class="sub-title"><span>Заголовок заявки</span></div>
+                            <input style="font-size: 20px; width: 100%;" name="name" type="text" placeholder="Краткое название заявки" value="{{ .Req.Name }}">
+                        </div>
+                    </div>
+
                     <div class="class">
                         <div class="type">
                             <div class="sub-title"><span>Тип заявки</span></div>
@@ -91,7 +99,7 @@
                     </div>
                     <div class="description">
                         <span>Описание</span>
-                        <textarea name="description" id="" rows="9" placeholder="Опишите подробности заявки">{{ .Req.Description }}</textarea>
+                        <textarea name="description" id="" rows="7" placeholder="Опишите подробности заявки">{{ .Req.Description }}</textarea>
                     </div>
                     <div class="file" style="margin-top: 10px;" onclick="window.dialoglistfile.showModal();"><a class="text-btn ">Список файлов <i class="fa-solid fa-download"></i></a></div>
                 </div>
@@ -146,7 +154,11 @@
                         <input type="date" name="date" value="{{ .Req.EndDate }}">
                     </div>
                 </div>
+                {{ if eq .Auth.Role "Admin" }}
                 <button class="main-btn adds">Изменить</button>
+                {{ else }}
+                <span style="position: absolute; bottom: 40px; left: 40px;">У Вас нет прав Администратора, чтобы редактировать заявки</span>
+                {{ end }}
             </form>
             <form action="/edm/request" method="get">
                 <button onclick="window.dialogedit.close();" aria-label="close" class="x">❌</button>
