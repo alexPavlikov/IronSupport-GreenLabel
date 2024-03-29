@@ -1,6 +1,6 @@
 module github.com/alexPavlikov/IronSupport-GreenLabel
 
-go 1.19
+go 1.22.1
 
 require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
