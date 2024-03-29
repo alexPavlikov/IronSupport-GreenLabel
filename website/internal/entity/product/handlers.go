@@ -1,1 +1,1 @@
-package website_product
+package product

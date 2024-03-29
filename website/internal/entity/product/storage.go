@@ -1,4 +1,4 @@
-package website_product
+package product
 
 type Repository interface {
 }

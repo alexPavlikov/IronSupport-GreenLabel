@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	website_product "github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/product"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/product"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -79,7 +79,7 @@ func ReadEventFile() (lines []string, err error) {
 	return arr, scanner.Err()
 }
 
-func WriteProductToExcelFile(products []website_product.Product) error {
+func WriteProductToExcelFile(products []product.Product) error {
 	file, err := excelize.OpenFile("./yandex_disk/DBSynchronization")
 	if err != nil {
 		return err
