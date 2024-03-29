@@ -162,7 +162,7 @@ func (r *repository) SelectRequestsBySort(ctx context.Context, req requests.Requ
 		id, title, client, worker, client_object, equipment, contract, description, priority, start_date, end_date, files, status, name
 	FROM 
 		public."Request"
-	WHERE client = $1 AND worker = $2 AND client_object = $3 AND equipment = $4 AND status = $5
+	WHERE client = $1 OR worker = $2 OR client_object = $3 OR equipment = $4 OR status = $5
 	`
 
 	r.logger.Tracef("SQL Query: %s", utils.FormatQuery(query))

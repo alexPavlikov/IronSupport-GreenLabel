@@ -9,6 +9,9 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	website_product "github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/product"
+	"github.com/xuri/excelize/v2"
 )
 
 func DoWithTries(fn func() error, attempts int, duration time.Duration) (err error) {
@@ -74,4 +77,21 @@ func ReadEventFile() (lines []string, err error) {
 	}
 
 	return arr, scanner.Err()
+}
+
+func WriteProductToExcelFile(products []website_product.Product) error {
+	file, err := excelize.OpenFile("./yandex_disk/DBSynchronization")
+	if err != nil {
+		return err
+	}
+
+	for i := 1; i <= len(products)-1; i++ {
+		file.SetCellValue("Sheet1", "A"+string(i), "")
+		file.SetCellValue("Sheet1", "B"+string(i), "")
+		file.SetCellValue("Sheet1", "C"+string(i), "")
+		file.SetCellValue("Sheet1", "D"+string(i), "")
+		file.SetCellValue("Sheet1", "E"+string(i), "")
+	}
+
+	return nil
 }

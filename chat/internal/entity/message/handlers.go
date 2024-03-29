@@ -56,7 +56,7 @@ func (h *handler) ChatHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *handler) ChatAddHandler(w http.ResponseWriter, r *http.Request) {
+func (h *handler) ChatAddHandler(w http.ResponseWriter, r *http.Request) { // array
 	r.ParseForm()
 
 	name := r.FormValue("name")

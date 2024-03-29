@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1231</title>
+    <title>Мессенджер</title>
 </head>
 
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
@@ -209,11 +209,11 @@
                     <div onclick="window.dialogdel.showModal();" class="members">12 members</div>
                 </div>
             </div>
-            {{ if eq .Key "Clear" }}
+            {{ if eq .Key "Clear1" }}
                 <div class="text">
                     <h1 style="position: absolute; top: 40%; width: 100%; text-align: center; color: rgb(184, 255, 112);">Выберите переписку</h1>
                 </div>
-            {{ else if ne .Key "Clear" }}
+            {{ else}}
             <div class="text">
                 <div class="text-object nmy">
                     <img src="/assets/data/disk_logo.png" alt="">
