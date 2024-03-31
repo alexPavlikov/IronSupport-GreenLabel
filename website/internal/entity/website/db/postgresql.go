@@ -1,9 +1,9 @@
-package website_db
+package site_db
 
 import (
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
-	"github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/website"
+	site "github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/website"
 )
 
 type repository struct {
@@ -11,7 +11,7 @@ type repository struct {
 	logger logging.Logger
 }
 
-func NewRepository(client dbClient.Client, logger *logging.Logger) website.Repository {
+func NewRepository(client dbClient.Client, logger *logging.Logger) site.Repository {
 	return &repository{
 		client: client,
 		logger: *logger,

@@ -10,19 +10,28 @@
         <form action="/products/sort" method="get">
             <select name="category" id="">
                 <option value="" disabled selected>Категория товара</option>
-                <option value="category">2</option>
+                {{ range $_, $ct := .Category }}
+                <option value="{{ $ct.Name }}">{{ $ct.Name }} | от {{ $ct.MinAge }} лет</option>
+                {{ end }}
             </select>
             <select name="price" id="">
                 <option value="" disabled selected>Сортировка по цене</option>
-                <option value="price">2</option>
+                <option value="min">от меньше к большему</option>
+                <option value="max">от большего к меньшему</option>
             </select>
             <select name="active" id="">
                 <option value="" disabled selected>Наличие товара</option>
-                <option value="active">2</option>
+                <option value="true">В наличие</option>
+                <option value="true">В течение 7 дней</option>
+                <option value="false">Не в наличие</option>
             </select>
             <select name="discount" id="">
                 <option value="" disabled selected>Скидка</option>
-                <option value="discount">2</option>
+                {{ range $_, $d := .Discount }}
+                    {{ if eq $d.Discount true }}
+                    <option value="{{$d.Percent}}">{{$d.Percent}}%</option>
+                    {{ end }}
+                {{ end }}
             </select>
             <button><i class="fa-solid fa-square-check"></i></button>
         </form>
@@ -31,17 +40,27 @@
     <div class="products-grid">         
 
         <!-- 4 товара со скидкой -->
-        <a href="/" class="product">
+        {{ range $_, $p := .Product }}
+        <a href="/products/product?id={{$p.Id}}" class="product">
             <div class="img"><img src="" alt=""></div>
-            <span>15мл/30мл, спрей, от 4 лет</span>
-            <div class="name">Херкометазол</div>
-            <div class="price"><span class="old-price">1 400 ₽</span><span class="new-price">900 ₽</span></div>
-            <form action="">
-                <input type="text" name="" id="" style="display: none;">
+            <span>{{$p.Waight}} {{$p.UnitOfMeasurement}}, {{ $p.Category.Name }}, от {{ $p.Category.MinAge }} лет</span>
+            <div class="name">{{ $p.Name }}</div>
+
+            {{ if eq $p.Discount.Discount true }}
+            <div class="price"><span class="old-price">{{ $p.Price }} ₽</span><span class="new-price">{{ $p.Discount.PriceWithDiscount }} ₽</span></div>
+            {{ else }}
+            <div class="price"><span class="new-price">{{ $p.Price }} ₽</span></div>
+            {{end}}
+
+            <form action="/products/backet/add" method="get">
+                <input type="text" name="guest" id="" style="display: none;" value="1">
+                <input type="text" name="product" id="" style="display: none;" value="{{$p.Id}}">
                 <button>В корзину</button>
             </form>
         </a>
-        <a href="/" class="product">
+        {{ end }}
+
+        <!-- <a href="/" class="product">
             <div class="img"><img src="" alt=""></div>
             <span>15мл/30мл, спрей, от 4 лет</span>
             <div class="name">Херкометазол</div>
@@ -81,7 +100,7 @@
                 <input type="text" name="" id="product_id" style="display: none;">
                 <button>В корзину</button>
             </form>
-        </a>
+        </a> -->
     </div>
     <div class="pagination:container">
         <a href="/products?page=-1" class="pagination:number arrow">

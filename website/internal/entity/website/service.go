@@ -1,4 +1,4 @@
-package website
+package site
 
 import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"

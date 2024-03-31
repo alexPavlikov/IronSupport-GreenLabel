@@ -73,10 +73,10 @@ display: none;
   z-index: 1000;
   position: relative;
  }
-
+ 
 .drop_vert_menu li:hover ul {
- display: block; 
- }
+  display: block; 
+}
 
 .drop_vert_menu li ul li{
 text-align:left;
@@ -106,4 +106,8 @@ background: rgb(211, 48, 20);
 
 ul li a span {
   color: white;
+}
+
+.table-sortable th {
+  background-color: rgb(211, 48, 20);
 }

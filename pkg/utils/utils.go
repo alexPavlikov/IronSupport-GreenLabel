@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/product"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -79,18 +79,36 @@ func ReadEventFile() (lines []string, err error) {
 	return arr, scanner.Err()
 }
 
-func WriteProductToExcelFile(products []product.Product) error {
+type UtilsProduct struct {
+	Id                string
+	Name              string
+	FullName          string
+	Waight            int //gramm
+	Category          string
+	UnitOfMeasurement string
+	Remains           int
+	Price             int
+}
+
+func WriteProductToExcelFile(products []UtilsProduct) error {
 	file, err := excelize.OpenFile("./yandex_disk/DBSynchronization")
 	if err != nil {
 		return err
 	}
 
 	for i := 1; i <= len(products)-1; i++ {
-		file.SetCellValue("Sheet1", "A"+string(i), "")
-		file.SetCellValue("Sheet1", "B"+string(i), "")
-		file.SetCellValue("Sheet1", "C"+string(i), "")
-		file.SetCellValue("Sheet1", "D"+string(i), "")
-		file.SetCellValue("Sheet1", "E"+string(i), "")
+		file.SetCellValue("Sheet1", fmt.Sprintf("A%d", i), products[i-1].Id)
+		file.SetCellValue("Sheet1", fmt.Sprintf("B%d", i), products[i-1].Name)
+		file.SetCellValue("Sheet1", fmt.Sprintf("C%d", i), products[i-1].FullName)
+		file.SetCellValue("Sheet1", fmt.Sprintf("D%d", i), products[i-1].Remains)
+		file.SetCellValue("Sheet1", fmt.Sprintf("E%d", i), products[i-1].UnitOfMeasurement)
+		file.SetCellValue("Sheet1", fmt.Sprintf("F%d", i), products[i-1].Price)
+		file.SetCellValue("Sheet1", fmt.Sprintf("G%d", i), products[i-1].Waight)
+	}
+
+	err = file.Save()
+	if err != nil {
+		return err
 	}
 
 	return nil

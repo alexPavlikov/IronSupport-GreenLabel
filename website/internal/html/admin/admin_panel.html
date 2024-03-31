@@ -33,25 +33,80 @@
         <aside>
           <h1>Категории</h1>
           <ul  class="drop_vert_menu">
-            <li><a href="#"><span>Главная</span></a></li>
-            <li><a href="#"><span>Контакты</span></a>
-              <ul id="drop">
-               <li><a href="#"><span>Телефон</span></a></li>
-               <li><a href="#"><span>E-mail</span></a></li>
-               <li><a href="#"><span>Адреса</span></a></li>
-                 </ul>
-               </li>
-            <li><a href="#"><span>О сайте</span></a>
-                <ul>
-               <li><a href="#"><span>История</span></a></li>
-               <li><a href="#"><span>Коллектив</span></a></li>
-                  </ul>
-            </li>
-            <li><a href="#"><span>Карта сайта</span></a></li>
-            <li><a href="#"><span>Ссылки</span></a></li>
+            <!-- <li><a href="/administrator?page=main"><span>Главная</span></a></li> -->
+            <li><a href="/administrator?page=news"><span>Новости</span></a></li>
+            <li><a href="/administrator?page=product"><span>Продукция</span></a></li>
+            <li><a href="/administrator?page=client"><span>Наши клиенты</span></a></li>
+            <li><a href="/administrator?page=vacancy"><span>Вакансии</span></a></li>
+            <li><a href="/administrator?page=about"><span>О компании</span></a></li>
           </ul>
         </aside>
-        <main>123</main>
+        <main>
+
+
+          {{ if eq .Body "news" }}
+
+          <table class="table-sortable">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Заголовок</th>
+                    <th>Картинка</th>
+                    <th>Дата создания</th>
+                    <th>Текст</th>
+                    <th>Видео</th>
+                    <th>Автор</th>
+                    <th>Удаленно</th>
+                    <th><i class="fa-solid fa-pen-to-square"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+    
+              {{ range $_, $n := .News }}
+
+              <tr>
+                <td style="text-align: center;">{{ $n.Id }}</td>
+                <td>{{ $n.Title }}</td>
+                <td>{{ $n.Avatar }}</td>
+                <td>{{ $n.CreateDate }}</td>
+                <td>{{ $n.Text }}</td>
+                <td>{{ $n.VideoLink }}</td>
+                <td>{{ $n.Author }}</td>
+                <td>{{ $n.Deleted }}</td>
+                <td class="edit">
+                    <form action="/administrator/news/edit" method="get">
+                        <input style="display: none;" name="id" type="text" value="{{$n.Id}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+              {{ end }}
+               
+            </tbody>
+        </table>
+
+          {{ else if eq .Body "product" }}
+
+          <h1>product</h1>
+
+          {{ else if eq .Body "client" }}
+
+          <h1>client</h1>
+
+          {{ else if eq .Body "vacancy" }}
+
+          <h1>vacancy</h1>
+
+          {{ else if eq .Body "about" }}
+
+          <h1>about</h1>
+
+          {{ end }}
+
+        </main>
     </div>
 </body>
 

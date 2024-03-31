@@ -9,17 +9,19 @@
 
         <div class="news-post">
             <div class="post-img">
-                <img src="../../../../assets/data/news/1.jpeg" alt="">
+                <img src="/assets/data/news/1.jpeg" alt="">
             </div>
             <a href="/post" class="title">Заголовок новости</a>
         </div>
 
+        {{ range $_, $n := .News }}
         <div class="news-post">
             <div class="post-img">
-                <img src="../../../../assets/data/news/1.jpeg" alt="">
+                <img src="{{$n.Avatar}}" alt="">
             </div>
-            <a href="/post" class="title">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi, nisi beatae maiores cumque nostrum ullam. Iusto corrupti quibusdam, vitae veniam obcaecati beatae. Odio at quidem magnam minima in. Quaerat, quam!</a>
+            <a href="/post?{{$n.Id}}" class="title">{{$n.Title}}</a>
         </div>
+        {{ end }}
 
     </div>
 

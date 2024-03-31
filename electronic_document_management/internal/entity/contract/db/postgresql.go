@@ -173,7 +173,7 @@ func (r *repository) UpdateContract(ctx context.Context, contract *contract.Cont
 	return nil
 }
 
-func (r *repository) CloseContract(ctx context.Context, id int) error {
+func (r *repository) CloseContract(ctx context.Context, id int) error { //!!!!!
 	query := `
 	UPDATE 
 		public."Contract"
