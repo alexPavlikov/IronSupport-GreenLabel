@@ -2,6 +2,7 @@ package product_db
 
 import (
 	"context"
+	"fmt"
 
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
@@ -170,8 +171,39 @@ func (r *repository) SelectSortProduct(ctx context.Context, cat string, price st
 	FROM 
 		public."Product" p
 	JOIN public."ProductCategory" pc ON p.category = pc.name
-	WHERE p.category = $1 OR p.on_the_way = $2 OR p.discount = $3
 	`
+
+	if cat != "" || active != "" || discount != 0 {
+		query += " WHERE "
+	}
+
+	if cat != "" {
+		query += fmt.Sprintf("p.category = '%s'", cat)
+		if active != "" || discount != 0 {
+			query += " OR "
+		}
+	}
+
+	if active == "true" {
+		query += fmt.Sprintf("p.on_the_way = %t ", true)
+		if discount != 0 {
+			query += " OR "
+		}
+	} else if active == "active" {
+		query += "p.remains > 0 "
+		if discount != 0 {
+			query += " OR "
+		}
+	} else if active == "false" {
+		query += "p.remains <= 0"
+		if discount != 0 {
+			query += " OR "
+		}
+	}
+
+	if discount != 0 {
+		query += fmt.Sprintf("p.discount = %d", discount)
+	}
 
 	if price == "min" {
 		query += " ORDER BY p.price"
@@ -181,8 +213,9 @@ func (r *repository) SelectSortProduct(ctx context.Context, cat string, price st
 
 	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
 
-	rows, err := r.client.Query(ctx, query, cat, active, discount)
+	rows, err := r.client.Query(ctx, query)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -190,11 +223,66 @@ func (r *repository) SelectSortProduct(ctx context.Context, cat string, price st
 		var p product.Product
 		err = rows.Scan(&p.Id, &p.Article, &p.Name, &p.FullName, &p.Waight, &p.UnitOfMeasurement, &p.Remains, &p.Price, &p.Category.Name, &p.Category.Avatar, &p.Category.Description, &p.Category.MinAge, &p.Discount.Percent, &p.OnTheWay)
 		if err != nil {
+			fmt.Println(err)
 			return nil, err
+		}
+
+		p.Discount, err = r.SelectProductDiscountByName(ctx, p.Discount.Percent)
+		if err != nil {
+			return nil, err
+		}
+
+		if p.Discount.Discount {
+			p.Discount.PriceWithDiscount = int((float64(p.Price) / 100) * (100 - float64(p.Discount.Percent)))
 		}
 
 		pr = append(pr, p)
 	}
+
+	return pr, nil
+}
+
+func (r *repository) FindProduct(ctx context.Context, find string) (pr []product.Product, err error) {
+	query := `
+	SELECT 
+		p.id, p.article, p.name, p.full_name, p.waight, p.unit_of_meas, p.remains, p.price, p.category, pc.avatar, pc.description, pc.min_age_to_use, p.discount, p.on_the_way
+	FROM 
+		public."Product" p
+	JOIN public."ProductCategory" pc ON p.category = pc.name
+	WHERE p.article ILIKE $1 or p.name ILIKE $2 OR p.full_name ILIKE $3 OR p.category = $4
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	find = "%" + find + "%"
+
+	rows, err := r.client.Query(ctx, query, find, find, find, find)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var p product.Product
+		err = rows.Scan(&p.Id, &p.Article, &p.Name, &p.FullName, &p.Waight, &p.UnitOfMeasurement, &p.Remains, &p.Price, &p.Category.Name, &p.Category.Avatar, &p.Category.Description, &p.Category.MinAge, &p.Discount.Percent, &p.OnTheWay)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		p.Discount, err = r.SelectProductDiscountByName(ctx, p.Discount.Percent)
+		if err != nil {
+			return nil, err
+		}
+
+		if p.Discount.Discount {
+			p.Discount.PriceWithDiscount = int((float64(p.Price) / 100) * (100 - float64(p.Discount.Percent)))
+		}
+
+		pr = append(pr, p)
+	}
+
+	fmt.Println("!!!!!!!!!!", pr)
 
 	return pr, nil
 }

@@ -1,9 +1,5 @@
 {{ define "products" }}
 
-{{ template "header" }}
-
-
-
 <body>
     <div class="sorted-panel">
         <h1 style="color: rgb(4, 160, 56);">Каталог товара</h1>
@@ -21,7 +17,7 @@
             </select>
             <select name="active" id="">
                 <option value="" disabled selected>Наличие товара</option>
-                <option value="true">В наличие</option>
+                <option value="active">В наличие</option>
                 <option value="true">В течение 7 дней</option>
                 <option value="false">Не в наличие</option>
             </select>

@@ -20,13 +20,14 @@
     <!-- <div class="headers box-header-center"><button class="main-btn primary" onclick="window.dialog.showModal();"><i class="fa-solid fa-plus"></i> Новая заявка</button></div> -->
     <div class="headers box-header-center">
         <!-- <button onclick="window.dialognews.showModal();" style=" width: 40%;" class="text-btn"><i class="fa-solid fa-envelope-open-text main-color"></i> События</button> -->
-            <form class="find" action="/find" method="post">
+            <form class="find" action="/find" method="get">
                 <input type="text" name="find" placeholder="Искать здесь...">
                 <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
     </div>
     <div class="headers box-header-right">
-        <a href="/account" class="main-btn" style="margin-right: 20px;"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        {{ if .Guest.Auth }}
+        <a href="/account" class="main-btn" style="margin-right: 20px;"><i class="fa-regular fa-user"></i>{{ .Guest.Lastname }}</a>
         <a href="/backet" class="main-btn" style="margin-right: 20px; position: relative;">
             <i class="fa-solid fa-basket-shopping"></i>
             <span style="position: absolute; top: 3; right: 3; color: yellow; font-weight: 700; font-size: 12px;">9</span>
@@ -34,6 +35,9 @@
         <form action="/exit">
         <button id="exit" class="main-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </form>
+        {{ else }}
+        <a href="/auth" class="main-btn" style="margin-right: 20px;"><i class="fa-solid fa-door-open" style="margin-right: 10px;"></i>Войти</a>
+        {{ end }}
     </div>
 </header>
 

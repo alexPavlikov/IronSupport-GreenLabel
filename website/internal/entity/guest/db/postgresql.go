@@ -2,6 +2,7 @@ package guest_db
 
 import (
 	"context"
+	"fmt"
 
 	dbClient "github.com/alexPavlikov/IronSupport-GreenLabel/pkg/client/postgresql"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
@@ -25,7 +26,7 @@ func (r *repository) SelectGuests(ctx context.Context) (guests []guest.Guests, e
 
 	query := `
 		SELECT 
-			id, email, firstname, lastname, patronymic, phone, password, age, ogranization, card_number, card_date, card_cvv, card_bank, banned
+			id, email, firstname, lastname, patronymic, phone, password, age, organization, card_number, card_date, card_cvv, card_bank, banned
 		FROM 
 			public."Guest"
 	`
@@ -59,7 +60,7 @@ func (r *repository) SelectGuestByColumn(ctx context.Context, column string, val
 
 	query := `
 		SELECT 
-			id, email, firstname, lastname, patronymic, phone, password, age, ogranization, card_number, card_date, card_cvv, card_bank, banned
+			id, email, firstname, lastname, patronymic, phone, password, age, organization, card_number, card_date, card_cvv, card_bank, banned
 		FROM 
 			public."Guest"
 		WHERE $1 = $2
@@ -121,7 +122,7 @@ func (r *repository) InsertOrganization(ctx context.Context, org guest.Organizat
 func (r *repository) InsertGuest(ctx context.Context, gst *guest.Guests) error {
 	query := `
 	INSERT INTO 
-		public."Guest" (email, firstname, lastname, patronymic, phone, password, age, ogranization, card_number, card_date, card_cvv, card_bank)
+		public."Guest" (email, firstname, lastname, patronymic, phone, password, age, organization, card_number, card_date, card_cvv, card_bank)
 	VALUEST 
 		($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	RETURNING id	
@@ -161,7 +162,7 @@ func (r *repository) UpdateGuest(ctx context.Context, gst guest.Guests) error {
 	UPDATE INTO
 		public."Guest"
 	SET 
-		email = $1, firstname = $2, lastname = $3, patronymic = $4, phone = $5, password = $6, age = $7, ogranization = $8, card_number = $9, card_date = $10, card_cvv = $11, card_bank = $12
+		email = $1, firstname = $2, lastname = $3, patronymic = $4, phone = $5, password = $6, age = $7, organization = $8, card_number = $9, card_date = $10, card_cvv = $11, card_bank = $12
 	WHERE
 		id = $13
 	`
@@ -186,4 +187,57 @@ func (r *repository) BannedGuest(ctx context.Context, id int) error {
 	_ = r.client.QueryRow(ctx, query, id)
 
 	return nil
+}
+
+func (r *repository) CheckAuthGuest(ctx context.Context, email string, password string) (g guest.Guests, err error) { //work
+	query := `
+		SELECT 
+			id, email, firstname, lastname, patronymic, phone, password, age, organization, card_number, card_date, card_cvv, card_bank, banned
+		FROM 
+			public."Guest"
+		WHERE email = $1 AND password = $2 AND banned = false
+	`
+
+	r.logger.Tracef("Query - %s", utils.FormatQuery(query))
+
+	rows := r.client.QueryRow(ctx, query, email, password)
+
+	err = rows.Scan(&g.Id, &g.Email, &g.Firstname, &g.Lastname, &g.Patronymic, &g.Phone, &g.Password, &g.Age, &g.Organization.INN, &g.SaveCard.Number, &g.SaveCard.Date, &g.SaveCard.CVV, &g.SaveCard.Bank, &g.Banned)
+	if err != nil {
+		return guest.Guests{}, err
+	}
+
+	g.Organization, err = r.SelectOrganization(ctx, g.Organization.INN)
+	if err != nil {
+		return guest.Guests{}, err
+	}
+
+	return g, nil
+}
+
+func (r *repository) SelectTrustCompany(ctx context.Context) (tc []guest.TrustCompany, err error) {
+	query := `
+	SELECT name, description, logo FROM public."TrustCompany"
+	`
+
+	r.logger.Tracef("Query: %s", utils.FormatQuery(query))
+
+	rows, err := r.client.Query(ctx, query)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var t guest.TrustCompany
+		err = rows.Scan(&t.Name, &t.Description, &t.Logo)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		tc = append(tc, t)
+	}
+
+	return tc, nil
 }

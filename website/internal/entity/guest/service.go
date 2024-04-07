@@ -75,3 +75,20 @@ func (s *Service) UpdateOrganization(ctx context.Context, org Organization) erro
 	}
 	return nil
 }
+
+func (s *Service) AuthGuest(ctx context.Context, email string, pass string) (guest Guests, err error) {
+	guest, err = s.repository.CheckAuthGuest(ctx, email, pass)
+	if err != nil {
+		return Guests{}, err
+	}
+
+	return guest, nil
+}
+
+func (s *Service) GetTrustCompany(ctx context.Context) (tc []TrustCompany, err error) {
+	tc, err = s.repository.SelectTrustCompany(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return tc, nil
+}

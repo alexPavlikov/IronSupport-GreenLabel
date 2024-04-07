@@ -600,7 +600,7 @@ section {
   }
 
   .partners .company img {
-      width: 150px;
+      /* width: 150px; */
       height: 150px;
       text-align: center;
       margin: auto;
@@ -1083,6 +1083,7 @@ section {
   display: flex;
   flex-direction: row;
   position: relative;
+  margin-bottom: 40px;
 }
 
 .vacancy .vacancy-item .name {

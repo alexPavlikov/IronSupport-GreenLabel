@@ -1,19 +1,19 @@
 {{ define "clients" }}
 
-{{ template "header" }}
-
 <body>
 
     <div class="clients">
         <h1 style="color: rgb(4, 160, 56); padding: 20px 0;">Компании, которые доверяют нам!</h1>
+        {{ range $_, $tc := .TrustCompany }}
        <div class="client">
-            <div class="logo"><img src="../../../../assets/image/logo.webp" alt=""></div>
+            <div class="logo"><img src="{{ $tc.Logo }}" alt=""></div>
             <div class="text">
-                <div class="name">ООО "Центр управления качеством больничной гигиены"</div>
-                <div class="main-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio, vero. Harum esse ea dignissimos, tempora nobis ducimus consectetur iste aperiam corporis molestias sunt enim temporibus delectus distinctio consequuntur voluptatibus beatae!</div>
+                <div class="name">{{ $tc.Name }}</div>
+                <div class="main-text">{{ $tc.Description }}</div>
                 <span>Спасибо, что доверяете нам!</span>
             </div>
        </div>
+       {{ end }}
     </div>
 
 </body>

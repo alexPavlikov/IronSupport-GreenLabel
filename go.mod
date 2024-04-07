@@ -12,6 +12,8 @@ require (
 	github.com/xuri/excelize/v2 v2.8.1
 )
 
+require gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -31,6 +33,7 @@ require (
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	gopkg.in/mail.v2 v2.3.1
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )

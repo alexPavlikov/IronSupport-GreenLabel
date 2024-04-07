@@ -343,7 +343,7 @@ func (h *handler) AuthUserConfirm(w http.ResponseWriter, r *http.Request) {
 			expires := time.Now().AddDate(1, 0, 0)
 			cookie := &http.Cookie{
 				Name:  "Id",
-				Value: UserAuth.Us.Email + " " + UserAuth.Us.Password + " " + UserAuth.Us.Role,
+				Value: UserAuth.Us.Email + " " + UserAuth.Us.Password + " " + UserAuth.Us.Role + " " + fmt.Sprint(UserAuth.Us.Id),
 				//MaxAge:  300,
 				Expires: expires,
 				Path:    "/",

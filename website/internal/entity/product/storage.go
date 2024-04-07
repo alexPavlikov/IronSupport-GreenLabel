@@ -9,4 +9,5 @@ type Repository interface {
 	SelectProductDiscount(ctx context.Context) (pd []DiscountProduct, err error)
 	SelectSortProduct(ctx context.Context, cat string, price string, active string, discount int) (pr []Product, err error)
 	SelectProductDiscountByName(ctx context.Context, name int) (pd DiscountProduct, err error)
+	FindProduct(ctx context.Context, find string) (pr []Product, err error)
 }

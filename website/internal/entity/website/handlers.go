@@ -1,6 +1,7 @@
 package site
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"text/template"
@@ -8,6 +9,7 @@ import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/guest"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -33,9 +35,6 @@ func (h *handler) Register(router *httprouter.Router) {
 	// router.HandlerFunc(http.MethodGet, "/backet", h.BacketHandler)
 	// router.HandlerFunc(http.MethodGet, "/purchases", h.PurchasesHandler)
 
-	router.HandlerFunc(http.MethodPost, "/find", h.FindHandler)
-	router.HandlerFunc(http.MethodGet, "/find", h.FindResultHandler)
-
 	router.HandlerFunc(http.MethodPost, "/subscribe", h.SubHandler)
 
 	// router.HandlerFunc(http.MethodGet, "/website/menu", h.WebsiteMenuHandler)
@@ -58,7 +57,28 @@ func (h *handler) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	err = tmpl.ExecuteTemplate(w, "website", nil)
+	category, err := h.service.GetProductCategory(context.TODO())
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	trust, err := h.service.GetTrustCompany(context.TODO())
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	data := map[string]interface{}{"Category": category, "Trust": trust}
+	title := map[string]interface{}{"Guest": guest.Guest, "Title": "Главная"}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	err = tmpl.ExecuteTemplate(w, "website", data)
 	if err != nil {
 		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
@@ -72,7 +92,25 @@ func (h *handler) VacancyHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	err = tmpl.ExecuteTemplate(w, "vacancy", nil)
+	vac, err := h.service.GetVacancy(context.TODO())
+	if err != nil {
+		fmt.Println(err)
+		h.logger.Tracef("%s - failed open website VacancyHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	title := map[string]interface{}{"Guest": guest.Guest, "Title": "Вакансии"}
+	data := map[string]interface{}{"Vacancy": vac}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	fmt.Println(vac)
+
+	err = tmpl.ExecuteTemplate(w, "vacancy", data)
 	if err != nil {
 		h.logger.Tracef("%s - failed open website VacancyHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
@@ -86,32 +124,17 @@ func (h *handler) AboutHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
+	data := map[string]interface{}{"Guest": guest.Guest, "Title": "О компании"}
+
+	err = tmpl.ExecuteTemplate(w, "header", data)
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
 	err = tmpl.ExecuteTemplate(w, "about", nil)
 	if err != nil {
 		h.logger.Tracef("%s - failed open website AboutHandler", config.LOG_ERROR)
-		http.NotFound(w, r)
-	}
-}
-
-func (h *handler) FindHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-
-	find := r.FormValue("find")
-	if find != "" {
-		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", find)
-
-		http.Redirect(w, r, "/find", http.StatusSeeOther)
-	}
-}
-
-func (h *handler) FindResultHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseGlob("./website/internal/html/website/*.html")
-	if err != nil {
-		http.NotFound(w, r)
-	}
-
-	err = tmpl.ExecuteTemplate(w, "find", nil)
-	if err != nil {
 		http.NotFound(w, r)
 	}
 }
@@ -121,7 +144,11 @@ func (h *handler) SubHandler(w http.ResponseWriter, r *http.Request) {
 
 	mail := r.FormValue("email")
 	if mail != "" {
-		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", mail)
+		err := h.service.AddSubscribers(context.TODO(), mail)
+		if err != nil {
+			h.logger.Tracef("%s - failed open website SubHandler", config.LOG_ERROR)
+			http.NotFound(w, r)
+		}
 		http.Redirect(w, r, "/#email", http.StatusSeeOther)
 	}
 }

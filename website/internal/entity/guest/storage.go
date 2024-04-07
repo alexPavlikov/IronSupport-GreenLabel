@@ -11,4 +11,6 @@ type Repository interface {
 	UpdateOrganization(ctx context.Context, ogr Organization) error
 	UpdateGuest(ctx context.Context, gst Guests) error
 	BannedGuest(ctx context.Context, id int) error
+	CheckAuthGuest(ctx context.Context, email string, password string) (g Guests, err error)
+	SelectTrustCompany(ctx context.Context) (tc []TrustCompany, err error)
 }

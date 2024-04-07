@@ -1,7 +1,5 @@
 package guest
 
-import "github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/product"
-
 type Guests struct { //table
 	Id           int
 	Email        string
@@ -15,6 +13,7 @@ type Guests struct { //table
 	SaveCard     Card
 	AllPurchase  []Purchase
 	Banned       bool
+	Auth         bool
 }
 
 type Card struct {
@@ -25,10 +24,10 @@ type Card struct {
 }
 
 type Purchase struct { //table
-	Guests  string
-	Product []product.Product
-	Cost    uint
-	Date    string
+	Guests string
+	//Product []product.Product
+	Cost uint
+	Date string
 }
 
 type Organization struct {
@@ -39,4 +38,10 @@ type Organization struct {
 	Fullname string
 	City     string
 	Country  string
+}
+
+type TrustCompany struct {
+	Name        string
+	Description string
+	Logo        string
 }

@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"crypto/md5"
+	"crypto/tls"
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -10,6 +11,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	gomail "gopkg.in/mail.v2"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -111,5 +114,24 @@ func WriteProductToExcelFile(products []UtilsProduct) error {
 		return err
 	}
 
+	return nil
+}
+
+func SendMessage(email string, message string, header string) error {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "a.pavlikov2002@gmail.com")
+	m.SetHeader("To", email)
+
+	m.SetHeader("Subject", header)
+
+	m.SetBody("text/plain", message)
+	d := gomail.NewDialer("smtp.gmail.com", 587, "a.pavlikov2002@gmail.com", "isei dkte iiwl wior")
+
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+		return err
+	}
 	return nil
 }

@@ -1,7 +1,5 @@
 {{ define "website" }}
 
-{{ template "header" }}
-
 <body>
     
     <div class="main-banner">
@@ -11,31 +9,39 @@
     </div>
 
     <div class="product-category">
-        <h1 style="color: rgb(4, 160, 56);">Категории выпускаемой нами продукции</h1>
+        <h1 style="color: rgb(4, 160, 56);">Категории выпускаемой нами продукции {{.User}}</h1>
         <!-- категории всех выпускаемых товаров для инфы пользователю -->
         <section>
             <div class="container">
                 <div class="carousel">
-                    <input type="radio" name="slides" checked="checked" id="slide-1">
-                    <input type="radio" name="slides" id="slide-2">
+                    {{ range $i, $_ := .Category }}
+                        {{ if eq $i 1 }}
+                            <input type="radio" name="slides" checked="checked" id="slide-{{$i}}">
+                        {{ else }}
+                        <input type="radio" name="slides" id="slide-{{$i}}">
+                        {{ end }}
+                    {{ end }}
+                    <!-- <input type="radio" name="slides" id="slide-2">
                     <input type="radio" name="slides" id="slide-3">
                     <input type="radio" name="slides" id="slide-4">
                     <input type="radio" name="slides" id="slide-5">
                     <input type="radio" name="slides" id="slide-6">
-                    <input type="radio" name="slides" id="slide-7">
+                    <input type="radio" name="slides" id="slide-7"> -->
                     <ul class="carousel__slides">
+                        {{ range $_, $ct := .Category }}
                         <li class="carousel__slide">
                             <figure>
                                 <div>
-                                    <img loading="lazy" src="https://picsum.photos/id/1041/800/450" alt="">
+                                    <img loading="lazy" src="{{ $ct.Avatar }}" alt="">
                                 </div>
                                 <figcaption>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    {{ $ct.Description }}
                                     <span class="credit">Photo: Tim Marshall</span>
                                 </figcaption>
                             </figure>
                         </li>
-                        <li class="carousel__slide">
+                        {{ end }}
+                        <!-- <li class="carousel__slide">
                             <figure>
                                 <div>
                                     <img    loading="lazy" src="https://picsum.photos/id/1043/800/450" alt="">
@@ -100,10 +106,15 @@
                                     <span class="credit">Photo: Annie Spratt</span>                            
                                 </figcaption>
                             </figure>
-                        </li>
+                        </li> -->
                     </ul>    
                     <ul class="carousel__thumbnails">
+                        {{ range $index, $c := .Category }}
                         <li>
+                            <label for="slide-{{$index}}"><img src="{{ $c.Avatar }}" alt=""></label>
+                        </li>
+                        {{ end }}
+                        <!-- <li>
                             <label for="slide-1"><img src="https://picsum.photos/id/1041/150/150" alt=""></label>
                         </li>
                         <li>
@@ -123,7 +134,7 @@
                         </li>
                         <li>
                             <label for="slide-7"><img src="https://picsum.photos/id/1052/150/150" alt=""></label>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -213,10 +224,12 @@
         <h1 style="color: rgb(4, 160, 56);">Компании, которые нам доверяют</h1>
 
         <div class="partners">
+            {{ range $_, $tc := .Trust }}
+            <div class="company"><img src="{{ $tc.Logo }}" alt="{{ $tc.Name }} {{ $tc.Description }}"></div>
+            {{ end }}
+            <!-- <div class="company"><img src="" alt=""></div>
             <div class="company"><img src="" alt=""></div>
-            <div class="company"><img src="" alt=""></div>
-            <div class="company"><img src="" alt=""></div>
-            <div class="company"><img src="" alt=""></div>
+            <div class="company"><img src="" alt=""></div> -->
         </div>
         
     </div>

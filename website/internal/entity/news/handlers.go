@@ -8,6 +8,7 @@ import (
 	"github.com/alexPavlikov/IronSupport-GreenLabel/config"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/handlers"
 	"github.com/alexPavlikov/IronSupport-GreenLabel/pkg/logging"
+	"github.com/alexPavlikov/IronSupport-GreenLabel/website/internal/entity/guest"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -41,6 +42,13 @@ func (h *handler) NewsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := map[string]interface{}{"News": news}
+	title := map[string]interface{}{"Guest": guest.Guest, "Title": "Новости"}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
 
 	err = tmpl.ExecuteTemplate(w, "news", data)
 	if err != nil {
@@ -53,6 +61,14 @@ func (h *handler) PostHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseGlob("./website/internal/html/website/*.html")
 	if err != nil {
 		h.logger.Tracef("%s - failed open website PostHandler", config.LOG_ERROR)
+		http.NotFound(w, r)
+	}
+
+	title := map[string]interface{}{"Guest": guest.Guest, "Title": "Публикация №1"}
+
+	err = tmpl.ExecuteTemplate(w, "header", title)
+	if err != nil {
+		h.logger.Tracef("%s - failed open website IndexHandler", config.LOG_ERROR)
 		http.NotFound(w, r)
 	}
 

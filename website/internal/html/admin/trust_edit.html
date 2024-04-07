@@ -1,0 +1,73 @@
+{{ define "trustedit" }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-сайт</title>
+</head>
+
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/awesome/css/all.min.css">
+<!-- <link rel="stylesheet" href="/assets/css/website.css"> -->
+<link rel="stylesheet" href="/assets/css/adminpanel.css">
+
+<link rel="stylesheet" href="/assets/css/dialog.css">
+
+<header>
+    <div class="headers box-header logo">
+       <a href="/ironsupport"><img src="../../assets/image/logo.webp" alt="Green Label г.Донецк"></a>
+    </div>
+   <div class="headers box-header-center">
+       <h2 style="color: rgb(211, 48, 20);">Админ-панель сайта</h2>
+    </div>
+    <div class="headers box-header-right">
+        <a href="/edm/user/account" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <button id="exit" class="main-btn"  style="background-color: rgb(211, 48, 20);"><i class="fa-solid fa-arrow-right-from-bracket" ></i></button>
+    </div>
+</header>
+
+<body>
+    <div class="container">
+        <aside>
+          <h1>Категории</h1>
+          <ul  class="drop_vert_menu">
+            <!-- <li><a href="/administrator?page=main"><span>Главная</span></a></li> -->
+            <li><a href="/administrator?page=news"><span>Новости</span></a></li>
+            <li><a href="/administrator?page=product"><span>Продукция</span></a></li>
+            <li><a href="/administrator?page=client"><span>Наши клиенты</span></a></li>
+            <li><a href="/administrator?page=vacancy"><span>Вакансии</span></a></li>
+            <li><a href="/administrator?page=about"><span>О компании</span></a></li>
+          </ul>
+        </aside>
+        <main>
+
+            <dialog class="dialogsub-medium dialog-visible" id="dialogobject" style="height: 70%; width: 50vw;">
+                <h3 class="main-color" style="text-transform: uppercase; color: rgb(211, 48, 20);">Редактирование клиента = {{ .Trust.Name }}</h3>
+            
+                <form action="/administrator/trust/edit" method="post" class="content-medium" autocomplete="off" enctype="multipart/form-data" >
+                    <input type="text" value="{{ .Trust.Logo }}" name="link" style="display: none;">
+                    <span>Название клиента</span>
+                    <input type="text" name="name" id="" value="{{ .Trust.Name }}" placeholder="{{ .Trust.Name }}">
+                    <span>Описание</span>
+                    <textarea name="description" style="font-size: 18px; resize: none; width: 100%; padding: 7px 10px;">{{ .Trust.Description }}</textarea>
+                    <span>Логотип клиента</span>
+                    <input type="file" name="logo" placeholder="{{ .Trust.Logo }}" value="{{ .Trust.Logo }}" accept=".png, .jpg, .jpeg, .gif">
+                  
+                    <input type="submit" value="Обновить">
+                </form>
+            
+                <form action="/administrator" method="get">
+                    <input style="display: none;" type="text" name="page" value="client">
+                    <button onclick="window.dialogedit.close();" aria-label="close" class="x">❌</button>
+                </form>
+            </dialog>
+
+        </main>
+    </div>
+</body>
+
+
+{{ end }}

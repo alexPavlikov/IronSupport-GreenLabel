@@ -24,7 +24,7 @@
        <h2 style="color: rgb(211, 48, 20);">Админ-панель сайта</h2>
     </div>
     <div class="headers box-header-right">
-        <a href="/" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <a href="/edm/user/account" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
         <button id="exit" class="main-btn"  style="background-color: rgb(211, 48, 20);"><i class="fa-solid fa-arrow-right-from-bracket" ></i></button>
     </div>
 </header>
@@ -44,20 +44,28 @@
         </aside>
         <main>
 
-            <dialog class="dialogsub-medium dialog-visible" id="dialogobject">
-                <h3 class="main-color" style="text-transform: uppercase;">Редактирование новости с id = {{ .News.Id }}</h3>
+            <dialog class="dialogsub-medium dialog-visible" id="dialogobject" style="height: 70%; width: 50vw;">
+                <h3 class="main-color" style="text-transform: uppercase; color: rgb(211, 48, 20);">Редактирование новости с id = {{ .News.Id }}</h3>
             
-                <form action="/administrator/news/edit" method="post" class="content-medium" autocomplete="off">
-                    <input type="text" name="id" id="" value="{{ .News.Id }}">
+                <form action="/administrator/news/edit" method="post" class="content-medium" autocomplete="off" enctype="multipart/form-data" >
+                    <input type="text" name="id" id="" value="{{ .News.Id }}" style="display: none;">
+                    <input type="text" name="link" value="{{ .News.Avatar }}" style="display: none;">
                     <span>Название объекта</span>
-                    <input type="text" name="name" id="" value="{{ .News.Title }}" placeholder="Объект">
-                    <span>Адрес объекта</span>
-                    <input type="text" name="address" id="" value="" placeholder="Адрес">
-                    <span>Время работы объекта</span>
-                    <input type="text" name="time" id="" value="" placeholder="Время работы">
+                    <input type="text" name="name" id="" value="{{ .News.Title }}" placeholder="{{ .News.Title }}">
+                    <span>Содержимое новости</span>
+                    <textarea name="text" style="font-size: 18px; resize: none; width: 100%; padding: 7px 10px;">{{ .News.Text }}</textarea>
+                    <span>Обложка новости</span>
+                    <input type="file" name="avatar" placeholder="{{ .News.Avatar }}" value="{{ .News.Avatar }}" accept=".png, .jpg, .jpeg, .gif">
+                    <span>Ссылка на видео в новости</span>
+                    <input type="text" name="video" placeholder="{{ .News.VideoLink }}" value="{{ .News.VideoLink }}">
+                    <span>Скрыть новость</span>
+                    <input type="checkbox" name="deleted" placeholder="{{ .News.Deleted }}" value="{{ .News.Deleted }}">
+
+                    <input type="submit" value="Обновить">
                 </form>
             
-                <form action="/edm/object" method="get">
+                <form action="/administrator" method="get">
+                    <input style="display: none;" type="text" name="page" value="news">
                     <button onclick="window.dialogedit.close();" aria-label="close" class="x">❌</button>
                 </form>
             </dialog>

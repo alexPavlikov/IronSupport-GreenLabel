@@ -14,6 +14,8 @@
 <!-- <link rel="stylesheet" href="/assets/css/website.css"> -->
 <link rel="stylesheet" href="/assets/css/adminpanel.css">
 
+<link rel="stylesheet" href="/assets/css/dialog.css">
+
 
 <header>
     <div class="headers box-header logo">
@@ -23,7 +25,7 @@
        <h2 style="color: rgb(211, 48, 20);">Админ-панель сайта</h2>
     </div>
     <div class="headers box-header-right">
-        <a href="/" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
+        <a href="/edm/user/account" class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);"><i class="fa-regular fa-user"></i>Павликов А.</a>
         <button id="exit" class="main-btn"  style="background-color: rgb(211, 48, 20);"><i class="fa-solid fa-arrow-right-from-bracket" ></i></button>
     </div>
 </header>
@@ -38,6 +40,7 @@
             <li><a href="/administrator?page=product"><span>Продукция</span></a></li>
             <li><a href="/administrator?page=client"><span>Наши клиенты</span></a></li>
             <li><a href="/administrator?page=vacancy"><span>Вакансии</span></a></li>
+            <li><a href="/administrator?page=email"><span>Рассылка</span></a></li>
             <li><a href="/administrator?page=about"><span>О компании</span></a></li>
           </ul>
         </aside>
@@ -45,6 +48,8 @@
 
 
           {{ if eq .Body "news" }}
+
+          <a class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);" href="/administrator/news/add">Добавить новость</a>
 
           <table class="table-sortable">
             <thead>
@@ -90,21 +95,142 @@
 
           {{ else if eq .Body "product" }}
 
-          <h1>product</h1>
+          <a class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);" href="/administrator/product/add">Загрузить данные с 1С</a>
+
+          <table class="table-sortable">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Артикль</th>
+                    <th>Наименование</th>
+                    <th>Полное наименование</th>
+                    <th>Вес</th>
+                    <th>Единица измерения</th>
+                    <th>Остаток</th>
+                    <th>Цена</th>
+                    <th>Категория</th>
+                    <th>Скидка</th>
+                    <th>Ожидается на этой недели</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+              {{ range $_, $p := .Product }}
+
+              <tr>
+                <td style="text-align: center;">{{ $p.Id }}</td>
+                <td style="text-align: center;">{{ $p.Article }}</td>
+                <td>{{ $p.Name }}</td>
+                <td>{{ $p.FullName }}</td>
+                <td>{{ $p.Waight }}</td>
+                <td>{{ $p.UnitOfMeasurement }}</td>
+                <td>{{ $p.Remains }}</td>
+                <td>{{ $p.Price }}</td>
+                <td>{{ $p.Category }}</td>
+                <td>{{ $p.Discount }}</td>
+                <td>{{ $p.OnTheWay }}</td>
+            </tr>
+
+              {{ end }}
+               
+            </tbody>
+        </table>
 
           {{ else if eq .Body "client" }}
 
-          <h1>client</h1>
+          <a class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);" href="/administrator/trust/add">Добавить клиента</a>
+
+          <table class="table-sortable">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Логотип</th>
+                    <th><i class="fa-solid fa-pen-to-square"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+    
+              {{ range $_, $tc := .TrustCompany }}
+
+              <tr>
+                <td style="text-align: center;">{{ $tc.Name }}</td>
+                <td>{{ $tc.Description }}</td>
+                <td>{{ $tc.Logo }}</td>
+                <td class="edit">
+                    <form action="/administrator/trust/edit" method="get">
+                        <input style="display: none;" name="name" type="text" value="{{$tc.Name}}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+              {{ end }}
+               
+            </tbody>
+        </table>
+
 
           {{ else if eq .Body "vacancy" }}
 
-          <h1>vacancy</h1>
+          <a class="main-btn" style="margin-right: 20px; background-color: rgb(211, 48, 20);" href="/administrator/vacancy/add">Добавить вакансию</a>
 
-          {{ else if eq .Body "about" }}
+          <table class="table-sortable">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Требования</th>
+                    <th>Активна</th>
+                    <th><i class="fa-solid fa-pen-to-square"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+    
+              {{ range $_, $v := .Vacancy }}
+
+              <tr>
+                <td style="text-align: center;">{{ $v.Name }}</td>
+                <td>{{ $v.Options }}</td>
+                <td>{{ $v.Active }}</td>
+                <td class="edit">
+                    <form action="/administrator/vacancy/edit" method="get">
+                        <input style="display: none;" name="name" type="text" value="{{ $v.Name }}">
+                        <button class="edtbtn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+              {{ end }}
+               
+            </tbody>
+        </table>
+
+        {{ else if eq .Body "email" }}
+
+        <dialog class="dialogsub-medium dialog-visible" id="dialogobject" style="height: 70%; width: 50vw;">
+          <h3 class="main-color" style="text-transform: uppercase; color: rgb(211, 48, 20);">Создать рассылку</h3>
+      
+          <form action="/administrator/email/add" method="post" class="content-medium" autocomplete="off" >
+              <span>Заголовок</span>
+              <input type="text" name="title" id="" placeholder="Заполните заголовок рассылки">
+              <span>Содержимое рассылки</span>
+              <textarea name="text" style="font-size: 18px; resize: none; width: 100%; padding: 7px 10px;" placeholder="Заполните основное содержание новости"></textarea>
+            
+              <input type="submit" style="padding: 7px 10px; text-align: center; margin: 20px 10px;" value="Создать">
+          </form>
+
+      </dialog>
+
+
+        {{ else if eq .Body "about" }}
 
           <h1>about</h1>
 
-          {{ end }}
+        {{ end }}
 
         </main>
     </div>

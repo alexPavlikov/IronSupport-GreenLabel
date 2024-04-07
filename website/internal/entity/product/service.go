@@ -59,3 +59,11 @@ func (s *Service) GetSortedProduct(ctx context.Context, cat string, price string
 	}
 	return pr, nil
 }
+
+func (s *Service) FindProducts(ctx context.Context, find string) (pr []Product, err error) {
+	pr, err = s.repository.FindProduct(ctx, find)
+	if err != nil {
+		return nil, err
+	}
+	return pr, nil
+}
